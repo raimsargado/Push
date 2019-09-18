@@ -2,31 +2,32 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:strongr/models/exercise.dart';
-import 'package:strongr/root_view.dart';
+import 'package:strongr/bloc/workout_bloc.dart';
+import 'package:strongr/models/workset.dart';
+import 'package:strongr/views/root_view.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        Provider(
-          builder: (context) => ExerciseBloc(),
-        )
+        Provider(builder: (context) => WorkoutBloc()),
+        Provider(builder: (context) => WorkSetBloc()),
       ],
       child: RootView(),
     ),
   );
 }
 
-class ExerciseBloc {
-  var valController = new StreamController<Exercise>();
-  var valControllerOutput = new StreamController<Exercise>();
+class WorkSetBloc {
 
-  Stream<Exercise> get exerciseOutput => valControllerOutput.stream;
+  var valController = new StreamController<WorkSet>.broadcast();
+  var valControllerOutput = new StreamController<WorkSet>.broadcast();
 
-  ExerciseBloc() {
-    valController.stream.listen((exercise) {
-      valControllerOutput.sink.add(exercise);
+  Stream<WorkSet> get valOutput => valControllerOutput.stream;
+
+  WorkSetBloc() {
+    valController.stream.listen((workset) {
+      valControllerOutput.sink.add(workset);
     });
   }
 
