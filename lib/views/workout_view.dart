@@ -31,7 +31,26 @@ class WorkoutView extends StatelessWidget {
         },
       ),
       appBar: AppBar(
-        title: Text(workout.name),
+        centerTitle: false,
+        title: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: TextField(
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  alignLabelWithHint: true,
+                  hintText: workout.name
+                ),
+               ),
+            ),
+            Expanded(
+              flex: 0,
+              child: IconButton(icon: Icon(Icons.directions_run), onPressed: () {},),
+            )
+
+          ],
+        ),
       ),
       body: StreamBuilder<WorkSet>(
         initialData: WorkSet("1","previous","5lbs","x10","not done"),
