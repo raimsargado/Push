@@ -26,6 +26,9 @@ dependencies:
 
   #new imports
   provider: ^3.0.0
+  sembast: ^2.0.1+2
+  path_provider: ^1.3.0
+
 
 
 dev_dependencies:

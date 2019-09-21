@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
-import 'package:strongr/models/workout.dart';
-import 'package:strongr/views/workout_view.dart';
+import 'package:strongr/workout/bloc/workout.dart';
+import 'package:strongr/workout/bloc/workout_view.dart';
 
 class WorkoutItem extends StatelessWidget {
   final Workout workout;
@@ -12,10 +11,11 @@ class WorkoutItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(workout.name),
-      onTap: (){
+      onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => WorkoutView(workout: workout)),
+          MaterialPageRoute(
+              builder: (context) => WorkoutView(workout: workout)),
         );
       },
     );

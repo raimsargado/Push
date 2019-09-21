@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:strongr/models/workout.dart';
+import 'package:strongr/workout/bloc/workout.dart';
 
 class WorkoutBloc {
   var valController = new StreamController<Workout>.broadcast();

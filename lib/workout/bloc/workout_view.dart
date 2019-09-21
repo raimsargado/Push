@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:strongr/workset/bloc/workset_bloc.dart';
 import 'package:strongr/main.dart';
-import 'package:strongr/models/workout.dart';
-import 'package:strongr/models/workset.dart';
-import 'package:strongr/views/workset_item.dart';
+import 'package:strongr/workout/bloc/workout.dart';
+import 'package:strongr/workset/bloc/workset.dart';
+import 'package:strongr/workset/bloc/workset_item.dart';
 
 class WorkoutView extends StatelessWidget {
   final Workout workout;
