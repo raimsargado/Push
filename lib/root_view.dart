@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:strongr/data/workout_repo.dart';
-import 'package:strongr/workout/bloc/workout_bloc.dart';
-import 'package:strongr/models/exercise.dart';
-import 'package:strongr/workout/bloc/workout.dart';
-import 'package:strongr/views/workout_item.dart';
-
+import 'package:strongr/bloc/app_bloc.dart';
+import 'package:strongr/workout/data/workout_dao_interface.dart';
+import 'package:strongr/main.dart';
+import 'package:strongr/workout/data/workout_repo.dart';
+import 'package:strongr/workout/models/exercise.dart';
+import 'package:strongr/workout/models/workout.dart';
+import 'package:strongr/workout/data/workout_bloc.dart';
+import 'package:strongr/workout/views/workout_item.dart';
 
 class RootView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // This widget is the root of your application.
+
+    //todo put this inside a bloc
+    var dao = serviceLocator.get<WorkoutDaoInterface>();
+
+    var workoutBloc = serviceLocator.get<AppBloc>();
 
     var workoutInstance = WorkoutRepo();
 
@@ -39,27 +46,23 @@ class RootView extends StatelessWidget {
             size: 40,
           ),
           onPressed: () {
-            _workoutProvider.valController.sink
-                .add(Workout("Leg Day", _exercises));
+            workoutBloc.valInput(_exercises);
+//            dao.addWorkout();
           },
         ),
         appBar: AppBar(
           title: Text("Strongr"),
           elevation: 0,
         ),
-        body: StreamBuilder<Workout>(
-          initialData: null,
-          stream: _workoutProvider.valOutput,
+        body: StreamBuilder(
+          initialData: Workout("", null),
+          stream: workoutBloc.valOutput,
           builder: (context, snapshot) {
             _workout.add(snapshot.data);
             if (snapshot.data == null) {
-
               //initialize.. todo put init inside the bloc
-              _workoutProvider.valController.sink
-                  .add(Workout("Leg Day", _exercises));
-
+              workoutBloc.valInput(_exercises);
               return Container();
-
             } else {
               return CustomScrollView(
                 slivers: <Widget>[

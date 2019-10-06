@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:strongr/workset/bloc/workset.dart';
+import 'package:strongr/workout/models/workset.dart';
 
 class WorkSetBloc {
 
