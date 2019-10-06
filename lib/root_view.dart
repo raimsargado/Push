@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:strongr/bloc/app_bloc.dart';
-import 'package:strongr/workout/data/workout_dao_interface.dart';
+import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/main.dart';
+import 'package:strongr/workout/bloc/workout_bloc.dart';
+import 'package:strongr/workout/bloc/workout_bloc_interface.dart';
 import 'package:strongr/workout/data/workout_repo.dart';
-import 'package:strongr/workout/models/exercise.dart';
 import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workout/data/workout_bloc.dart';
 import 'package:strongr/workout/views/workout_item.dart';
 
 class RootView extends StatelessWidget {
+
+  var _workoutBloc = serviceLocator.get<WorkoutBlocInterface>();
+
   @override
   Widget build(BuildContext context) {
     // This widget is the root of your application.
 
     //todo put this inside a bloc
-    var dao = serviceLocator.get<WorkoutDaoInterface>();
-
-    var workoutBloc = serviceLocator.get<AppBloc>();
 
     var workoutInstance = WorkoutRepo();
 
@@ -46,8 +45,7 @@ class RootView extends StatelessWidget {
             size: 40,
           ),
           onPressed: () {
-            workoutBloc.valInput(_exercises);
-//            dao.addWorkout();
+            _workoutBloc.valInput(_exercises);
           },
         ),
         appBar: AppBar(
@@ -56,12 +54,12 @@ class RootView extends StatelessWidget {
         ),
         body: StreamBuilder(
           initialData: Workout("", null),
-          stream: workoutBloc.valOutput,
+          stream: _workoutBloc.valOutput,
           builder: (context, snapshot) {
             _workout.add(snapshot.data);
             if (snapshot.data == null) {
               //initialize.. todo put init inside the bloc
-              workoutBloc.valInput(_exercises);
+              _workoutBloc.valInput(_exercises);
               return Container();
             } else {
               return CustomScrollView(

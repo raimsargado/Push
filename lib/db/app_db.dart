@@ -4,23 +4,12 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
+import 'package:strongr/db/app_db_interface.dart';
 
-class AppDatabase {
-  // Singleton instance
-  static final AppDatabase _singleton = AppDatabase._();
-
-  // Singleton accessor
-  static AppDatabase get instance => _singleton;
+class AppDatabase extends AppDatabaseInterface {
 
   //Completer is used for transforming synchronous code into asynchronous code.
   Completer<Database> _dbOpenCompleter;
-
-  // A private constructor. Allows us to create instances of AppDatabase
-  // only from within the AppDatabase class itself.
-  AppDatabase._();
-
-  // Sembast database object
-  Database _database;
 
   // Database object accessor
   Future<Database> get database async {

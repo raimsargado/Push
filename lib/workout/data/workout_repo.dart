@@ -1,10 +1,11 @@
-
-import 'package:strongr/workout/data/workout_interface.dart';
-import 'package:strongr/workout/models/exercise.dart';
+import 'package:strongr/workout/data/workout_dao.dart';
+import 'package:strongr/workout/data/workout_repo_interface.dart';
 import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workout/models/workset.dart';
-//todo
-class WorkoutRepo implements WorkoutInterface {
+
+
+class WorkoutRepo implements WorkoutRepoInterface {
+
+  var dao = WorkoutDao();
 
   final workoutList = List<Workout>();
 
@@ -18,20 +19,27 @@ class WorkoutRepo implements WorkoutInterface {
     return _instance;
   }
 
-
-  @override
-  void addExercise(Exercise exercise) {
-    // TODO: add Exercise to db
-  }
-
-  @override
-  void addWorkSet(WorkSet workSet) {
-    // TODO: add WorkdSEt to db
-  }
-
   @override
   void addWorkout(Workout workout) {
-    // TODO: add Workout to db
-
+    // TODO: implement addWorkout
   }
+
+  @override
+  void deleteWorkout(Workout workOut) {
+    // TODO: implement deleteWorkout
+  }
+
+  @override
+  void updateWorkout(Workout workout) {
+    // TODO: implement updateWorkout
+  }
+
+  @override
+  // TODO: implement workout
+  Workout get workout => null;
+
+  @override
+  // TODO: implement workouts
+  List<Workout> get workouts => null;
+
 }

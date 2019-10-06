@@ -1,9 +1,14 @@
 import 'dart:async';
 
-import 'package:strongr/bloc/app_bloc.dart';
+import 'package:strongr/main.dart';
+import 'package:strongr/workout/bloc/workout_bloc_interface.dart';
+import 'package:strongr/workout/data/workout_repo_interface.dart';
 import 'package:strongr/workout/models/workout.dart';
 
-class WorkoutBloc extends AppBloc {
+class WorkoutBloc extends WorkoutBlocInterface {
+
+  var _workoutRepo = serviceLocator.get<WorkoutRepoInterface>();
+
   var valController = new StreamController<Workout>.broadcast();
   var valControllerOutput = new StreamController<Workout>.broadcast();
 
@@ -12,8 +17,6 @@ class WorkoutBloc extends AppBloc {
       valControllerOutput.sink.add(exercise);
     });
   }
-
-
 
   @override
   Stream get valOutput => valControllerOutput.stream;
@@ -29,4 +32,5 @@ class WorkoutBloc extends AppBloc {
     valController.sink
         .add(Workout("Leg Day", any));
   }
+
 }

@@ -1,19 +1,13 @@
 import 'package:sembast/sembast.dart';
-import 'package:sembast/utils/value_utils.dart';
-import 'package:strongr/workout/data/workout_dao_interface.dart';
-import 'package:strongr/db/app_db.dart';
-import 'package:strongr/workout/models/exercise.dart';
+import 'package:strongr/db/app_db_interface.dart';
+import 'package:strongr/exercise/models/exercise.dart';
+import 'package:strongr/main.dart';
 import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workout/models/workset.dart';
 
-class WorkoutDao extends WorkoutDaoInterface {
-  DatabaseClient _db;
-
-  WorkoutDao() {
-    AppDatabase.instance.database.then((db) {
-      _db = db;
-    });
-  }
+class WorkoutDao {
+  //
+  Future<Database> get _database async =>
+      await serviceLocator.get<AppDatabaseInterface>().database;
 
   //workout_store
   //exercise_store
@@ -107,6 +101,7 @@ class WorkoutDao extends WorkoutDaoInterface {
   //finding and updating a workout
 
   Future insert(Workout workout) async {
+    print("appdb : $_database");
     var key = "push day";
     var value = [Exercise("bench press")];
 
@@ -117,7 +112,7 @@ class WorkoutDao extends WorkoutDaoInterface {
     //TODO WE CAN DIRECTLY EDIT A MAP VALUE VIA FINDER BY KEY UPDATER
     //1. add workout to workout list.. via workout_store .. record key 'workout_list'
     var records = await _workoutStore.record("workout_list").put(
-      _db,
+      await _database,
       {
         "workouts": [
           "key1",
@@ -131,7 +126,7 @@ class WorkoutDao extends WorkoutDaoInterface {
 // .. all are just keys) to workout store ..
 // key AUTO (SO WE CAN FIND VIA KEY)
     //todo adding workout
-    var workoutRecord = await _workoutStore.add(_db, {
+    var workoutRecord = await _workoutStore.add(await _database, {
       "workout_name": "Push Day",
       "exercises": [
         "exercise1 KEY",
@@ -144,7 +139,7 @@ class WorkoutDao extends WorkoutDaoInterface {
 // (has the list of worksets)
 // .. all are just keys) to exercise store..
 // key AUTO (so we can find via key)
-    var exerciseRecord = await _exerciseStore.add(_db, {
+    var exerciseRecord = await _exerciseStore.add(await _database, {
       "exercise_name": "bench press",
       "sets": [
         "WORKSET1 KEY",
@@ -155,7 +150,7 @@ class WorkoutDao extends WorkoutDaoInterface {
 
 //4  add single workset item which has the workset details .
 // .. to WORKSET STORE. AUTO KEY (SO WE CAN FIND VIA KEY)
-    var worksetRecord = await _worksetStore.add(_db, {
+    var worksetRecord = await _worksetStore.add(await _database, {
       "set_name": "1st",
       "exer_name": "Bench press",
       "previous": "10kgX8reps",
@@ -166,12 +161,12 @@ class WorkoutDao extends WorkoutDaoInterface {
   }
 
   Future updateWorkout(Workout workout) async {
-    print(_db);
-    if (_db != null) {
+    print(_database);
+    if (_database != null) {
       final finder = Finder(filter: Filter.equals('test', 'test'));
-      var records = await _workoutStore.find(_db, finder: finder);
+      var records = await _workoutStore.find(await _database, finder: finder);
       await _workoutStore.update(
-        _db,
+        await _database,
         {
           "username": "John john dex",
           "hasAuth": false,
@@ -193,58 +188,17 @@ class WorkoutDao extends WorkoutDaoInterface {
     }
   }
 
-  @override
-  void addExercise(Exercise exercise) {
-    // TODO: implement addExercise
-  }
-
-  @override
-  void addWorkSet(WorkSet workSet) {
-    // TODO: implement addWorkSet
-  }
-
-  @override
   void addWorkout(Workout workout) {
     // TODO: implement addWorkout
   }
 
-  @override
-  void deleteExercise(Exercise exercise) {
-    // TODO: implement deleteExercise
-  }
-
-  @override
-  void deleteWorkSet(WorkSet workSet) {
-    // TODO: implement deleteWorkSet
-  }
-
-  @override
   void deleteWorkout(Workout workOut) {
     // TODO: implement deleteWorkout
   }
 
-  @override
-  // TODO: implement exercises
-  List<Exercise> get exercises => null;
+  // TODO: implement workout
+  Workout get workout => null;
 
-  @override
-  void updateExercise(Exercise exercise) {
-    // TODO: implement updateExercise
-  }
-
-  @override
-  void updateSet(WorkSet workSet) {
-    // TODO: implement updateSet
-  }
-
-  @override
-  // TODO: implement workSets
-  List<WorkSet> get workSets => null;
-
-  @override
   // TODO: implement workouts
   List<Workout> get workouts => null;
-
-
-
 }

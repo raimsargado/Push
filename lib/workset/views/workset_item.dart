@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:strongr/workout/models/workset.dart';
+import 'package:strongr/workset/models/workset.dart';
 
 class WorkSetItem extends StatelessWidget {
   final WorkSet set;
