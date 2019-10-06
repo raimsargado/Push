@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:strongr/workout/bloc/workout.dart';
+import 'package:strongr/bloc/app_bloc.dart';
+import 'package:strongr/workout/models/workout.dart';
 
-class WorkoutBloc {
+class WorkoutBloc extends AppBloc {
   var valController = new StreamController<Workout>.broadcast();
   var valControllerOutput = new StreamController<Workout>.broadcast();
-
-  Stream<Workout> get valOutput => valControllerOutput.stream;
 
   WorkoutBloc() {
     valController.stream.listen((exercise) {
@@ -14,8 +13,20 @@ class WorkoutBloc {
     });
   }
 
+
+
+  @override
+  Stream get valOutput => valControllerOutput.stream;
+
+  @override
   void dispose() {
     valControllerOutput.close();
     valController.close();
+  }
+
+  @override
+  void valInput(dynamic any) {
+    valController.sink
+        .add(Workout("Leg Day", any));
   }
 }

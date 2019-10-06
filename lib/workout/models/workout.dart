@@ -1,4 +1,4 @@
-import 'package:strongr/models/exercise.dart';
+import 'package:strongr/workout/models/exercise.dart';
 
 class Workout {
 

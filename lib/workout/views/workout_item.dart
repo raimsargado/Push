@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/workout/bloc/workout.dart';
-import 'package:strongr/workout/bloc/workout_view.dart';
+import 'package:strongr/workout/models/workout.dart';
+import 'package:strongr/workout/views/workout_view.dart';
 
 class WorkoutItem extends StatelessWidget {
   final Workout workout;
@@ -15,7 +15,8 @@ class WorkoutItem extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => WorkoutView(workout: workout)),
+            builder: (context) => WorkoutView(workout: workout),
+          ),
         );
       },
     );
