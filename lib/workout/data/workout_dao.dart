@@ -1,7 +1,7 @@
 import 'package:sembast/sembast.dart';
 import 'package:strongr/db/app_db_interface.dart';
 import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/main.dart';
+import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
 
 class WorkoutDao {

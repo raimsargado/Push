@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/main.dart';
+import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc.dart';
 import 'package:strongr/workout/bloc/workout_bloc_interface.dart';
 import 'package:strongr/workout/data/workout_repo.dart';

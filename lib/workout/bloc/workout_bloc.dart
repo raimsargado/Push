@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:strongr/main.dart';
+import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_interface.dart';
 import 'package:strongr/workout/data/workout_repo_interface.dart';
 import 'package:strongr/workout/models/workout.dart';

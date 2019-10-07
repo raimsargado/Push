@@ -1,6 +1,6 @@
 import 'package:strongr/exercise/bloc/exercise_bloc_interface.dart';
 import 'package:strongr/exercise/data/exercise_repo_interface.dart';
-import 'package:strongr/main.dart';
+import 'package:strongr/service_init.dart';
 
 class ExerciseBloc extends ExerciseBlocInterface {
 
