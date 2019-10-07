@@ -9,16 +9,23 @@ class WorkoutItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(workout.name),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => WorkoutView(workout: workout),
+    return Card(
+      child: ListTile(
+        title: Container(
+          margin: EdgeInsets.all(24.0),
+          child: Center(
+            child: Text(workout.name),
           ),
-        );
-      },
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WorkoutView(workout: workout),
+            ),
+          );
+        },
+      ),
     );
   }
 }

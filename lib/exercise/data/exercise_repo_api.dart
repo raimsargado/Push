@@ -1,6 +1,6 @@
 import 'package:strongr/exercise/models/exercise.dart';
 
-abstract class ExerciseRepoInterface {
+abstract class ExerciseRepoApi {
   //get exercises
   List<Exercise> get exercises;
 

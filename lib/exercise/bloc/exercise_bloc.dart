@@ -1,10 +1,10 @@
-import 'package:strongr/exercise/bloc/exercise_bloc_interface.dart';
-import 'package:strongr/exercise/data/exercise_repo_interface.dart';
+import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
+import 'package:strongr/exercise/data/exercise_repo_api.dart';
 import 'package:strongr/service_init.dart';
 
-class ExerciseBloc extends ExerciseBlocInterface {
+class ExerciseBloc extends ExerciseBlocApi {
 
-  var _exerciseRepo = serviceLocator.get<ExerciseRepoInterface>();
+  var _exerciseRepo = serviceLocator.get<ExerciseRepoApi>();
 
   @override
   void dispose() {

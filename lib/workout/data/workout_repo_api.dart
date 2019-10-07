@@ -2,7 +2,7 @@ import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
 
-abstract class WorkoutRepoInterface {
+abstract class WorkoutApi {
   //get workouts
   List<Workout> get workouts;
 

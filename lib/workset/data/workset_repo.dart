@@ -2,7 +2,7 @@ import 'package:strongr/workset/data/workset_dao.dart';
 import 'package:strongr/workset/data/workset_repo_interface.dart';
 import 'package:strongr/workset/models/workset.dart';
 
-class WorkSetRepo extends WorkSetRepoInterface {
+class WorkSetRepo extends WorkSetRepoApi {
 
   var dao = WorkSetDao();
 

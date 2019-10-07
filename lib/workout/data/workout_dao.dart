@@ -7,7 +7,7 @@ import 'package:strongr/workout/models/workout.dart';
 class WorkoutDao {
   //
   Future<Database> get _database async =>
-      await serviceLocator.get<AppDatabaseInterface>().database;
+      await serviceLocator.get<AppDatabaseApi>().database;
 
   //workout_store
   //exercise_store

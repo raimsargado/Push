@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/bloc/workout_bloc.dart';
-import 'package:strongr/workout/bloc/workout_bloc_interface.dart';
-import 'package:strongr/workout/data/workout_repo.dart';
+import 'package:strongr/workout/bloc/workout_bloc_api.dart';
 import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workout/views/workout_item.dart';
 
-class RootView extends StatelessWidget {
+class HomeView extends StatelessWidget {
 
-  var _workoutBloc = serviceLocator.get<WorkoutBlocInterface>();
+  //injection without context dependency
+  var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
 
   @override
   Widget build(BuildContext context) {
-    // This widget is the root of your application.
-
-    //todo put this inside a bloc
-
-    var workoutInstance = WorkoutRepo();
-
-    var _workoutProvider = Provider.of<WorkoutBloc>(context);
-
     var _exercises = List<Exercise>();
     _exercises.add(Exercise("Bench Press"));
     _exercises.add(Exercise("Inclined Bench Press"));
@@ -39,24 +29,13 @@ class RootView extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
       home: Scaffold(
-        floatingActionButton: IconButton(
-          icon: Icon(
-            Icons.add_circle_outline,
-            size: 40,
-          ),
-          onPressed: () {
-            _workoutBloc.valInput(_exercises);
-          },
-        ),
         appBar: AppBar(
           title: Text("Strongr"),
           elevation: 0,
         ),
         body: StreamBuilder(
-          initialData: Workout("", null),
           stream: _workoutBloc.valOutput,
           builder: (context, snapshot) {
-            _workout.add(snapshot.data);
             if (snapshot.data == null) {
               //initialize.. todo put init inside the bloc
               _workoutBloc.valInput(_exercises);
@@ -77,6 +56,15 @@ class RootView extends StatelessWidget {
                 ],
               );
             }
+          },
+        ),
+        floatingActionButton: IconButton(
+          icon: Icon(
+            Icons.add_circle_outline,
+            size: 40,
+          ),
+          onPressed: () {
+            _workoutBloc.valInput(_exercises);
           },
         ),
       ),

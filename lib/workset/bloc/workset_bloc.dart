@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:strongr/main.dart';
 import 'package:strongr/service_init.dart';
-import 'package:strongr/workset/bloc/workset_bloc_interface.dart';
+import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/data/workset_repo_interface.dart';
 import 'package:strongr/workset/models/workset.dart';
 
-class WorkSetBloc extends WorkSetBlocInterface {
+class WorkSetBloc extends WorkSetBlocApi {
   //
-  var _workSetRepo = serviceLocator.get<WorkSetRepoInterface>();
+  var _workSetRepo = serviceLocator.get<WorkSetRepoApi>();
 
   var valController = new StreamController<WorkSet>.broadcast();
   var valControllerOutput = new StreamController<WorkSet>.broadcast();
@@ -30,6 +30,6 @@ class WorkSetBloc extends WorkSetBlocInterface {
 
   @override
   void valInput(any) {
-    // TODO: implement valInput
+    valController.sink.add(any);
   }
 }

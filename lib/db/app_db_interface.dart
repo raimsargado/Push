@@ -1,5 +1,5 @@
 import 'package:sembast/sembast.dart';
 
-abstract class AppDatabaseInterface{
+abstract class AppDatabaseApi{
   Future<Database> get database;
 }

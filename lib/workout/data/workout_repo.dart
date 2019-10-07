@@ -1,9 +1,9 @@
 import 'package:strongr/workout/data/workout_dao.dart';
-import 'package:strongr/workout/data/workout_repo_interface.dart';
+import 'package:strongr/workout/data/workout_repo_api.dart';
 import 'package:strongr/workout/models/workout.dart';
 
 
-class WorkoutRepo implements WorkoutRepoInterface {
+class WorkoutRepo implements WorkoutApi {
 
   var dao = WorkoutDao();
 

@@ -6,7 +6,7 @@ import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:strongr/db/app_db_interface.dart';
 
-class AppDatabase extends AppDatabaseInterface {
+class AppDatabase extends AppDatabaseApi {
 
   //Completer is used for transforming synchronous code into asynchronous code.
   Completer<Database> _dbOpenCompleter;

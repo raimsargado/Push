@@ -1,6 +1,6 @@
 import 'package:strongr/workset/models/workset.dart';
 
-abstract class WorkSetRepoInterface {
+abstract class WorkSetRepoApi {
   //get exercises
   List<WorkSet> get workSets;
 
