@@ -1,6 +1,6 @@
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/data/exercise_repo_api.dart';
-import 'package:strongr/service_init.dart';
+import 'package:strongr/service/service_init.dart';
 
 class ExerciseBloc extends ExerciseBlocApi {
 

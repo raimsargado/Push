@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/service_init.dart';
+import 'package:strongr/service/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
 import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workout/views/workout_item.dart';

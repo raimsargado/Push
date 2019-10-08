@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:strongr/main.dart';
-import 'package:strongr/service_init.dart';
+import 'package:strongr/service/service_init.dart';
 import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/data/workset_repo_interface.dart';
 import 'package:strongr/workset/models/workset.dart';
