@@ -2,15 +2,15 @@ import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
 
-abstract class WorkoutApi {
+abstract class WorkoutRepoApi {
   //get workouts
-  List<Workout> get workouts;
+  Future<List<dynamic>> get workouts;
 
   //get workout
-  Workout get workout;
+  Future<Workout> getWorkout(String workoutKey);
 
   //add workout(Workout)
-  void addWorkout(Workout workout);
+  Future<Workout> addWorkout(Workout workout);
 
   //update workout(Workout)
   void updateWorkout(Workout workout);

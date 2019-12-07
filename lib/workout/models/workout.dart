@@ -5,6 +5,6 @@ class Workout {
   final String name;
   final List<Exercise> exercise;
 
-  Workout(this.name, this.exercise);
+  Workout(this.name, {this.exercise});
 
 }

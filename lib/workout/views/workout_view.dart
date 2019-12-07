@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/service/service_init.dart';
+import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
+import 'package:strongr/exercise/models/exercise.dart';
+import 'package:strongr/exercise/views/exercise_item.dart';
+import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/models/workset.dart';
 import 'package:strongr/workset/views/workset_item.dart';
 
 class WorkoutView extends StatelessWidget {
-
-  var _worksetBloc = serviceLocator.get<WorkSetBlocApi>();
+  //
+  var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
 
   final Workout workout;
 
@@ -17,11 +20,11 @@ class WorkoutView extends StatelessWidget {
   Widget build(BuildContext context) {
     //get workout name
     //join workout name to list of workset item
-    var _worksets = List<WorkSet>();
-    _worksets.add(WorkSet("1", "previous", "5lbs", "x10", "not done"));
-    _worksets.add(WorkSet("1", "previous", "5lbs", "x10", "not done"));
-    _worksets.add(WorkSet("1", "previous", "5lbs", "x10", "not done"));
-    _worksets.add(WorkSet("1", "previous", "5lbs", "x10", "not done"));
+    var _exercises = List<Exercise>();
+    _exercises.add(Exercise("BENCH PRESS"));
+    _exercises.add(Exercise("OH PRESS"));
+    _exercises.add(Exercise("LEG PRESS"));
+
     return Scaffold(
       floatingActionButton: IconButton(
         icon: Icon(
@@ -29,7 +32,8 @@ class WorkoutView extends StatelessWidget {
           size: 40,
         ),
         onPressed: () {
-          _worksetBloc.valInput(WorkSet("1", "previous", "5lbs", "x10", "not done"));
+          _exerciseBloc
+              .valInput(Exercise("CHEST MACHINE PRESS"));
         },
       ),
       appBar: AppBar(
@@ -54,22 +58,22 @@ class WorkoutView extends StatelessWidget {
           ],
         ),
       ),
-      body: StreamBuilder<WorkSet>(
-          initialData: WorkSet("1", "previous", "5lbs", "x10", "not done"),
-          stream: _worksetBloc.valOutput,
+      body: StreamBuilder<Exercise>(
+          initialData: Exercise("BOOTY PRESS"),
+          stream: _exerciseBloc.valOutput,
           builder: (context, snapshot) {
-            _worksets.add(snapshot.data);
+            _exercises.add(snapshot.data);
             return CustomScrollView(
               slivers: <Widget>[
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                    var _workset = _worksets?.elementAt(index);
+                    var _exercise = _exercises?.elementAt(index);
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                      child: WorkSetItem(set: _workset),
+                      child: ExerciseItem(exercise: _exercise),
                     );
-                  }, childCount: _worksets?.length),
+                  }, childCount: _exercises?.length),
                 ),
               ],
             );

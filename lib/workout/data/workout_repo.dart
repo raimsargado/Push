@@ -2,26 +2,18 @@ import 'package:strongr/workout/data/workout_dao.dart';
 import 'package:strongr/workout/data/workout_repo_api.dart';
 import 'package:strongr/workout/models/workout.dart';
 
-
-class WorkoutRepo implements WorkoutApi {
-
+class WorkoutRepo implements WorkoutRepoApi {
   var dao = WorkoutDao();
 
-  final workoutList = List<Workout>();
+  var workoutList = List<Workout>();
 
-  WorkoutRepo._privateConstructor() {
-//    initFirstStorage();
-  }
-
-  static final _instance = WorkoutRepo._privateConstructor();
-
-  factory WorkoutRepo() {
-    return _instance;
+  WorkoutRepo() {
+    initFirstStorage();
   }
 
   @override
-  void addWorkout(Workout workout) {
-    // TODO: implement addWorkout
+  Future<Workout> addWorkout(Workout workout) async {
+    return dao.addWorkout(workout);
   }
 
   @override
@@ -34,12 +26,20 @@ class WorkoutRepo implements WorkoutApi {
     // TODO: implement updateWorkout
   }
 
-  @override
-  // TODO: implement workout
-  Workout get workout => null;
+
 
   @override
   // TODO: implement workouts
-  List<Workout> get workouts => null;
+  Future<List<dynamic>> get workouts async {
+    return initFirstStorage();
+  }
 
+  Future<List<dynamic>> initFirstStorage() async {
+    return await dao.workouts;
+  }
+
+  @override
+ Future<Workout>  getWorkout(String workoutKey) async {
+    return await dao.getWorkout(workoutKey);
+  }
 }
