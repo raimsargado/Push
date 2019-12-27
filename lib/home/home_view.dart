@@ -53,19 +53,20 @@ class WorkoutListView extends StatelessWidget {
                   "\nI will start adding workout now."),
             );
           } else {
-            _workouts.add(snapshot.data as Workout);
-            var workouts = _workouts.toSet().toList();
+            var workouts = snapshot.data as List<Workout>;
+            print("home_view workouts: ${workouts.length}");
+            var wList = workouts.toSet().toList();
             return CustomScrollView(
               slivers: <Widget>[
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                    var _workout = workouts?.elementAt(index);
+                    var _workout = wList?.elementAt(index);
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
                       child: WorkoutItem(workout: _workout),
                     );
-                  }, childCount: workouts?.length),
+                  }, childCount: wList?.length),
                 ),
               ],
             );

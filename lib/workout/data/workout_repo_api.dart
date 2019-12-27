@@ -4,13 +4,13 @@ import 'package:strongr/workset/models/workset.dart';
 
 abstract class WorkoutRepoApi {
   //get workouts
-  Future<List<dynamic>> get workouts;
+  Future<List<Workout>> getWorkouts();
 
   //get workout
   Future<Workout> getWorkout(String workoutKey);
 
   //add workout(Workout)
-  Future<Workout> addWorkout(Workout workout);
+  Future<dynamic> addWorkout(Workout workout);
 
   //update workout(Workout)
   void updateWorkout(Workout workout);

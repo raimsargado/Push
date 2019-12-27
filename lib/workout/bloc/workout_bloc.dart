@@ -6,29 +6,20 @@ import 'package:strongr/workout/data/workout_repo_api.dart';
 import 'package:strongr/workout/models/workout.dart';
 
 class WorkoutBloc extends WorkoutBlocApi {
+  var _workoutList = List<Workout>();
   var _workoutRepo = serviceLocator.get<WorkoutRepoApi>();
-
-  var valController = new StreamController<Workout>.broadcast();
-  var valControllerOutput = new StreamController<Workout>.broadcast();
+  var valController = new StreamController<List<Workout>>.broadcast();
+  var valControllerOutput = new StreamController<List<Workout>>.broadcast();
 
   WorkoutBloc() {
-    valController.stream.listen((workout) {
-      valControllerOutput.sink.add(workout);
+    valController.stream.listen((workouts) {
+      valControllerOutput.sink.add(workouts);
     });
 
-
-    //TODO RETRIEVE FROM DB
-    //init workouts
-    _workoutRepo.workouts.then((workoutKeys) {
-      //init workouts
-      workoutKeys.forEach((workoutKey){
-        print("workout_bloc workoutKey: ${workoutKey}");
-        _workoutRepo.getWorkout(workoutKey).then((workout){
-          valController.sink.add(workout);
-        });
-      });
+    _workoutRepo.getWorkouts().then((workouts) {
+      _workoutList.addAll(workouts);
+      valController.sink.add(workouts);
     });
-
   }
 
   @override
@@ -42,8 +33,10 @@ class WorkoutBloc extends WorkoutBlocApi {
 
   @override
   void valInput(dynamic any) {
-    _workoutRepo.addWorkout(any as Workout).then((workout) {
-      valController.sink.add(workout); //TODO DIRECT TO DB
+    var workout = any as Workout;
+    _workoutRepo.addWorkout(workout).then((_) {
+      _workoutList.add(workout);
+      valController.sink.add(_workoutList); //TODO DIRECT TO DB
     });
   }
 }
