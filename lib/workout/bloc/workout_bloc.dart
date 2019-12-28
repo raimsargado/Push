@@ -26,17 +26,32 @@ class WorkoutBloc extends WorkoutBlocApi {
   Stream get valOutput => valControllerOutput.stream;
 
   @override
-  void dispose() {
-    valControllerOutput.close();
-    valController.close();
-  }
-
-  @override
   void valInput(dynamic any) {
     var workout = any as Workout;
     _workoutRepo.addWorkout(workout).then((_) {
+      //update view after adding workout
       _workoutList.add(workout);
-      valController.sink.add(_workoutList); //TODO DIRECT TO DB
+      valController.sink.add(_workoutList); //update list
     });
+  }
+
+  @override
+  void valUpdate(Workout workout) {
+    _workoutRepo.updateWorkout(workout).then((_) {
+      var filteredWorkout = _workoutList.firstWhere((w) => w.id == workout.id);
+      print("filteredworkout ${filteredWorkout.name}");
+      print("new workout: ${workout.name}");
+      //remove old workout
+      _workoutList.remove(filteredWorkout);
+      //add new workout
+      _workoutList.add(workout);
+      valController.sink.add(_workoutList); //update list
+    });
+  }
+
+  @override
+  void dispose() {
+    valControllerOutput.close();
+    valController.close();
   }
 }
