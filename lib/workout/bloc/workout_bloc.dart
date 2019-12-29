@@ -45,6 +45,7 @@ class WorkoutBloc extends WorkoutBlocApi {
       _workoutList.remove(filteredWorkout);
       //add new workout
       _workoutList.add(workout);
+
       valController.sink.add(_workoutList); //update list
     });
   }

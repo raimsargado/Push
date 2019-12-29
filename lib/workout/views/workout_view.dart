@@ -19,7 +19,7 @@ class WorkoutView extends StatelessWidget {
 
   var _textController = TextEditingController();
 
-  var _oldWorkoutName;
+  String _oldWorkoutName;
 
   WorkoutView({this.workout});
 
@@ -33,6 +33,7 @@ class WorkoutView extends StatelessWidget {
     _exercises.add(Exercise("LEG PRESS"));
 
     _oldWorkoutName = workout.name;
+    print("_oldWorkoutName: ${_oldWorkoutName}");
 
     return Scaffold(
       floatingActionButton: IconButton(
@@ -48,6 +49,8 @@ class WorkoutView extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
+            print("onpress text controller: ${_textController.text}");
+            print("onpress old name: ${_oldWorkoutName}");
             //detect if has changes
             if (hasChanges()) {
               //show dialog if wanna save or discard changes
@@ -109,7 +112,8 @@ class WorkoutView extends StatelessWidget {
   }
 
   bool hasChanges() {
-    return _oldWorkoutName != _textController.text;
+    return _textController.text.isNotEmpty &&
+        _oldWorkoutName != _textController.text;
   }
 
   void displayChangesDialog(context) {
@@ -124,20 +128,20 @@ class WorkoutView extends StatelessWidget {
                 child: new Text('DISCARD'),
                 onPressed: () {
                   //go back to previous page
+                  Navigator.pop(context);
                   Navigator.pop(
                     context,
                     MaterialPageRoute(
                       builder: (context) => HomeView(),
                     ),
                   );
-
                   //toast "changes not saved"
                 },
               ),
               FlatButton(
                 child: new Text('OK'),
                 onPressed: () {
-
+                  Navigator.pop(context);
                   Navigator.pop(
                     context,
                     MaterialPageRoute(
@@ -145,12 +149,11 @@ class WorkoutView extends StatelessWidget {
                     ),
                   );
 
-//
-//                  var w = Workout(_textController.text);
-//                  w.id = workout.id;
-//                  //update workout db
-//                  _workoutBloc.valUpdate(w);
 
+                  var w = Workout(_textController.text);
+                  w.id = workout.id;
+                  //update workout db
+                  _workoutBloc.valUpdate(w);
 
                   //toast "changes saved."
                 },
