@@ -143,8 +143,10 @@ class _WorkoutViewState extends State<WorkoutView> {
             Expanded(
               flex: 0,
               child: IconButton(
-                icon: Icon(Icons.directions_run),
-                onPressed: () {},
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  _displayDeleteDialog();
+                },
               ),
             )
           ],
@@ -217,6 +219,49 @@ class _WorkoutViewState extends State<WorkoutView> {
                   _workoutBloc.valUpdate(w);
 
                   //toast "changes saved."
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  void _displayDeleteDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Are you sure to delete workout?'),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('NOPE'),
+                onPressed: () {
+                  //go back to previous page
+                  Navigator.pop(context);
+                  Navigator.pop(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeView(),
+                    ),
+                  );
+                  //toast "changes not saved"
+                },
+              ),
+              FlatButton(
+                child: new Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeView(),
+                    ),
+                  );
+
+                  _workoutBloc.valDelete(widget.workout);
+
+                  //TODO toast "changes saved."
                 },
               )
             ],

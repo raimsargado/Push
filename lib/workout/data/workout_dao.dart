@@ -111,9 +111,9 @@ class WorkoutDao {
     );
   }
 
-  void deleteWorkout(Workout workOut) async {
+  Future<dynamic> deleteWorkout(Workout workOut) async {
     final finder = Finder(filter: Filter.byKey(workOut.id));
-    await _newWorkoutStore.delete(
+   return await _newWorkoutStore.delete(
       await _database,
       finder: finder,
     );

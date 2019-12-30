@@ -35,6 +35,19 @@ class WorkoutBloc extends WorkoutBlocApi {
     });
   }
 
+
+  @override
+  void valDelete(Workout workout) {
+    _workoutRepo.deleteWorkout(workout).then((_){
+      var filteredWorkout = _workoutList.firstWhere((w) => w.id == workout.id);
+      print("filteredworkout ${filteredWorkout.name}");
+      print("removed workout: ${workout.name}");
+      //remove workout
+      _workoutList.remove(filteredWorkout);
+      valController.sink.add(_workoutList); //update list
+    });
+  }
+
   @override
   void valUpdate(Workout workout) {
     _workoutRepo.updateWorkout(workout).then((_) {

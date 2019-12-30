@@ -6,7 +6,7 @@ class WorkoutItem extends StatelessWidget {
   final Workout workout;
 
   WorkoutItem({this.workout});
-  //test owner commit 
+  //test owner commit
 
   @override
   Widget build(BuildContext context) {

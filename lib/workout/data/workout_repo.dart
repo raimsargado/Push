@@ -18,13 +18,13 @@ class WorkoutRepo implements WorkoutRepoApi {
   }
 
   @override
-  void deleteWorkout(Workout workOut) {
-    dao.deleteWorkout(workOut);
+  Future<dynamic> deleteWorkout(Workout workOut) {
+    return dao.deleteWorkout(workOut);
   }
 
   @override
   Future<dynamic> updateWorkout(Workout workout) async {
-   return await dao.update(workout);
+    return await dao.update(workout);
   }
 
   @override
