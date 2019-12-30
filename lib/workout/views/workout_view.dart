@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
@@ -6,22 +8,65 @@ import 'package:strongr/home/home_view.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
 import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/bloc/workset_bloc_api.dart';
-import 'package:strongr/workset/models/workset.dart';
-import 'package:strongr/workset/views/workset_item.dart';
 
-class WorkoutView extends StatelessWidget {
+class WorkoutView extends StatefulWidget {
   //
-  var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
-  var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
-
   final Workout workout;
 
-  var _textController = TextEditingController();
-
-  String _oldWorkoutName;
-
   WorkoutView({this.workout});
+
+  @override
+  _WorkoutViewState createState() => _WorkoutViewState();
+}
+
+class _WorkoutViewState extends State<WorkoutView> {
+  var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
+
+  var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
+
+  var _textController = TextEditingController();
+  FocusNode _textFocus = new FocusNode();
+  bool _isChanged = false;
+  Timer _debounce;
+  String newWorkoutName;
+
+  @override
+  void initState() {
+    _textController.addListener(onChange);
+    _textFocus.addListener(onChange);
+    _textController.text = widget.workout.name;
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    _textController.removeListener(onChange);
+    _textFocus.removeListener(onChange);
+  }
+
+  void onChange() {
+    newWorkoutName = _textController.text;
+    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _debounce = Timer(const Duration(milliseconds: 1000), () {
+      print("onChange");
+      if (hasChanges()) {
+        setState(() {
+          _isChanged = true;
+          _textController.value.copyWith(
+              text: newWorkoutName,
+              selection: TextSelection(
+                  baseOffset: newWorkoutName.length,
+                  extentOffset: newWorkoutName.length));
+          FocusScope.of(context).requestFocus(_textFocus);
+        });
+      } else {
+        setState(() {
+          _isChanged = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +77,25 @@ class WorkoutView extends StatelessWidget {
     _exercises.add(Exercise("OH PRESS"));
     _exercises.add(Exercise("LEG PRESS"));
 
-    _oldWorkoutName = workout.name;
-    print("_oldWorkoutName: ${_oldWorkoutName}");
+    return _isChanged
+        ? WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                print("onPanUpdate details direction ${details.delta.dx} ");
+                if (details.delta.dx > 0) {
+                  displayChangesDialog(context);
+                }
+              },
+              child: _scaffold(_exercises),
+            ),
+          )
+        : _scaffold(_exercises);
+  }
 
+  _scaffold(_exercises) {
     return Scaffold(
       floatingActionButton: IconButton(
         icon: Icon(
@@ -50,7 +111,7 @@ class WorkoutView extends StatelessWidget {
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
             print("onpress text controller: ${_textController.text}");
-            print("onpress old name: ${_oldWorkoutName}");
+            print("onpress old name: ${widget.workout.name}");
             //detect if has changes
             if (hasChanges()) {
               //show dialog if wanna save or discard changes
@@ -74,7 +135,8 @@ class WorkoutView extends StatelessWidget {
               child: TextField(
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                    alignLabelWithHint: true, hintText: workout.name),
+                    alignLabelWithHint: true,
+                    hintText: widget.workout.name),
                 controller: _textController,
               ),
             ),
@@ -97,13 +159,13 @@ class WorkoutView extends StatelessWidget {
               slivers: <Widget>[
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                    var _exercise = _exercises?.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                      child: ExerciseItem(exercise: _exercise),
-                    );
-                  }, childCount: _exercises?.length),
+                          (BuildContext context, int index) {
+                        var _exercise = _exercises?.elementAt(index);
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                          child: ExerciseItem(exercise: _exercise),
+                        );
+                      }, childCount: _exercises?.length),
                 ),
               ],
             );
@@ -113,7 +175,7 @@ class WorkoutView extends StatelessWidget {
 
   bool hasChanges() {
     return _textController.text.isNotEmpty &&
-        _oldWorkoutName != _textController.text;
+        widget.workout.name != _textController.text;
   }
 
   void displayChangesDialog(context) {
@@ -149,9 +211,8 @@ class WorkoutView extends StatelessWidget {
                     ),
                   );
 
-
                   var w = Workout(_textController.text);
-                  w.id = workout.id;
+                  w.id = widget.workout.id;
                   //update workout db
                   _workoutBloc.valUpdate(w);
 

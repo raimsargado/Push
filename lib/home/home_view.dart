@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
 import 'package:strongr/workout/models/workout.dart';
@@ -18,10 +17,10 @@ class HomeView extends StatelessWidget {
 
 // ignore: must_be_immutable
 class WorkoutListView extends StatelessWidget {
-
   //injection without context dependency
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
   var _workouts = List<Workout>();
+  var _lastClickedWorkout;
 
   @override
   Widget build(BuildContext context) {
@@ -116,5 +115,4 @@ class WorkoutListView extends StatelessWidget {
           );
         });
   }
-
 }
