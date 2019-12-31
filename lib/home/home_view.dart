@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
 import 'package:strongr/workout/models/workout.dart';
@@ -44,6 +45,7 @@ class WorkoutListView extends StatelessWidget {
       body: StreamBuilder(
         stream: _workoutBloc.valOutput,
         builder: (context, snapshot) {
+          print("homeview snapshot data: ${snapshot.data}");
           if (snapshot.data == null) {
             //initialize.. todo put init inside the bloc
 //              _workoutBloc.valInput(_exercises);s
@@ -54,21 +56,28 @@ class WorkoutListView extends StatelessWidget {
           } else {
             var workouts = snapshot.data as List<Workout>;
             print("home_view workouts: ${workouts.length}");
-            var wList = workouts.toSet().toList();
-            return CustomScrollView(
-              slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                    var _workout = wList?.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                      child: WorkoutItem(workout: _workout),
-                    );
-                  }, childCount: wList?.length),
-                ),
-              ],
-            );
+            if (workouts.isNotEmpty) {
+              var wList = workouts.toSet().toList();
+              return CustomScrollView(
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                      var _workout = wList?.elementAt(index);
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                        child: WorkoutItem(workout: _workout),
+                      );
+                    }, childCount: wList?.length),
+                  ),
+                ],
+              );
+            } else {
+              return Center(
+                child: Text("If I were you, "
+                    "\nI will start adding workout now."),
+              );
+            }
           }
         },
       ),
@@ -108,7 +117,23 @@ class WorkoutListView extends StatelessWidget {
               FlatButton(
                 child: new Text('OK'),
                 onPressed: () {
-                  _workoutBloc.valInput(Workout(_textFieldController.text));
+                  _workoutBloc
+                      .valSearch(Workout(_textFieldController.text))
+                      .then((isExist) {
+                    print("workout exist: $isExist");
+                    if (!isExist) {
+                      _workoutBloc
+                          .valCreate(Workout(_textFieldController.text));
+                      Navigator.of(context, rootNavigator: true).pop();
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: "Sorry dude, this workout exists!",
+                        gravity: ToastGravity.CENTER,
+                      );
+                    }
+                    //TODO TOAAST EXIST OR NOT EXIST
+                    //TODO ADD MEMBER METHOD TO CRUD EXERCISES WITHIN THE WORKOUT BLOC
+                  });
                 },
               )
             ],

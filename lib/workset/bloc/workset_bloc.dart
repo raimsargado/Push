@@ -29,7 +29,25 @@ class WorkSetBloc extends WorkSetBlocApi {
   }
 
   @override
-  void valInput(any) {
+  void valCreate(any) {
     valController.sink.add(any);
   }
+
+  @override
+  void valDelete(dynamic any) {
+
+  }
+
+  @override
+  void valUpdate(dynamic any) {
+
+  }
+
+  @override
+  Future<bool> valSearch(any) {
+    // TODO: implement valSearch
+    return null;
+  }
+
+
 }

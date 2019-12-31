@@ -113,12 +113,11 @@ class WorkoutDao {
 
   Future<dynamic> deleteWorkout(Workout workOut) async {
     final finder = Finder(filter: Filter.byKey(workOut.id));
-   return await _newWorkoutStore.delete(
+    return await _newWorkoutStore.delete(
       await _database,
       finder: finder,
     );
   }
-
 
   Future<List<Workout>> getWorkoutsFromDao() async {
     // Finder object can also sort data.
@@ -138,5 +137,14 @@ class WorkoutDao {
       workout.id = snapshot.key;
       return workout;
     }).toList();
+  }
+
+  Future<bool> hasWorkout(Workout workout) async {
+    final finder =
+        Finder(filter: Filter.greaterThanOrEquals("name", workout.name));
+    var _workoutList =
+        await _newWorkoutStore.find(await _database, finder: finder);
+    print("workout data length: ${_workoutList.length}");
+    return _workoutList.length > 0;
   }
 }

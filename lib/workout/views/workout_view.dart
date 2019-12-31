@@ -20,6 +20,7 @@ class WorkoutView extends StatefulWidget {
 }
 
 class _WorkoutViewState extends State<WorkoutView> {
+
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
 
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
@@ -31,9 +32,10 @@ class _WorkoutViewState extends State<WorkoutView> {
   String newWorkoutName;
 
   @override
+  // ignore: must_call_super
   void initState() {
-    _textController.addListener(onChange);
-    _textFocus.addListener(onChange);
+    _textController.addListener(_onChange);
+    _textFocus.addListener(_onChange);
     _textController.text = widget.workout.name;
   }
 
@@ -41,16 +43,16 @@ class _WorkoutViewState extends State<WorkoutView> {
   @override
   void dispose() {
     super.dispose();
-    _textController.removeListener(onChange);
-    _textFocus.removeListener(onChange);
+    _textController.removeListener(_onChange);
+    _textFocus.removeListener(_onChange);
   }
 
-  void onChange() {
+  void _onChange() {
     newWorkoutName = _textController.text;
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 1000), () {
       print("onChange");
-      if (hasChanges()) {
+      if (_hasChanges()) {
         setState(() {
           _isChanged = true;
           _textController.value.copyWith(
@@ -86,7 +88,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               onPanUpdate: (details) {
                 print("onPanUpdate details direction ${details.delta.dx} ");
                 if (details.delta.dx > 0) {
-                  displayChangesDialog(context);
+                  _displayChangesDialog(context);
                 }
               },
               child: _scaffold(_exercises),
@@ -103,7 +105,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           size: 40,
         ),
         onPressed: () {
-          _exerciseBloc.valInput(Exercise("CHEST MACHINE PRESS"));
+          _exerciseBloc.valCreate(Exercise("CHEST MACHINE PRESS"));
         },
       ),
       appBar: AppBar(
@@ -113,9 +115,9 @@ class _WorkoutViewState extends State<WorkoutView> {
             print("onpress text controller: ${_textController.text}");
             print("onpress old name: ${widget.workout.name}");
             //detect if has changes
-            if (hasChanges()) {
+            if (_hasChanges()) {
               //show dialog if wanna save or discard changes
-              displayChangesDialog(context);
+              _displayChangesDialog(context);
             } else {
               //go back to previous page
               Navigator.pop(
@@ -175,12 +177,12 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  bool hasChanges() {
+  bool _hasChanges() {
     return _textController.text.isNotEmpty &&
         widget.workout.name != _textController.text;
   }
 
-  void displayChangesDialog(context) {
+  void _displayChangesDialog(context) {
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -239,12 +241,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                 onPressed: () {
                   //go back to previous page
                   Navigator.pop(context);
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeView(),
-                    ),
-                  );
                   //toast "changes not saved"
                 },
               ),

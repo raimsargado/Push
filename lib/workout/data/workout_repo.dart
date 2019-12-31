@@ -37,4 +37,10 @@ class WorkoutRepo implements WorkoutRepoApi {
   Future<Workout> getWorkout(String workoutKey) async {
 //    return await dao.getWorkout(workoutKey);
   }
+
+  @override
+  Future<bool> searchWorkout(Workout workout) async {
+    // TODO: implement searchWorkout
+    return await dao.hasWorkout(workout);
+  }
 }
