@@ -8,11 +8,15 @@ abstract class ExerciseRepoApi {
   Exercise get exercise;
 
   //add exercise(Exercise)
-  void addExercise(Exercise exercise);
+  Future addExercise(Exercise exercise);
 
   //update exercise(Exercise)
   void updateExercise(Exercise exercise);
 
   //delete exercise(Exercise)
   void deleteExercise(Exercise exercise);
+
+  Future<List<Exercise>> getExercises(String workoutName);
+
+  Future<dynamic> searchExercise(Exercise exercise);
 }

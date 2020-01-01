@@ -4,16 +4,17 @@ import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/data/exercise_repo_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/models/workout.dart';
 
 class ExerciseBloc implements ExerciseBlocApi {
+  //
+  var _exercises = List<Exercise>();
   var _exerciseRepo = serviceLocator.get<ExerciseRepoApi>();
-  var valController = new StreamController<Exercise>.broadcast();
-  var valControllerOutput = new StreamController<Exercise>.broadcast();
+  var valController = new StreamController<List<Exercise>>.broadcast();
+  var valControllerOutput = new StreamController<List<Exercise>>.broadcast();
 
   ExerciseBloc() {
-    valController.stream.listen((workout) {
-      valControllerOutput.sink.add(workout);
+    valController.stream.listen((exercises) {
+      valControllerOutput.sink.add(exercises);
     });
   }
 
@@ -28,7 +29,12 @@ class ExerciseBloc implements ExerciseBlocApi {
 
   @override
   void valCreate(dynamic any) {
-    valController.sink.add(Exercise("Leg Day"));
+    var exercise = any as Exercise;
+    _exerciseRepo.addExercise(exercise).then((_) {
+      //update exercise list and the view via stream
+      _exercises.add(exercise);
+      valController.sink.add(_exercises);
+    });
   }
 
   @override
@@ -36,16 +42,25 @@ class ExerciseBloc implements ExerciseBlocApi {
     // TODO: implement valDelete
   }
 
-
-
   @override
   void valUpdate(any) {
     // TODO: implement valUpdate
   }
 
   @override
-  Future<bool> valSearch(any) {
-    // TODO: implement valSearch
-    return null;
+  Future<bool> valSearch(any) async {
+    var exercise = any as Exercise;
+    bool isExist = await _exerciseRepo.searchExercise(exercise);
+    return isExist;
+  }
+
+  @override
+  void initExercises(String workoutName) {
+    _exercises.clear();
+    _exerciseRepo.getExercises(workoutName).then((exercises) {
+      //trigger stream
+      _exercises.addAll(exercises);
+      valController.sink.add(_exercises);
+    });
   }
 }

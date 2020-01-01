@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/exercise/views/exercise_item.dart';
@@ -20,10 +21,10 @@ class WorkoutView extends StatefulWidget {
 }
 
 class _WorkoutViewState extends State<WorkoutView> {
-
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
 
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
+  var _exerciseNameFieldController = TextEditingController();
 
   var _textController = TextEditingController();
   FocusNode _textFocus = new FocusNode();
@@ -37,8 +38,8 @@ class _WorkoutViewState extends State<WorkoutView> {
     _textController.addListener(_onChange);
     _textFocus.addListener(_onChange);
     _textController.text = widget.workout.name;
+    _exerciseBloc.initExercises(widget.workout.name);
   }
-
 
   @override
   void dispose() {
@@ -72,12 +73,8 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   @override
   Widget build(BuildContext context) {
-    //get workout name
-    //join workout name to list of workset item
+    //
     var _exercises = List<Exercise>();
-    _exercises.add(Exercise("BENCH PRESS"));
-    _exercises.add(Exercise("OH PRESS"));
-    _exercises.add(Exercise("LEG PRESS"));
 
     return _isChanged
         ? WillPopScope(
@@ -91,13 +88,13 @@ class _WorkoutViewState extends State<WorkoutView> {
                   _displayChangesDialog(context);
                 }
               },
-              child: _scaffold(_exercises),
+              child: _scaffold(),
             ),
           )
-        : _scaffold(_exercises);
+        : _scaffold();
   }
 
-  _scaffold(_exercises) {
+  _scaffold() {
     return Scaffold(
       floatingActionButton: IconButton(
         icon: Icon(
@@ -105,7 +102,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           size: 40,
         ),
         onPressed: () {
-          _exerciseBloc.valCreate(Exercise("CHEST MACHINE PRESS"));
+          _displayAddExerciseDialog(context);
         },
       ),
       appBar: AppBar(
@@ -137,8 +134,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: TextField(
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                    alignLabelWithHint: true,
-                    hintText: widget.workout.name),
+                    alignLabelWithHint: true, hintText: widget.workout.name),
                 controller: _textController,
               ),
             ),
@@ -154,25 +150,36 @@ class _WorkoutViewState extends State<WorkoutView> {
           ],
         ),
       ),
-      body: StreamBuilder<Exercise>(
-          initialData: Exercise("BOOTY PRESS"),
+      body: StreamBuilder<List<Exercise>>(
           stream: _exerciseBloc.valOutput,
           builder: (context, snapshot) {
-            _exercises.add(snapshot.data);
-            return CustomScrollView(
-              slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
+            print("exercises: ${snapshot.data}");
+            if (snapshot.data == null) {
+              return CircularProgressIndicator();
+            } else {
+              if (snapshot.data.isEmpty) {
+                return Center(
+                  child: Text("Dude , tap that damn add button then"
+                      " \nstart adding exercises."),
+                );
+              } else {
+                var exercises = snapshot.data;
+                return CustomScrollView(
+                  slivers: <Widget>[
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
-                        var _exercise = _exercises?.elementAt(index);
+                        var _exercise = exercises?.elementAt(index);
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
                           child: ExerciseItem(exercise: _exercise),
                         );
-                      }, childCount: _exercises?.length),
-                ),
-              ],
-            );
+                      }, childCount: exercises?.length),
+                    ),
+                  ],
+                );
+              }
+            }
           }),
     );
   }
@@ -258,6 +265,51 @@ class _WorkoutViewState extends State<WorkoutView> {
                   _workoutBloc.valDelete(widget.workout);
 
                   //TODO toast "changes saved."
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  _displayAddExerciseDialog(BuildContext context) async {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Add exercise'),
+            content: TextField(
+              controller: _exerciseNameFieldController,
+              decoration: InputDecoration(hintText: "eg. Chest Press"),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('CANCEL'),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              ),
+              FlatButton(
+                child: new Text('OK'),
+                onPressed: () {
+                  _exerciseBloc
+                      .valSearch(Exercise(_exerciseNameFieldController.text))
+                      .then((isExist) {
+                    print("exercise exist: $isExist");
+                    if (!isExist) {
+                      _exerciseBloc
+                          .valCreate(Exercise(_exerciseNameFieldController.text));
+                      Navigator.of(context, rootNavigator: true).pop();
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: "Sorry dude, this exercise exists!",
+                        gravity: ToastGravity.CENTER,
+                      );
+                    }
+                    //TODO TOAAST EXIST OR NOT EXIST
+                    //TODO ADD MEMBER METHOD TO CRUD EXERCISES WITHIN THE WORKOUT BLOC
+                  });
                 },
               )
             ],
