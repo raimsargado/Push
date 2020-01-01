@@ -50,9 +50,7 @@ class WorkoutListView extends StatelessWidget {
             //initialize.. todo put init inside the bloc
 //              _workoutBloc.valInput(_exercises);s
             return Center(
-              child: Text("If I were you, "
-                  "\nI will start adding workout now."),
-            );
+              child: CircularProgressIndicator());
           } else {
             var workouts = snapshot.data as List<Workout>;
             print("home_view workouts: ${workouts.length}");
