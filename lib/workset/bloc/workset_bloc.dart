@@ -58,10 +58,11 @@ class WorkSetBloc extends WorkSetBlocApi {
 
   @override
   void initWorkSets(String workoutName, String exerciseName) {
-    _workSets.clear();
     _workSetRepo.getWorkSets(workoutName, exerciseName).then((workSets) {
       //trigger stream
+      _workSets.clear();
       _workSets.addAll(workSets);
+      print("initWorkSets worksets ${_workSets.length}");
       valController.sink.add(_workSets);
     });
   }

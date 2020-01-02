@@ -56,9 +56,9 @@ class ExerciseBloc implements ExerciseBlocApi {
 
   @override
   void initExercises(String workoutName) {
-    _exercises.clear();
     _exerciseRepo.getExercises(workoutName).then((exercises) {
       //trigger stream
+      _exercises.clear();
       _exercises.addAll(exercises);
       valController.sink.add(_exercises);
     });

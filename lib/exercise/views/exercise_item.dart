@@ -111,17 +111,17 @@ class _ExerciseItemState extends State<ExerciseItem> {
               StreamBuilder(
                 stream: _worksetBloc.valOutput,
                 builder: (context, snapshot) {
-                  print("exercise item snapshot data: ${snapshot.data}");
                   if (snapshot.data == null) {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
                   } else {
-                    var worksets = snapshot.data as List<WorkSet>;
-                    print("home_view workouts: ${worksets.length}");
-                    if (worksets.isNotEmpty) {
-                      var wList = worksets.toSet().toList();
+                    var workSets = snapshot.data as List<WorkSet>;
+                    print("exercise item worksets: ${workSets.length}");
+                    if (workSets.isNotEmpty) {
+                      var wList = workSets.toSet().toList();
                       return CustomScrollView(
+                        physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         slivers: <Widget>[
                           SliverList(
