@@ -8,19 +8,20 @@ import 'package:strongr/workset/models/workset.dart';
 
 class WorkSetBloc extends WorkSetBlocApi {
   //
+  //
+  var _workSets = List<WorkSet>();
   var _workSetRepo = serviceLocator.get<WorkSetRepoApi>();
-
-  var valController = new StreamController<WorkSet>.broadcast();
-  var valControllerOutput = new StreamController<WorkSet>.broadcast();
+  var valController = new StreamController<List<WorkSet>>.broadcast();
+  var valControllerOutput = new StreamController<List<WorkSet>>.broadcast();
 
   WorkSetBloc() {
-    valController.stream.listen((workset) {
-      valControllerOutput.sink.add(workset);
+    valController.stream.listen((exercises) {
+      valControllerOutput.sink.add(exercises);
     });
   }
 
   @override
-  Stream<WorkSet> get valOutput => valControllerOutput.stream;
+  Stream get valOutput => valControllerOutput.stream;
 
   @override
   void dispose() {
@@ -29,25 +30,39 @@ class WorkSetBloc extends WorkSetBlocApi {
   }
 
   @override
-  void valCreate(any) {
-    valController.sink.add(any);
+  void valCreate(dynamic any) {
+    var workSet = any as WorkSet;
+    _workSetRepo.addWorkSet(workSet).then((_) {
+      //update exercise list and the view via stream
+      _workSets.add(workSet);
+      valController.sink.add(_workSets);
+    });
   }
 
   @override
-  void valDelete(dynamic any) {
-
+  void valDelete(any) {
+    // TODO: implement valDelete
   }
 
   @override
-  void valUpdate(dynamic any) {
-
+  void valUpdate(any) {
+    // TODO: implement valUpdate
   }
 
   @override
-  Future<bool> valSearch(any) {
-    // TODO: implement valSearch
-    return null;
+  Future<bool> valSearch(any) async {
+    var workSet = any as WorkSet;
+    bool isExist = await _workSetRepo.searchWorkSet(workSet);
+    return isExist;
   }
 
-
+  @override
+  void initWorkSets(String workoutName, String exerciseName) {
+    _workSets.clear();
+    _workSetRepo.getWorkSets(workoutName, exerciseName).then((workSets) {
+      //trigger stream
+      _workSets.addAll(workSets);
+      valController.sink.add(_workSets);
+    });
+  }
 }

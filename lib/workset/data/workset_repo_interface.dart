@@ -8,11 +8,15 @@ abstract class WorkSetRepoApi {
   WorkSet get workSet;
 
   //add WorkSet(WorkSet)
-  void addExercise(WorkSet workSet);
+  Future addWorkSet(WorkSet workSet);
 
   //update WorkSet(WorkSet)
-  void updateExercise(WorkSet workSet);
+  void updateWorkSet(WorkSet workSet);
 
   //delete WorkSet(WorkSet)
-  void deleteExercise(WorkSet workSet);
+  void deleteWorkSet(WorkSet workSet);
+
+  Future<bool> searchWorkSet(WorkSet workSet);
+
+  Future<List<WorkSet>> getWorkSets(String workoutName, String exerciseName);
 }

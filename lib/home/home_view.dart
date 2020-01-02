@@ -25,15 +25,6 @@ class WorkoutListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//
-//    var _exercises = List<Exercise>();
-//    _exercises.add(Exercise("Bench Press"));
-//    _exercises.add(Exercise("Inclined Bench Press"));
-//    _exercises.add(Exercise("French Press"));
-//    _exercises.add(Exercise("Overhead Press"));
-//    _exercises.add(Exercise("Lateral Raises"));
-//    _exercises.add(Exercise("Front Raises"));
-//
 
     print("build stateless $_workouts");
     // TODO: implement build

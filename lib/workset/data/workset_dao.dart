@@ -1,8 +1,16 @@
+import 'package:sembast/sembast.dart';
+import 'package:strongr/app_db_interface.dart';
+import 'package:strongr/service_init.dart';
 import 'package:strongr/workset/models/workset.dart';
 
-class WorkSetDao  {
-  void addWorkSet(WorkSet workSet) {
-    // TODO: implement addWorkSet
+class WorkSetDao {
+  StoreRef _workSetStore;
+
+  Future<Database> get _database async =>
+      await serviceLocator.get<AppDatabaseApi>().database;
+
+  Future addWorkSet(WorkSet workSet) async {
+    await _workSetStore.add(await _database, workSet.toMap());
   }
 
   void deleteWorkSet(WorkSet workSet) {
@@ -17,5 +25,22 @@ class WorkSetDao  {
   WorkSet get workSet => null;
 
   // TODO: implement workSets
-  List<WorkSet> get workSets => null;
+  Future<List<WorkSet>> getWorkSets(
+      String workoutName, String exerciseName) async {
+    //INIT THE STORE , [workoutName] + [exerciseName] as store ref
+    _workSetStore = intMapStoreFactory.store(workoutName + exerciseName);
+
+    // Finder object can also sort data.
+
+    final recordSnapshots = await _workSetStore.find(await _database);
+
+    // Making a List<Workout> out of List<RecordSnapshot>
+    return recordSnapshots.map((snapshot) {
+      final workSet = WorkSet.fromMap(snapshot.value);
+      // An ID is a key of a record from the database.
+      workSet.id = snapshot.key;
+      return workSet;
+    }).toList();
+  }
+
 }

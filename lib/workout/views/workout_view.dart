@@ -172,7 +172,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                         var _exercise = exercises?.elementAt(index);
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                          child: ExerciseItem(exercise: _exercise),
+                          child: ExerciseItem(
+                              workout: widget.workout, exercise: _exercise),
                         );
                       }, childCount: exercises?.length),
                     ),
@@ -298,8 +299,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                       .then((isExist) {
                     print("exercise exist: $isExist");
                     if (!isExist) {
-                      _exerciseBloc
-                          .valCreate(Exercise(_exerciseNameFieldController.text));
+                      _exerciseBloc.valCreate(
+                          Exercise(_exerciseNameFieldController.text));
                       Navigator.of(context, rootNavigator: true).pop();
                     } else {
                       Fluttertoast.showToast(
