@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:strongr/custom_widgets/overlay_progressbar.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/exercise/views/exercise_item.dart';
@@ -31,6 +32,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   bool _isChanged = false;
   Timer _debounce;
   String newWorkoutName;
+  var progressBar = CustomProgressBar();
 
   @override
   // ignore: must_call_super
@@ -50,12 +52,14 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   void _onChange() {
     newWorkoutName = _textController.text;
-    if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 1000), () {
-      print("onChange");
-      if (_hasChanges()) {
+    print("orig workout name ${widget.workout.name}");
+
+    print("onChange haschanges ${_hasChanges()}");
+    if (_hasChanges()) {
+      if (_debounce?.isActive ?? false) _debounce.cancel();
+      _debounce = Timer(const Duration(milliseconds: 1000), () {
         setState(() {
-          _isChanged = true;
+          _exerciseBloc.initExercises(widget.workout.name);
           _textController.value.copyWith(
               text: newWorkoutName,
               selection: TextSelection(
@@ -63,20 +67,19 @@ class _WorkoutViewState extends State<WorkoutView> {
                   extentOffset: newWorkoutName.length));
           FocusScope.of(context).requestFocus(_textFocus);
         });
-      } else {
-        setState(() {
-          _isChanged = false;
-        });
-      }
-    });
+      });
+    } else {
+      setState(() {
+        _exerciseBloc.initExercises(widget.workout.name);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     //
-    var _exercises = List<Exercise>();
 
-    return _isChanged
+    return _hasChanges()
         ? WillPopScope(
             onWillPop: () async {
               return false;
@@ -154,8 +157,9 @@ class _WorkoutViewState extends State<WorkoutView> {
           stream: _exerciseBloc.valOutput,
           builder: (context, snapshot) {
             print("exercises: ${snapshot.data}");
+
             if (snapshot.data == null) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             } else {
               if (snapshot.data.isEmpty) {
                 return Center(

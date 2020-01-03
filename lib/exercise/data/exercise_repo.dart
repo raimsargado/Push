@@ -36,6 +36,6 @@ class ExerciseRepo extends ExerciseRepoApi {
 
   @override
   Future searchExercise(Exercise exercise) async {
-    return await dao.hasWorkout(exercise);
+    return await dao.hasExercise(exercise);
   }
 }
