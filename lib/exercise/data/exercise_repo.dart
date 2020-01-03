@@ -11,8 +11,8 @@ class ExerciseRepo extends ExerciseRepoApi {
   }
 
   @override
-  void deleteExercise(Exercise exercise) {
-    // TODO: implement deleteExercise
+  Future<dynamic> deleteExercise(Exercise exercise) {
+    return dao.deleteExercise(exercise);
   }
 
   @override

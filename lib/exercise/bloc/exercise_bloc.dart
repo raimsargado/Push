@@ -39,7 +39,15 @@ class ExerciseBloc implements ExerciseBlocApi {
 
   @override
   void valDelete(any) {
-    // TODO: implement valDelete
+    var exercise = any as Exercise;
+    _exerciseRepo.deleteExercise(exercise).then((_) {
+      var filteredExercise = _exercises.firstWhere((w) => w.id == exercise.id);
+      print("filteredworkout ${filteredExercise.name}");
+      print("removed workout: ${exercise.name}");
+      //remove workout
+      _exercises.remove(filteredExercise);
+      valController.sink.add(_exercises); //update list
+    });
   }
 
   @override

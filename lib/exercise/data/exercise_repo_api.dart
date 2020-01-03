@@ -14,9 +14,10 @@ abstract class ExerciseRepoApi {
   void updateExercise(Exercise exercise);
 
   //delete exercise(Exercise)
-  void deleteExercise(Exercise exercise);
+  Future<dynamic> deleteExercise(Exercise exercise);
 
   Future<List<Exercise>> getExercises(String workoutName);
 
   Future<dynamic> searchExercise(Exercise exercise);
+
 }

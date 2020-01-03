@@ -141,7 +141,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             Expanded(
               flex: 0,
               child: IconButton(
-                icon: Icon(Icons.delete),
+                icon: Icon(Icons.delete_outline),
                 onPressed: () {
                   _displayDeleteDialog();
                 },

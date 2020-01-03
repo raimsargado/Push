@@ -13,8 +13,12 @@ class ExerciseDao {
     await _exercisesStore.add(await _database, exercise.toMap());
   }
 
-  void deleteExercise(Exercise exercise) {
-    // TODO: implement deleteExercise
+  Future<dynamic>  deleteExercise(Exercise exercise) async {
+    final finder = Finder(filter: Filter.byKey(exercise.id));
+    return await _exercisesStore.delete(
+      await _database,
+      finder: finder,
+    );
   }
 
   // TODO: implement exercise

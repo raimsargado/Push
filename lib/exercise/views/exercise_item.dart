@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
@@ -19,6 +20,7 @@ class ExerciseItem extends StatefulWidget {
 
 class _ExerciseItemState extends State<ExerciseItem> {
   var _worksetBloc = serviceLocator.get<WorkSetBlocApi>();
+  var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
   var _weightFieldController = TextEditingController();
 
   @override
@@ -59,8 +61,10 @@ class _ExerciseItemState extends State<ExerciseItem> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.settings),
-                    onPressed: () => null,
+                    icon: Icon(Icons.delete_outline),
+                    onPressed: (){
+                      _exerciseBloc.valDelete(widget.exercise);
+                    },
                   )
                 ],
               ),
