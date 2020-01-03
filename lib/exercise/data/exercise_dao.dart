@@ -52,12 +52,13 @@ class ExerciseDao {
     // TODO: implement updateExercise
   }
 
- Future<bool> hasWorkout(Exercise exercise) async {
+ Future<bool> hasExercise(Exercise exercise) async {
    final finder =
-   Finder(filter: Filter.greaterThanOrEquals("name", exercise.name));
+   Finder(filter: Filter.equals("name", exercise.name));
    var _exercises =
        await _exercisesStore.find(await _database, finder: finder);
-   print("exercise data length: ${_exercises.length}");
+
+   print("exercise data length: ${_exercises}");
    return _exercises.length > 0;
  }
 }
