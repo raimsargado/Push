@@ -140,8 +140,12 @@ class WorkoutDao {
   }
 
   Future<bool> hasWorkout(Workout workout) async {
-    final finder =
-        Finder(filter: Filter.greaterThanOrEquals("name", workout.name));
+    //
+    final finder = Finder(
+        filter: Filter.and([
+      Filter.equals("name", workout.name),
+    ]));
+    //
     var _workoutList =
         await _newWorkoutStore.find(await _database, finder: finder);
     print("workout data length: ${_workoutList.length}");

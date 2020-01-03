@@ -58,8 +58,17 @@ class ExerciseBloc implements ExerciseBlocApi {
   @override
   Future<bool> valSearch(any) async {
     var exercise = any as Exercise;
-    bool isExist = await _exerciseRepo.searchExercise(exercise);
-    return isExist;
+    bool exists = false;
+    if (_exercises.isNotEmpty) {
+      var filtered = _exercises.firstWhere(
+          (w) => w.name.trim() == exercise.name.trim(),
+          orElse: () => null);
+      exists = filtered != null;
+    } else {
+      exists = false;
+    }
+
+    return exists;
   }
 
   @override

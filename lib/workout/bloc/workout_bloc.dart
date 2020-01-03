@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
 import 'package:strongr/workout/data/workout_repo_api.dart';
@@ -18,6 +19,7 @@ class WorkoutBloc implements WorkoutBlocApi {
 
     _workoutRepo.getWorkouts().then((workouts) {
       _workoutList.addAll(workouts);
+      print("workout list: $_workoutList");
       valController.sink.add(workouts);
     });
   }
@@ -67,8 +69,23 @@ class WorkoutBloc implements WorkoutBlocApi {
   @override
   Future<bool> valSearch(dynamic any) async {
     var workout = any as Workout;
-    bool isExist = await _workoutRepo.searchWorkout(workout);
-    return isExist;
+    bool exists = false;
+    print("workout bloc search workoutlist: ${_workoutList.length}");
+    if (_workoutList.isNotEmpty) {
+      _workoutList.forEach((w) {
+        print("workout exists: isNotEmpty _workoutList ${w.name}");
+      });
+      var filtered = _workoutList.firstWhere(
+          (w) =>  w.name.trim() == workout.name.trim()  , orElse: () => null);
+      exists = filtered != null;
+      print("workout exists: isNotEmpty $exists");
+      print("workout exists: filtered ${filtered}");
+    } else {
+      exists = false;
+      print("workout exists: $exists");
+    }
+
+    return exists;
   }
 
   @override
