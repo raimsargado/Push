@@ -22,6 +22,7 @@ class WorkoutView extends StatefulWidget {
 }
 
 class _WorkoutViewState extends State<WorkoutView> {
+  //
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
 
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
@@ -282,9 +283,10 @@ class _WorkoutViewState extends State<WorkoutView> {
         context: context,
         barrierDismissible: true,
         builder: (context) {
-          return AlertDialog(
+          _exerciseNameFieldController.text = "";
+          return new AlertDialog(
             title: Text('Add exercise'),
-            content: TextField(
+            content: new TextField(
               controller: _exerciseNameFieldController,
               decoration: InputDecoration(hintText: "eg. Chest Press"),
             ),

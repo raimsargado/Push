@@ -77,7 +77,6 @@ class WorkoutListView extends StatelessWidget {
         ),
         onPressed: () {
           _displayDialog(context);
-//            _workoutBloc.valInput(Workout("My First Workout"));
         },
       ),
     );
@@ -86,6 +85,7 @@ class WorkoutListView extends StatelessWidget {
   TextEditingController _textFieldController = TextEditingController();
 
   _displayDialog(BuildContext context) async {
+    _textFieldController.text = "";
     showDialog(
         context: context,
         barrierDismissible: true,
