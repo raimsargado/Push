@@ -10,6 +10,7 @@ import 'package:strongr/home/home_view.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
 import 'package:strongr/workout/models/workout.dart';
+import 'package:strongr/workset/models/workset.dart';
 
 class WorkoutView extends StatefulWidget {
   //
@@ -301,12 +302,16 @@ class _WorkoutViewState extends State<WorkoutView> {
                 child: new Text('OK'),
                 onPressed: () {
                   _exerciseBloc
-                      .valSearch(Exercise(_exerciseNameFieldController.text))
+                      .valSearch(_exerciseNameFieldController.text)
                       .then((isExist) {
                     print("exercise exist: $isExist");
                     if (!isExist) {
                       _exerciseBloc.valCreate(
-                          Exercise(_exerciseNameFieldController.text));
+                        Exercise(
+                          _exerciseNameFieldController.text,
+                          [WorkSet().toMap()], //empty placeholder as initial workSet
+                        ),
+                      );
                       Navigator.of(context, rootNavigator: true).pop();
                     } else {
                       Fluttertoast.showToast(

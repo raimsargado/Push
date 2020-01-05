@@ -1,17 +1,27 @@
+
+
 class Exercise {
   final String name;
+  final List<dynamic> workSets;
+
   int id;
 
-  Exercise(this.name);
+  //todo filter worksets items per exercise
+  //todo OR embed worksets as map into exercise object
+
+  Exercise(this.name, this.workSets);
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-//      'isSweet': isSweet,
+      'workSets': workSets,
     };
   }
 
   static Exercise fromMap(Map<String, dynamic> map) {
-    return Exercise(map['name']);
+    return Exercise(
+      map['name'],
+      map['workSets'],
+    );
   }
 }

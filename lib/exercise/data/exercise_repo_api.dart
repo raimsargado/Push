@@ -20,4 +20,6 @@ abstract class ExerciseRepoApi {
 
   Future<dynamic> searchExercise(Exercise exercise);
 
+  void addWorkSet(Exercise exercise);
+
 }

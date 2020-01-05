@@ -4,7 +4,6 @@ import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/models/workset.dart';
 import 'package:strongr/workset/views/workset_item.dart';
 
@@ -19,17 +18,8 @@ class ExerciseItem extends StatefulWidget {
 }
 
 class _ExerciseItemState extends State<ExerciseItem> {
-  var _worksetBloc = serviceLocator.get<WorkSetBlocApi>();
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
   var _weightFieldController = TextEditingController();
-
-  @override
-  void initState() {
-//    _textController.addListener(_onChange);
-//    _textFocus.addListener(_onChange);
-//    _textController.text = widget.workout.name;
-    _worksetBloc.initWorkSets(widget.workout.name, widget.exercise.name);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +41,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              //ITEM HEADER
               Row(
                 children: <Widget>[
                   Expanded(
@@ -62,12 +53,13 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   ),
                   IconButton(
                     icon: Icon(Icons.delete_outline),
-                    onPressed: (){
+                    onPressed: () {
                       _exerciseBloc.valDelete(widget.exercise);
                     },
                   )
                 ],
               ),
+              //ITEM SUBHEADER
               Row(
                 children: <Widget>[
                   Expanded(
@@ -112,46 +104,31 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   ),
                 ],
               ),
-              StreamBuilder(
-                stream: _worksetBloc.valOutput,
-                builder: (context, snapshot) {
-                  if (snapshot.data == null) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    var workSets = snapshot.data as List<WorkSet>;
-                    print("exercise item worksets: ${workSets.length}");
-                    if (workSets.isNotEmpty) {
-                      var wList = workSets.toSet().toList();
-                      return CustomScrollView(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        slivers: <Widget>[
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                              var _workSet = wList?.elementAt(index);
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                                child: WorkSetItem(set: _workSet),
-                              );
-                            }, childCount: wList?.length),
-                          ),
-                        ],
+              //WORKSET LIST
+              CustomScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                      var _workSet = widget.exercise.workSets?.elementAt(index);
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                        child: WorkSetItem(set: WorkSet.fromMap(_workSet)),
                       );
-                    } else {
-                      return Center(
-                        child: WorkSetItem(set: WorkSet()),
-                      );
-                    }
-                  }
-                },
+                    }, childCount: widget.exercise.workSets?.length),
+                  ),
+                ],
               ),
+              //ADD BUTTON
               FlatButton(
                 child: Text("Add Set"),
                 onPressed: () {
-                  _worksetBloc.valCreate(WorkSet());
+                  //GET EXISTING WORKSET FROM EXERCISE BLOC
+                  _exerciseBloc.addWorkSet(widget.exercise);
+
+                  //UPDATE THE WORKSET LIST BY ADDING ONE WORKSET
                 },
               )
             ],

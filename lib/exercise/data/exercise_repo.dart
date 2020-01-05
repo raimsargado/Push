@@ -38,4 +38,9 @@ class ExerciseRepo extends ExerciseRepoApi {
   Future searchExercise(Exercise exercise) async {
     return await dao.hasExercise(exercise);
   }
+
+  @override
+  void addWorkSet(exercise) {
+    dao.addWorkSet(exercise);
+  }
 }

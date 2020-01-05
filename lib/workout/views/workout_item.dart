@@ -12,6 +12,7 @@ class WorkoutItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print("workout item onTap: workout: $workout");
         Navigator.push(
           context,
           MaterialPageRoute(

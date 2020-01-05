@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sembast/sembast.dart';
+import 'package:sembast/utils/value_utils.dart';
 import 'package:strongr/app_db_interface.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
+import 'package:strongr/workset/models/workset.dart';
 
 class ExerciseDao {
   StoreRef _exercisesStore;
@@ -13,7 +16,7 @@ class ExerciseDao {
     await _exercisesStore.add(await _database, exercise.toMap());
   }
 
-  Future<dynamic>  deleteExercise(Exercise exercise) async {
+  Future<dynamic> deleteExercise(Exercise exercise) async {
     final finder = Finder(filter: Filter.byKey(exercise.id));
     return await _exercisesStore.delete(
       await _database,
@@ -52,13 +55,36 @@ class ExerciseDao {
     // TODO: implement updateExercise
   }
 
- Future<bool> hasExercise(Exercise exercise) async {
-   final finder =
-   Finder(filter: Filter.equals("name", exercise.name));
-   var _exercises =
-       await _exercisesStore.find(await _database, finder: finder);
+  Future<bool> hasExercise(Exercise exercise) async {
+    final finder = Finder(filter: Filter.equals("name", exercise.name));
+    var _exercises =
+        await _exercisesStore.find(await _database, finder: finder);
 
-   print("exercise data length: ${_exercises}");
-   return _exercises.length > 0;
- }
+    print("exercise data length: ${_exercises}");
+    return _exercises.length > 0;
+  }
+
+  Future addWorkSet(Exercise exercise) async {
+    final finder = Finder(filter: Filter.byKey(exercise.id));
+
+    // find a record
+    var _exercise =
+        await _exercisesStore.findFirst(await _database, finder: finder);
+
+// record snapshot are read-only.
+// If you want to modify it you should clone it
+    var map = cloneMap(_exercise.value);
+
+    var newExercise = Exercise.fromMap(map);
+    newExercise.workSets.add(WorkSet().toMap());
+    print("exercise data newExercise: ${newExercise.toMap()}");
+    await _exercisesStore.update(
+      await _database,
+      newExercise.toMap(),
+      finder: finder,
+    );
+  }
 }
+
+
+//TODO PUT STREAMBUILDER FOR WORKSETS

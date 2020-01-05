@@ -57,11 +57,11 @@ class ExerciseBloc implements ExerciseBlocApi {
 
   @override
   Future<bool> valSearch(any) async {
-    var exercise = any as Exercise;
+    var exerciseName = any as String;
     bool exists = false;
     if (_exercises.isNotEmpty) {
       var filtered = _exercises.firstWhere(
-          (w) => w.name.trim() == exercise.name.trim(),
+          (w) => w.name.trim() == exerciseName.trim(),
           orElse: () => null);
       exists = filtered != null;
     } else {
@@ -79,5 +79,10 @@ class ExerciseBloc implements ExerciseBlocApi {
       _exercises.addAll(exercises);
       valController.sink.add(_exercises);
     });
+  }
+
+  @override
+  void addWorkSet(exercise) {
+    _exerciseRepo.addWorkSet(exercise);
   }
 }

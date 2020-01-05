@@ -62,6 +62,9 @@ class WorkSetBloc extends WorkSetBlocApi {
       //trigger stream
       _workSets.clear();
       _workSets.addAll(workSets);
+      _workSets.forEach((ws) {
+        print("initWorkSets exerciseName: $exerciseName worksets item:  ${ws.id}");
+      });
       print("initWorkSets worksets ${_workSets.length}");
       valController.sink.add(_workSets);
     });
