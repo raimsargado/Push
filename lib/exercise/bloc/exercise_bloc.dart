@@ -7,6 +7,7 @@ import 'package:strongr/service_init.dart';
 
 class ExerciseBloc implements ExerciseBlocApi {
   //
+  static const TAG = "EXERBLOC";
   var _exercises = List<Exercise>();
   var _exerciseRepo = serviceLocator.get<ExerciseRepoApi>();
   var valController = new StreamController<List<Exercise>>.broadcast();
@@ -30,6 +31,7 @@ class ExerciseBloc implements ExerciseBlocApi {
   @override
   void valCreate(dynamic any) {
     var exercise = any as Exercise;
+    print("$TAG valcreate: ${exercise.workSets}");
     _exerciseRepo.addExercise(exercise).then((_) {
       //update exercise list and the view via stream
       _exercises.add(exercise);

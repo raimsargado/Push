@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:strongr/app_db_interface.dart';
@@ -73,18 +73,20 @@ class ExerciseDao {
 
 // record snapshot are read-only.
 // If you want to modify it you should clone it
-    var map = cloneMap(_exercise.value);
+    if (_exercise != null) {
+      var map = cloneMap(_exercise.value);
+      var newExercise = Exercise.fromMap(map);
+      newExercise.workSets.add(WorkSet().toMap());
+      print("exercise data newExercise: ${newExercise.toMap()}");
+      await _exercisesStore.update(
+        await _database,
+        newExercise.toMap(),
+        finder: finder,
+      );
+    } else {
 
-    var newExercise = Exercise.fromMap(map);
-    newExercise.workSets.add(WorkSet().toMap());
-    print("exercise data newExercise: ${newExercise.toMap()}");
-    await _exercisesStore.update(
-      await _database,
-      newExercise.toMap(),
-      finder: finder,
-    );
+    }
   }
 }
-
 
 //TODO PUT STREAMBUILDER FOR WORKSETS
