@@ -14,9 +14,12 @@ class WorkSetBloc extends WorkSetBlocApi {
   var valController = new StreamController<List<WorkSet>>.broadcast();
   var valControllerOutput = new StreamController<List<WorkSet>>.broadcast();
 
+  var TAG = "WORKSETBLOC";
+
   WorkSetBloc() {
-    valController.stream.listen((exercises) {
-      valControllerOutput.sink.add(exercises);
+    valController.stream.listen((workSets) {
+      print("$TAG worksets ${workSets.length}");
+      valControllerOutput.sink.add(workSets);
     });
   }
 
@@ -68,5 +71,10 @@ class WorkSetBloc extends WorkSetBlocApi {
       print("initWorkSets worksets ${_workSets.length}");
       valController.sink.add(_workSets);
     });
+  }
+
+  @override
+  void updateWorkSets(List<WorkSet> workSets) {
+    valController.sink.add(workSets);
   }
 }

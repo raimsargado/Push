@@ -4,6 +4,7 @@ import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
+import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/models/workset.dart';
 import 'package:strongr/workset/views/workset_item.dart';
 
@@ -19,7 +20,18 @@ class ExerciseItem extends StatefulWidget {
 
 class _ExerciseItemState extends State<ExerciseItem> {
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
+  var _workSetBloc = serviceLocator.get<WorkSetBlocApi>();
   var _weightFieldController = TextEditingController();
+  var wSets = List<WorkSet>();
+
+  var TAG = "EXER ITEM";
+
+  @override
+  void initState() {
+    widget.exercise.workSets.forEach((workSetMap) {
+      wSets.add(WorkSet.fromMap(workSetMap));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,28 +117,54 @@ class _ExerciseItemState extends State<ExerciseItem> {
                 ],
               ),
               //WORKSET LIST
-              CustomScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                slivers: <Widget>[
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      var _workSet = widget.exercise.workSets?.elementAt(index);
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                        child: WorkSetItem(set: WorkSet.fromMap(_workSet)),
-                      );
-                    }, childCount: widget.exercise.workSets?.length),
-                  ),
-                ],
-              ),
+              StreamBuilder<List<WorkSet>>(
+                  initialData: wSets,
+                  stream: _workSetBloc.valOutput,
+                  builder: (context, snapshot) {
+                    print("$TAG snapshot data ${snapshot.data}");
+                    if (snapshot.data == null) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      if (snapshot.data.isEmpty) {
+                        return Center(
+                          child: Text("Dude , tap that damn add button then"
+                              " \nstart adding exercises."),
+                        );
+                      } else {
+                        var workSets = snapshot.data;
+                        return CustomScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          slivers: <Widget>[
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                                var _workSet = workSets?.elementAt(index);
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                                  child: WorkSetItem(set: _workSet),
+                                );
+                              }, childCount: workSets?.length),
+                            ),
+                          ],
+                        );
+                      }
+                    }
+                  }),
               //ADD BUTTON
               FlatButton(
                 child: Text("Add Set"),
                 onPressed: () {
-                  //GET EXISTING WORKSET FROM EXERCISE BLOC
-                  _exerciseBloc.addWorkSet(widget.exercise);
+                  //GET UPDATED WORKSETS AFTER EXERCISE UPDATE
+                  _exerciseBloc.addWorkSet(widget.exercise).then((workSets) {
+                    var wSets = List<WorkSet>();
+                    workSets.forEach((workSetMap) {
+                      wSets.add(WorkSet.fromMap(workSetMap));
+                    });
+                    print("$TAG after adding a workset: worksets $wSets");
+                    _workSetBloc.updateWorkSets(wSets);
+                  });
 
                   //UPDATE THE WORKSET LIST BY ADDING ONE WORKSET
                 },

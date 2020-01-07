@@ -4,6 +4,7 @@ import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/data/exercise_repo_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
+import 'package:strongr/workset/models/workset.dart';
 
 class ExerciseBloc implements ExerciseBlocApi {
   //
@@ -83,8 +84,14 @@ class ExerciseBloc implements ExerciseBlocApi {
     });
   }
 
+//TODO CREATE FUTURE FOR WORKSETS
   @override
-  void addWorkSet(exercise) {
-    _exerciseRepo.addWorkSet(exercise);
+  Future<List<dynamic>> addWorkSet(exercise) async {
+    return await _exerciseRepo.addWorkSet(exercise).then((result) async {
+      return Future<List<dynamic>>.value(result.workSets);
+    });
   }
+
+  @override
+  var outWorkSets;
 }

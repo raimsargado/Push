@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:strongr/app_db_interface.dart';
@@ -64,8 +63,20 @@ class ExerciseDao {
     return _exercises.length > 0;
   }
 
-  Future addWorkSet(Exercise exercise) async {
+  Future<Exercise> getExercise(Exercise exercise) async {
     final finder = Finder(filter: Filter.byKey(exercise.id));
+    var _exercise =
+        await _exercisesStore.findFirst(await _database, finder: finder);
+
+    print("exercise data length: ${_exercise}");
+    return _exercise.value;
+  }
+
+  //TODO FIX ID IS ALWAYS NULL AT FIRST ADD SET
+  Future<Exercise> addWorkSet(Exercise exercise) async {
+    print("exercise input addWorkSet: id: ${exercise.name}");
+
+    final finder = Finder(filter: Filter.equals("name", exercise.name));
 
     // find a record
     var _exercise =
@@ -78,13 +89,18 @@ class ExerciseDao {
       var newExercise = Exercise.fromMap(map);
       newExercise.workSets.add(WorkSet().toMap());
       print("exercise data newExercise: ${newExercise.toMap()}");
-      await _exercisesStore.update(
-        await _database,
-        newExercise.toMap(),
-        finder: finder,
-      );
+      return await _exercisesStore
+          .update(await _database, newExercise.toMap(), finder: finder)
+          .then((_) {
+        return Future<Exercise>.value(newExercise);
+      });
     } else {
-
+      print("exercise data exercise: ${exercise.toMap()}");
+      return await _exercisesStore
+          .add(await _database, exercise.toMap())
+          .then((_) {
+        return Future<Exercise>.value(exercise);
+      });
     }
   }
 }

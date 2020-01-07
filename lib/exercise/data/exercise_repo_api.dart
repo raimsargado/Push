@@ -1,11 +1,12 @@
 import 'package:strongr/exercise/models/exercise.dart';
+import 'package:strongr/workset/models/workset.dart';
 
 abstract class ExerciseRepoApi {
   //get exercises
   List<Exercise> get exercises;
 
   //get exercise
-  Exercise get exercise;
+  Future<Exercise> getExercise(exercise);
 
   //add exercise(Exercise)
   Future addExercise(Exercise exercise);
@@ -20,6 +21,8 @@ abstract class ExerciseRepoApi {
 
   Future<dynamic> searchExercise(Exercise exercise);
 
-  void addWorkSet(Exercise exercise);
+  Future<Exercise> addWorkSet(Exercise exercise);
+
+  List<WorkSet> getWorkSets(Exercise exercise);
 
 }
