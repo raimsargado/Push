@@ -86,9 +86,9 @@ class ExerciseBloc implements ExerciseBlocApi {
 
 //TODO CREATE FUTURE FOR WORKSETS
   @override
-  Future<List<dynamic>> addWorkSet(exercise) async {
-    return await _exerciseRepo.addWorkSet(exercise).then((result) async {
-      return Future<List<dynamic>>.value(result.workSets);
+  Future<Exercise> addWorkSet(exercise) async {
+    return await _exerciseRepo.addWorkSet(exercise).then((newExercise) async {
+      return Future<Exercise>.value(newExercise);
     });
   }
 

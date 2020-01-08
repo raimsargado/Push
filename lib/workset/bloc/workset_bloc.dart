@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/main.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workset/bloc/workset_bloc_api.dart';
@@ -9,17 +10,17 @@ import 'package:strongr/workset/models/workset.dart';
 class WorkSetBloc extends WorkSetBlocApi {
   //
   //
-  var _workSets = List<WorkSet>();
+  var _exercise = Exercise;
   var _workSetRepo = serviceLocator.get<WorkSetRepoApi>();
-  var valController = new StreamController<List<WorkSet>>.broadcast();
-  var valControllerOutput = new StreamController<List<WorkSet>>.broadcast();
+  var valController = new StreamController<Exercise>.broadcast();
+  var valControllerOutput = new StreamController<Exercise>.broadcast();
 
   var TAG = "WORKSETBLOC";
 
   WorkSetBloc() {
-    valController.stream.listen((workSets) {
-      print("$TAG worksets ${workSets.length}");
-      valControllerOutput.sink.add(workSets);
+    valController.stream.listen((exercise) {
+//      print("$TAG worksets ${exercise?.workSets.length}");
+      valControllerOutput.sink.add(exercise);
     });
   }
 
@@ -35,11 +36,11 @@ class WorkSetBloc extends WorkSetBlocApi {
   @override
   void valCreate(dynamic any) {
     var workSet = any as WorkSet;
-    _workSetRepo.addWorkSet(workSet).then((_) {
+//    _workSetRepo.addWorkSet(workSet).then((_) {
       //update exercise list and the view via stream
-      _workSets.add(workSet);
-      valController.sink.add(_workSets);
-    });
+//      _exercise.add(workSet);
+//      valController.sink.add(_exercise);
+//    });
   }
 
   @override
@@ -61,20 +62,23 @@ class WorkSetBloc extends WorkSetBlocApi {
 
   @override
   void initWorkSets(String workoutName, String exerciseName) {
-    _workSetRepo.getWorkSets(workoutName, exerciseName).then((workSets) {
-      //trigger stream
-      _workSets.clear();
-      _workSets.addAll(workSets);
-      _workSets.forEach((ws) {
-        print("initWorkSets exerciseName: $exerciseName worksets item:  ${ws.id}");
-      });
-      print("initWorkSets worksets ${_workSets.length}");
-      valController.sink.add(_workSets);
-    });
+
   }
+//    _workSetRepo.getWorkSets(workoutName, exerciseName).then((workSets) {
+      //trigger stream
+//      _exercise.clear();
+//      _exercise.addAll(workSets);
+//      _exercise.forEach((ws) {
+//        print(
+//            "initWorkSets exerciseName: $exerciseName worksets item:  ${ws.id}");
+//      });
+//      print("initWorkSets worksets ${_exercise.length}");
+//      valController.sink.add(_exercise);
+//    });
+//  }
 
   @override
-  void updateWorkSets(List<WorkSet> workSets) {
-    valController.sink.add(workSets);
+  void updateWorkSets(Exercise exercise) {
+    valController.sink.add(exercise);
   }
 }

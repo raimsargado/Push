@@ -88,14 +88,14 @@ class ExerciseDao {
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
       newExercise.workSets.add(WorkSet().toMap());
-      print("exercise data newExercise: ${newExercise.toMap()}");
+      print("exercise not null , replace by newExercise: ${newExercise.toMap()}");
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
         return Future<Exercise>.value(newExercise);
       });
     } else {
-      print("exercise data exercise: ${exercise.toMap()}");
+      print("exercise is null , data exercise: ${exercise.toMap()}");
       return await _exercisesStore
           .add(await _database, exercise.toMap())
           .then((_) {
