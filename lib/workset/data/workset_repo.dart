@@ -17,7 +17,7 @@ class WorkSetRepo extends WorkSetRepoApi {
 
   @override
   void updateWorkSet(WorkSet workSet) {
-    // TODO: implement updateExercise
+   dao.updateSet(workSet);
   }
 
   @override

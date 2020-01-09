@@ -50,7 +50,8 @@ class WorkSetBloc extends WorkSetBlocApi {
 
   @override
   void valUpdate(any) {
-    // TODO: implement valUpdate
+    var workSet = any as WorkSet;
+    _workSetRepo.updateWorkSet(workSet);
   }
 
   @override

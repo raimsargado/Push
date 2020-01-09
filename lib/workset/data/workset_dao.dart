@@ -13,8 +13,13 @@ class WorkSetDao {
     await _workSetStore.add(await _database, workSet.toMap());
   }
 
-  void deleteWorkSet(WorkSet workSet) {
-    // TODO: implement deleteWorkSet
+  Future deleteWorkSet(WorkSet workSet) async {
+    final finder = Finder(filter: Filter.byKey(workSet.id));
+    await _workSetStore.update(
+      await _database,
+      workSet.toMap(),
+      finder: finder,
+    );
   }
 
   void updateSet(WorkSet workSet) {
