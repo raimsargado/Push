@@ -12,7 +12,10 @@ class WorkSetItem extends StatefulWidget {
 
 class _WorkSetItemState extends State<WorkSetItem> {
   //
+  var _setFieldController = TextEditingController();
+  var _recentFieldController = TextEditingController();
   var _weightFieldController = TextEditingController();
+  var _repsFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
                   keyboardType: TextInputType.text,
                   decoration:
                       InputDecoration(alignLabelWithHint: true, hintText: ""),
-                  controller: _weightFieldController,
+                  controller: _setFieldController,
                 ),
               ),
             ),
@@ -46,7 +49,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
                   keyboardType: TextInputType.text,
                   decoration:
                       InputDecoration(alignLabelWithHint: true, hintText: ""),
-                  controller: _weightFieldController,
+                  controller: _recentFieldController,
                 ),
               ),
             ),
@@ -74,7 +77,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
                   keyboardType: TextInputType.text,
                   decoration:
                       InputDecoration(alignLabelWithHint: true, hintText: ""),
-                  controller: _weightFieldController,
+                  controller: _repsFieldController,
                 ),
               ),
             ),
