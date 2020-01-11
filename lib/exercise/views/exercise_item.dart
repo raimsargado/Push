@@ -49,7 +49,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
 //        );
       },
       child: Card(
-        margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
+//        margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Container(
@@ -81,31 +81,19 @@ class _ExerciseItemState extends State<ExerciseItem> {
                 children: <Widget>[
                   Expanded(
                     flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
-                      child: Center(child: Text("SET")),
-                    ),
+                    child: Center(child: Text("SET")),
                   ),
                   Expanded(
                     flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
-                      child: Center(child: Text("RECENT")),
-                    ),
+                    child: Center(child: Text("RECENT")),
                   ),
                   Expanded(
                     flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(child: Text("WEIGHT")),
-                    ),
+                    child: Center(child: Text("WEIGHT")),
                   ),
                   Expanded(
                     flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
-                      child: Center(child: Text("REPS")),
-                    ),
+                    child: Center(child: Text("REPS")),
                   ),
                   Expanded(
                     flex: 1,
@@ -122,12 +110,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
                     delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       var _workSet = wSets?.elementAt(index);
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                        child: WorkSetItem(
-                          set: _workSet,
-                          exercise: widget.exercise,
-                        ),
+                      return WorkSetItem(
+                        set: _workSet,
+                        exercise: widget.exercise,
                       );
                     }, childCount: wSets?.length),
                   ),
