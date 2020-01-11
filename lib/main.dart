@@ -4,6 +4,7 @@ import 'package:strongr/service_init.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   serviceInit();
   runApp(HomeView());
 }
