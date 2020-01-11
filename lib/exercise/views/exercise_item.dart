@@ -97,15 +97,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: TextField(
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                              alignLabelWithHint: true, hintText: "kg/lbs"),
-                          controller: _weightFieldController,
-                        ),
-                      ),
+                      child: Center(child: Text("WEIGHT")),
                     ),
                   ),
                   Expanded(
