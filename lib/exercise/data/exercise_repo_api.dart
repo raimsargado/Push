@@ -23,6 +23,9 @@ abstract class ExerciseRepoApi {
 
   Future<Exercise> addWorkSet(Exercise exercise);
 
+  Future<Exercise> updateWorkSet(Exercise exercise,WorkSet newWorkSet);
+
   List<WorkSet> getWorkSets(Exercise exercise);
+
 
 }

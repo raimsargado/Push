@@ -54,4 +54,9 @@ class ExerciseRepo extends ExerciseRepoApi {
   List<WorkSet> getWorkSets(Exercise exercise) {
     return exercise.workSets;
   }
+
+  @override
+  Future<Exercise> updateWorkSet(Exercise exercise,WorkSet newWorkSet) async {
+    return await dao.updateWorkSet(exercise,newWorkSet);
+  }
 }

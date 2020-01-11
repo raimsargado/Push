@@ -29,9 +29,11 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   @override
   void initState() {
+    print("$TAG exercise: ${widget.exercise.toMap()}");
     widget.exercise.workSets.forEach((workSetMap) {
       wSets.add(WorkSet.fromMap(workSetMap));
     });
+    wSets.sort((a, b) => a.set.toString().compareTo(b.set.toString()));
   }
 
   @override
@@ -130,7 +132,10 @@ class _ExerciseItemState extends State<ExerciseItem> {
                       var _workSet = wSets?.elementAt(index);
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                        child: WorkSetItem(set: _workSet),
+                        child: WorkSetItem(
+                          set: _workSet,
+                          exercise: widget.exercise,
+                        ),
                       );
                     }, childCount: wSets?.length),
                   ),
@@ -178,8 +183,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
                 child: Text("Add Set"),
                 onPressed: () {
                   //GET UPDATED WORKSETS AFTER EXERCISE UPDATE
-
-                  wSets.add(WorkSet());
+                  var lastSetId = int.tryParse(wSets.last.set.toString());
+                  lastSetId++;
+                  wSets.add(WorkSet(set: lastSetId.toString()));
 //
                   _exerciseBloc.addWorkSet(widget.exercise).then((newExercise) {
                     setState(() {});

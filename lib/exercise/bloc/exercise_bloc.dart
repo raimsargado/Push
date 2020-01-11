@@ -94,4 +94,13 @@ class ExerciseBloc implements ExerciseBlocApi {
 
   @override
   var outWorkSets;
+
+  @override
+  Future<Exercise> updateWorkSet(Exercise exercise, WorkSet newWorkSet) async {
+    return await _exerciseRepo
+        .updateWorkSet(exercise, newWorkSet)
+        .then((newExercise) async {
+      return Future<Exercise>.value(newExercise);
+    });
+  }
 }

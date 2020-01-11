@@ -12,8 +12,9 @@ class WorkSetDao {
   Future addWorkSet(WorkSet workSet) async {
     await _workSetStore.add(await _database, workSet.toMap());
   }
-
-  Future deleteWorkSet(WorkSet workSet) async {
+//TODO UPDATE THE DATA INSIDE EXERCISE...
+//TODO ...OBJECT TO UPDATE THE SPECIFIC WORKSET
+  Future updateSet(WorkSet workSet) async {
     final finder = Finder(filter: Filter.byKey(workSet.id));
     await _workSetStore.update(
       await _database,
@@ -22,7 +23,7 @@ class WorkSetDao {
     );
   }
 
-  void updateSet(WorkSet workSet) {
+  void deleteWorkSet(WorkSet workSet) {
     // TODO: implement updateSet
   }
 

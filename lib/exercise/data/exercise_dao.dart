@@ -87,8 +87,10 @@ class ExerciseDao {
     if (_exercise != null) {
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
-      newExercise.workSets.add(WorkSet().toMap());
-      print("exercise not null , replace by newExercise: ${newExercise.toMap()}");
+      var newSetId = int.tryParse(WorkSet.fromMap(newExercise.workSets.last).set);
+      newExercise.workSets.add(WorkSet(set: "${++newSetId}").toMap());
+      print(
+          "exercise not null , replace by newExercise: ${newExercise.toMap()}");
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
@@ -103,6 +105,42 @@ class ExerciseDao {
       });
     }
   }
-}
 
-//TODO PUT STREAMBUILDER FOR WORKSETS
+  Future<Exercise> updateWorkSet(Exercise exercise, WorkSet newWorkSet) async {
+    print("exercise input updateWorkSet: id: ${exercise.name}");
+
+    final finder = Finder(filter: Filter.equals("name", exercise.name));
+
+    // find a record
+    var _exercise =
+        await _exercisesStore.findFirst(await _database, finder: finder);
+
+// record snapshot are read-only.
+// If you want to modify it you should clone it
+    if (_exercise != null) {
+      var map = cloneMap(_exercise.value);
+      var newExercise = Exercise.fromMap(map);
+      //removing old
+      newExercise.workSets.removeWhere(
+        ((workSet) => workSet["set"] == newWorkSet.set),
+      );
+      //adding new
+      newExercise.workSets.add(newWorkSet.toMap());
+      print(
+          "exercise not null ,updateWorkSet replace by newExercise: ${newExercise.toMap()}");
+      return await _exercisesStore
+          .update(await _database, newExercise.toMap(), finder: finder)
+          .then((_) {
+        return Future<Exercise>.value(newExercise);
+      });
+    } else {
+      print(
+          "exercise is null ,updateWorkSet data exercise: ${exercise.toMap()}");
+      return await _exercisesStore
+          .add(await _database, exercise.toMap())
+          .then((_) {
+        return Future<Exercise>.value(exercise);
+      });
+    }
+  }
+}

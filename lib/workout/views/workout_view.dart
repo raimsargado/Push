@@ -31,7 +31,6 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   var _textController = TextEditingController();
   FocusNode _textFocus = new FocusNode();
-  bool _isChanged = false;
   Timer _debounce;
   String newWorkoutName;
   var progressBar = CustomProgressBar();
@@ -309,7 +308,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                       _exerciseBloc.valCreate(
                         Exercise(
                           _exerciseNameFieldController.text,
-                          [WorkSet().toMap()], //empty placeholder as initial workSet
+                          [WorkSet(set:"1").toMap()], //empty placeholder as initial workSet
                         ),
                       );
                       Navigator.of(context, rootNavigator: true).pop();

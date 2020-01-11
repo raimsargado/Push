@@ -1,10 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
+import 'package:strongr/exercise/models/exercise.dart';
+import 'package:strongr/service_init.dart';
+import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/models/workset.dart';
 
 class WorkSetItem extends StatefulWidget {
   final WorkSet set;
+  final Exercise exercise;
 
-  const WorkSetItem({Key key, this.set}) : super(key: key);
+  const WorkSetItem({Key key, this.set, this.exercise}) : super(key: key);
 
   @override
   _WorkSetItemState createState() => _WorkSetItemState();
@@ -16,6 +23,26 @@ class _WorkSetItemState extends State<WorkSetItem> {
   var _recentFieldController = TextEditingController();
   var _weightFieldController = TextEditingController();
   var _repsFieldController = TextEditingController();
+
+  var _workSetBloc = serviceLocator.get<WorkSetBlocApi>();
+  var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
+
+  Timer _debounce;
+
+  @override
+  // ignore: must_call_super
+  void initState() {
+    var wSet = widget.set;
+    _setFieldController.text = wSet.set;
+    _recentFieldController.text = wSet.previous;
+    _weightFieldController.text = wSet.weight;
+    _repsFieldController.text = wSet.reps;
+
+    _setFieldController.addListener(_onChange);
+    _recentFieldController.addListener(_onChange);
+    _weightFieldController.addListener(_onChange);
+    _repsFieldController.addListener(_onChange);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,12 +124,41 @@ class _WorkSetItemState extends State<WorkSetItem> {
         ),
       ),
     );
+  }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _setFieldController.removeListener(_onChange);
+    _recentFieldController.removeListener(_onChange);
+    _weightFieldController.removeListener(_onChange);
+    _repsFieldController.removeListener(_onChange);
+  }
+
+  void _onChange() {
+    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _debounce = Timer(const Duration(milliseconds: 1000), () {
+      _exerciseBloc.updateWorkSet(
+        widget.exercise,
+        WorkSet(
+          set: _setFieldController.text.trim(),
+          previous: _recentFieldController.text.trim(),
+          weight: _weightFieldController.text.trim(),
+          reps: _repsFieldController.text.trim(),
+        ),
+      );
+    });
 //
-//    return ListTile(
-//      leading: Text(set.id),
-//      title: Text(set.previous),
-//      trailing: Text(set.tag),
-//    );
+//    newWorkoutName = _textController.text;
+//    print("orig workout name ${widget.workout.name}");
+//
+//    print("onChange haschanges ${_hasChanges()}");
+//    if (_hasChanges()) {
+//
+//    } else {
+//      setState(() {
+//        _exerciseBloc.initExercises(widget.workout.name);
+//      });
+//    }
   }
 }
