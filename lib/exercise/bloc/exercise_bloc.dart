@@ -44,7 +44,7 @@ class ExerciseBloc implements ExerciseBlocApi {
   void valDelete(any) {
     var exercise = any as Exercise;
     _exerciseRepo.deleteExercise(exercise).then((_) {
-      var filteredExercise = _exercises.firstWhere((w) => w.id == exercise.id);
+      var filteredExercise = _exercises.firstWhere((exer) => exer.name == exercise.name);
       print("filteredworkout ${filteredExercise.name}");
       print("removed workout: ${exercise.name}");
       //remove workout
