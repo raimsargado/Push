@@ -50,8 +50,16 @@ class ExerciseDao {
     }).toList();
   }
 
-  void updateExercise(Exercise exercise) {
-    // TODO: implement updateExercise
+  Future<void> updateExercise(Exercise exercise) async {
+    print("exercise input updateWorkSet: id: ${exercise.name}");
+
+    final finder = Finder(filter: Filter.equals("name", exercise.name));
+
+    return await _exercisesStore
+        .update(await _database, exercise.toMap(), finder: finder)
+        .then((_) {
+      return Future<Exercise>.value(exercise);
+    });
   }
 
   Future<bool> hasExercise(Exercise exercise) async {
@@ -86,7 +94,8 @@ class ExerciseDao {
     if (_exercise != null) {
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
-      var newSetId = int.tryParse(WorkSet.fromMap(newExercise.workSets.last).set);
+      var newSetId =
+          int.tryParse(WorkSet.fromMap(newExercise.workSets.last).set);
       newExercise.workSets.add(WorkSet(set: "${++newSetId}").toMap());
       print(
           "exercise not null , replace by newExercise: ${newExercise.toMap()}");

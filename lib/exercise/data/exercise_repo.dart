@@ -26,7 +26,7 @@ class ExerciseRepo extends ExerciseRepoApi {
 
   @override
   void updateExercise(Exercise exercise) {
-    // TODO: implement updateExercise
+    dao.updateExercise(exercise);
   }
 
   @override

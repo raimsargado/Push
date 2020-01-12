@@ -307,8 +307,9 @@ class _WorkoutViewState extends State<WorkoutView> {
                     if (!isExist) {
                       _exerciseBloc.valCreate(
                         Exercise(
-                          _exerciseNameFieldController.text,
-                          [WorkSet(set:"1").toMap()], //empty placeholder as initial workSet
+                          name: _exerciseNameFieldController.text,
+                          workSets: [WorkSet(set: "1").toMap()], //empty placeholder as initial workSet
+                          weightUnit: "Kgs",
                         ),
                       );
                       Navigator.of(context, rootNavigator: true).pop();

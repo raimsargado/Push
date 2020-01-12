@@ -55,7 +55,8 @@ class ExerciseBloc implements ExerciseBlocApi {
 
   @override
   void valUpdate(any) {
-    // TODO: implement valUpdate
+    var exer  = any as Exercise;
+    _exerciseRepo.updateExercise(exer);
   }
 
   @override

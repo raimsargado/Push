@@ -24,7 +24,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
   var _weightFieldController = TextEditingController();
   Exercise _currentExercise; //placeholder of currentexercise
   var _wSets = List<WorkSet>();
-  var _defaultWeightUnit = "Kgs"; //todo get default unit from exer object
+  String _defaultWeightUnit;
 
   var TAG = "EXER ITEM";
 
@@ -37,6 +37,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
     _wSets.sort(
       (a, b) => a.set.toString().compareTo(b.set.toString()),
     );
+    _defaultWeightUnit = widget.exercise.weightUnit;
   }
 
   @override
@@ -111,6 +112,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
                               break;
                           }
                           setState(() {});
+                          var exer = widget.exercise.toMap();
+                          exer['weightUnit'] = _defaultWeightUnit;
+                          _exerciseBloc.valUpdate(Exercise.fromMap(exer));
                         },
                       ),
                     ),
