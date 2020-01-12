@@ -23,7 +23,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
   var _workSetBloc = serviceLocator.get<WorkSetBlocApi>();
   var _weightFieldController = TextEditingController();
   Exercise _currentExercise; //placeholder of currentexercise
-  var wSets = List<WorkSet>();
+  var _wSets = List<WorkSet>();
+  var _defaultWeightUnit = "Kgs"; //todo get default unit from exer object
 
   var TAG = "EXER ITEM";
 
@@ -31,9 +32,11 @@ class _ExerciseItemState extends State<ExerciseItem> {
   void initState() {
     print("$TAG exercise: ${widget.exercise.toMap()}");
     widget.exercise.workSets.forEach((workSetMap) {
-      wSets.add(WorkSet.fromMap(workSetMap));
+      _wSets.add(WorkSet.fromMap(workSetMap));
     });
-    wSets.sort((a, b) => a.set.toString().compareTo(b.set.toString()));
+    _wSets.sort(
+      (a, b) => a.set.toString().compareTo(b.set.toString()),
+    );
   }
 
   @override
@@ -89,7 +92,28 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Center(child: Text("WEIGHT")),
+                    child: Card(
+                      child: MaterialButton(
+                        child: Text(
+                          _defaultWeightUnit,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        onPressed: () {
+                          switch (_defaultWeightUnit) {
+                            case "Kgs":
+                              _defaultWeightUnit = "Lbs";
+                              break;
+                            case "Lbs":
+                              _defaultWeightUnit = "Lvl";
+                              break;
+                            case "Lvl":
+                              _defaultWeightUnit = "Kgs";
+                              break;
+                          }
+                          setState(() {});
+                        },
+                      ),
+                    ),
                   ),
                   Expanded(
                     flex: 1,
@@ -109,60 +133,23 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
-                      var _workSet = wSets?.elementAt(index);
+                      var _workSet = _wSets?.elementAt(index);
                       return WorkSetItem(
                         set: _workSet,
                         exercise: widget.exercise,
                       );
-                    }, childCount: wSets?.length),
+                    }, childCount: _wSets?.length),
                   ),
                 ],
               ),
-//              StreamBuilder<Exercise>(
-//                  initialData: widget.exercise,
-//                  stream: _workSetBloc.valOutput,
-//                  builder: (context, snapshot) {
-//                    print(
-//                        "$TAG snapshot data exer name: ${snapshot.data.name}");
-//                    if (snapshot.data == null) {
-//                      return Center(child: CircularProgressIndicator());
-//                    } else {
-//                      if (snapshot.data.workSets.isEmpty) {
-//                        return Center(
-//                          child: Text("Dude , tap that damn add button then"
-//                              " \nstart adding exercises."),
-//                        );
-//                      } else {
-//                        var workSets = snapshot.data.workSets;
-//                        return CustomScrollView(
-//                          physics: NeverScrollableScrollPhysics(),
-//                          shrinkWrap: true,
-//                          slivers: <Widget>[
-//                            SliverList(
-//                              delegate: SliverChildBuilderDelegate(
-//                                  (BuildContext context, int index) {
-//                                var _workSet = workSets?.elementAt(index);
-//                                return Padding(
-//                                  padding:
-//                                      const EdgeInsets.fromLTRB(2, 4, 2, 0),
-//                                  child: WorkSetItem(
-//                                      set: WorkSet.fromMap(_workSet)),
-//                                );
-//                              }, childCount: workSets?.length),
-//                            ),
-//                          ],
-//                        );
-//                      }
-//                    }
-//                  }),
               //ADD BUTTON
               FlatButton(
                 child: Text("Add Set"),
                 onPressed: () {
                   //GET UPDATED WORKSETS AFTER EXERCISE UPDATE
-                  var lastSetId = int.tryParse(wSets.last.set.toString());
+                  var lastSetId = int.tryParse(_wSets.last.set.toString());
                   lastSetId++;
-                  wSets.add(WorkSet(set: lastSetId.toString()));
+                  _wSets.add(WorkSet(set: lastSetId.toString()));
 //
                   _exerciseBloc.addWorkSet(widget.exercise).then((newExercise) {
                     setState(() {});
@@ -178,5 +165,3 @@ class _ExerciseItemState extends State<ExerciseItem> {
     );
   }
 }
-
-
