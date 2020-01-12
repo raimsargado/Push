@@ -72,7 +72,6 @@ class ExerciseDao {
     return _exercise.value;
   }
 
-  //TODO FIX ID IS ALWAYS NULL AT FIRST ADD SET
   Future<Exercise> addWorkSet(Exercise exercise) async {
     print("exercise input addWorkSet: id: ${exercise.name}");
 

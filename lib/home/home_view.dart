@@ -38,8 +38,6 @@ class WorkoutListView extends StatelessWidget {
         builder: (context, snapshot) {
           print("homeview snapshot data: ${snapshot.data}");
           if (snapshot.data == null) {
-            //initialize.. todo put init inside the bloc
-//              _workoutBloc.valInput(_exercises);s
             return Center(
               child: CircularProgressIndicator());
           } else {
@@ -121,7 +119,6 @@ class WorkoutListView extends StatelessWidget {
                       );
                     }
                     //TODO TOAAST EXIST OR NOT EXIST
-                    //TODO ADD MEMBER METHOD TO CRUD EXERCISES WITHIN THE WORKOUT BLOC
                   });
                 },
               )

@@ -319,7 +319,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                       );
                     }
                     //TODO TOAAST EXIST OR NOT EXIST
-                    //TODO ADD MEMBER METHOD TO CRUD EXERCISES WITHIN THE WORKOUT BLOC
                   });
                 },
               )

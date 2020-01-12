@@ -178,4 +178,5 @@ class _ExerciseItemState extends State<ExerciseItem> {
     );
   }
 }
-//todo put filter in workset bloc valoutput with the correct exer item
+
+

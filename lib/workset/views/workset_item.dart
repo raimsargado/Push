@@ -21,6 +21,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
   //
   var _setFieldController = TextEditingController();
   String _workSetText;
+  bool _checkboxTag = false; //todo catch the value from exercise object
   var _recentFieldController = TextEditingController();
   var _weightFieldController = TextEditingController();
   var _repsFieldController = TextEditingController();
@@ -102,9 +103,12 @@ class _WorkSetItemState extends State<WorkSetItem> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Checkbox(
-                  value: false,
+                  value: _checkboxTag,
                   onChanged: (bool value) {
                     print("onchange $value");
+                    setState(() {
+                      _checkboxTag = value;
+                    });
                   },
                 ),
               ),

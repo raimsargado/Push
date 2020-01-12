@@ -12,8 +12,6 @@ class WorkSetDao {
   Future addWorkSet(WorkSet workSet) async {
     await _workSetStore.add(await _database, workSet.toMap());
   }
-//TODO UPDATE THE DATA INSIDE EXERCISE...
-//TODO ...OBJECT TO UPDATE THE SPECIFIC WORKSET
   Future updateSet(WorkSet workSet) async {
     final finder = Finder(filter: Filter.byKey(workSet.id));
     await _workSetStore.update(
