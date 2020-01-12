@@ -21,7 +21,6 @@ class WorkoutListView extends StatelessWidget {
   //injection without context dependency
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
   var _workouts = List<Workout>();
-  var _lastClickedWorkout;
 
   @override
   Widget build(BuildContext context) {

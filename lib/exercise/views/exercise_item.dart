@@ -91,6 +91,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                     flex: 1,
                     child: Center(child: Text("RECENT")),
                   ),
+                  //WEIGHT HEADER
                   Expanded(
                     flex: 1,
                     child: Card(
@@ -119,6 +120,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
                       ),
                     ),
                   ),
+                  //PADDING
+                  Expanded(flex: 0, child: Text("  ")),
+                  //REPS HEADER
                   Expanded(
                     flex: 1,
                     child: Center(child: Text("REPS")),

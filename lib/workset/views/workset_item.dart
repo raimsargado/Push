@@ -86,6 +86,10 @@ class _WorkSetItemState extends State<WorkSetItem> {
               ),
             ),
             Expanded(
+              flex: 0,
+              child: Text("X", style: TextStyle(color: Colors.grey)),
+            ),
+            Expanded(
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
