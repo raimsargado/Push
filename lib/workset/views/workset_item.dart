@@ -87,7 +87,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
             ),
             Expanded(
               flex: 0,
-              child: Text("X", style: TextStyle(color: Colors.grey)),
+              child: Icon(Icons.clear, color: Colors.grey,size: 20,),
             ),
             Expanded(
               flex: 1,

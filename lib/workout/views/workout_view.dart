@@ -328,3 +328,5 @@ class _WorkoutViewState extends State<WorkoutView> {
         });
   }
 }
+
+//TODO WORKOUTVIEW... FIX MISSING EXERCISES WHEN WORKOUT PROGRAM CHANGES

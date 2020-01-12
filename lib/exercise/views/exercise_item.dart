@@ -94,34 +94,37 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   //WEIGHT HEADER
                   Expanded(
                     flex: 1,
-                    child: Card(
-                      child: MaterialButton(
-                        child: Text(
-                          _defaultWeightUnit,
-                          style: TextStyle(color: Colors.grey),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(0,0,14,0),
+                      child: Card(
+                        child: MaterialButton(
+                          child: Text(
+                            _defaultWeightUnit,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          onPressed: () {
+                            switch (_defaultWeightUnit) {
+                              case "Kgs":
+                                _defaultWeightUnit = "Lbs";
+                                break;
+                              case "Lbs":
+                                _defaultWeightUnit = "Lvl";
+                                break;
+                              case "Lvl":
+                                _defaultWeightUnit = "Kgs";
+                                break;
+                            }
+                            setState(() {});
+                            var exer = widget.exercise.toMap();
+                            exer['weightUnit'] = _defaultWeightUnit;
+                            _exerciseBloc.valUpdate(Exercise.fromMap(exer));
+                          },
                         ),
-                        onPressed: () {
-                          switch (_defaultWeightUnit) {
-                            case "Kgs":
-                              _defaultWeightUnit = "Lbs";
-                              break;
-                            case "Lbs":
-                              _defaultWeightUnit = "Lvl";
-                              break;
-                            case "Lvl":
-                              _defaultWeightUnit = "Kgs";
-                              break;
-                          }
-                          setState(() {});
-                          var exer = widget.exercise.toMap();
-                          exer['weightUnit'] = _defaultWeightUnit;
-                          _exerciseBloc.valUpdate(Exercise.fromMap(exer));
-                        },
                       ),
                     ),
                   ),
                   //PADDING
-                  Expanded(flex: 0, child: Text("  ")),
+                  Expanded(flex: 0, child: Center(child: Text(" "))),
                   //REPS HEADER
                   Expanded(
                     flex: 1,

@@ -23,10 +23,8 @@ class ExerciseDao {
     );
   }
 
-  // TODO: implement exercise
   Exercise get exercise => null;
 
-  // TODO: implement exercises
   Future<List<Exercise>> getExercises(String workoutName) async {
     //INIT THE STORE , [workoutName] as store ref
     _exercisesStore = intMapStoreFactory.store(workoutName);
