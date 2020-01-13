@@ -16,7 +16,7 @@ class ExerciseDao {
   }
 
   Future<dynamic> deleteExercise(Exercise exercise) async {
-    final finder = Finder(filter: Filter.byKey(exercise.id));
+    final finder = Finder(filter: Filter.equals("name", exercise.name));
     return await _exercisesStore.delete(
       await _database,
       finder: finder,
