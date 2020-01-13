@@ -42,7 +42,6 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return GestureDetector(
       onTap: () {
 //        Navigator.push(

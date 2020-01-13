@@ -163,9 +163,14 @@ class _WorkoutViewState extends State<WorkoutView> {
               return Center(child: CircularProgressIndicator());
             } else {
               if (snapshot.data.isEmpty) {
-                return Center(
-                  child: Text("Dude , tap that damn add button then"
-                      " \nstart adding exercises."),
+              return  Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image(image: AssetImage('assets/MoshingDoodle.png')),
+                      Text("Slight warm-up will do before starting."),
+                    ],
+                  ),
                 );
               } else {
                 var exercises = snapshot.data;

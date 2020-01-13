@@ -28,7 +28,6 @@ class WorkSetDao {
   // TODO: implement workSet
   WorkSet get workSet => null;
 
-  // TODO: implement workSets
   Future<List<WorkSet>> getWorkSets(
       String workoutName, String exerciseName) async {
     //INIT THE STORE , [workoutName] + [exerciseName] as store ref

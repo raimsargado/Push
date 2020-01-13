@@ -17,11 +17,9 @@ class ExerciseRepo extends ExerciseRepoApi {
   }
 
   @override
-  // TODO: implement exercise
   Exercise get exercise => null;
 
   @override
-  // TODO: implement exercises
   List<Exercise> get exercises => null;
 
   @override

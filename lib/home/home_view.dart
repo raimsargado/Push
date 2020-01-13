@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
@@ -10,7 +11,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData.dark(),
+      theme: ThemeData.fallback(),
       home: WorkoutListView(), /**[WorkoutListView] as home page**/
     );
   }
@@ -24,9 +25,14 @@ class WorkoutListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+//    final String assetName = 'assets/BikiniDoodle.svg';
+//    final Widget svg = SvgPicture.asset(
+//      assetName,
+//      semanticsLabel: 'Empty',
+//
+//    );
 
     print("build stateless $_workouts");
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text("Strongr"),
@@ -37,8 +43,7 @@ class WorkoutListView extends StatelessWidget {
         builder: (context, snapshot) {
           print("homeview snapshot data: ${snapshot.data}");
           if (snapshot.data == null) {
-            return Center(
-              child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           } else {
             var workouts = snapshot.data as List<Workout>;
             print("home_view workouts: ${workouts.length}");
@@ -60,8 +65,13 @@ class WorkoutListView extends StatelessWidget {
               );
             } else {
               return Center(
-                child: Text("If I were you, "
-                    "\nI will start adding workout now."),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image(image: AssetImage('assets/BikiniDoodle.png')),
+                    Text("Add workout now and achieve your bikini body."),
+                  ],
+                ),
               );
             }
           }

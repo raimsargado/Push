@@ -28,7 +28,6 @@ class WorkoutRepo implements WorkoutRepoApi {
   }
 
   @override
-  // TODO: implement workouts
   Future<List<Workout>> getWorkouts() async {
     return await dao.getWorkoutsFromDao();
   }
@@ -40,7 +39,6 @@ class WorkoutRepo implements WorkoutRepoApi {
 
   @override
   Future<bool> searchWorkout(Workout workout) async {
-    // TODO: implement searchWorkout
     return await dao.hasWorkout(workout);
   }
 }
