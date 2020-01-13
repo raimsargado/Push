@@ -1,6 +1,7 @@
 import 'package:strongr/exercise/data/exercise_dao.dart';
 import 'package:strongr/exercise/data/exercise_repo_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
+import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
 
 class ExerciseRepo extends ExerciseRepoApi {
@@ -28,8 +29,8 @@ class ExerciseRepo extends ExerciseRepoApi {
   }
 
   @override
-  Future<List<Exercise>> getExercises(String workoutName) async {
-    var exercises = await dao.getExercises(workoutName);
+  Future<List<Exercise>> getExercises(Workout workout) async {
+    var exercises = await dao.getExercises(workout);
     return exercises;
   }
 

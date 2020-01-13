@@ -29,7 +29,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
   var _exerciseNameFieldController = TextEditingController();
 
-  var _textController = TextEditingController();
+  var _workoutNameController = TextEditingController();
   FocusNode _textFocus = new FocusNode();
   Timer _debounce;
   String newWorkoutName;
@@ -38,40 +38,31 @@ class _WorkoutViewState extends State<WorkoutView> {
   @override
   // ignore: must_call_super
   void initState() {
-    _textController.addListener(_onChange);
+    _workoutNameController.addListener(_onChange);
     _textFocus.addListener(_onChange);
-    _textController.text = widget.workout.name;
-    _exerciseBloc.initExercises(widget.workout.name);
+    _workoutNameController.text = widget.workout.name;
+    _exerciseBloc.initExercises(widget.workout);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _textController.removeListener(_onChange);
+    _workoutNameController.removeListener(_onChange);
     _textFocus.removeListener(_onChange);
   }
 
   void _onChange() {
-    newWorkoutName = _textController.text;
-    print("orig workout name ${widget.workout.name}");
+    newWorkoutName = _workoutNameController.text;
+    print("_onChange orig workout name ${widget.workout.name}");
+    print("_onChange newWorkoutName  $newWorkoutName");
 
-    print("onChange haschanges ${_hasChanges()}");
     if (_hasChanges()) {
       if (_debounce?.isActive ?? false) _debounce.cancel();
       _debounce = Timer(const Duration(milliseconds: 1000), () {
-        setState(() {
-          _exerciseBloc.initExercises(widget.workout.name);
-          _textController.value.copyWith(
-              text: newWorkoutName,
-              selection: TextSelection(
-                  baseOffset: newWorkoutName.length,
-                  extentOffset: newWorkoutName.length));
-          FocusScope.of(context).requestFocus(_textFocus);
-        });
-      });
-    } else {
-      setState(() {
-        _exerciseBloc.initExercises(widget.workout.name);
+        var w = Workout(_workoutNameController.text);
+        w.id = widget.workout.id;
+        //update workout db
+        _workoutBloc.valUpdate(w);
       });
     }
   }
@@ -79,23 +70,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   @override
   Widget build(BuildContext context) {
     //
-
-    return _hasChanges()
-        ? WillPopScope(
-            onWillPop: () async {
-              return false;
-            },
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                print("onPanUpdate details direction ${details.delta.dx} ");
-                if (details.delta.dx > 0) {
-                  _displayChangesDialog(context);
-                }
-              },
-              child: _scaffold(),
-            ),
-          )
-        : _scaffold();
+    return _scaffold();
   }
 
   _scaffold() {
@@ -113,21 +88,14 @@ class _WorkoutViewState extends State<WorkoutView> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            print("onpress text controller: ${_textController.text}");
+            print("onpress text controller: ${_workoutNameController.text}");
             print("onpress old name: ${widget.workout.name}");
-            //detect if has changes
-            if (_hasChanges()) {
-              //show dialog if wanna save or discard changes
-              _displayChangesDialog(context);
-            } else {
-              //go back to previous page
-              Navigator.pop(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomeView(),
-                ),
-              );
-            }
+            Navigator.pop(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeView(),
+              ),
+            );
           },
         ),
         centerTitle: false,
@@ -139,7 +107,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                     alignLabelWithHint: true, hintText: widget.workout.name),
-                controller: _textController,
+                controller: _workoutNameController,
               ),
             ),
             Expanded(
@@ -163,7 +131,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               return Center(child: CircularProgressIndicator());
             } else {
               if (snapshot.data.isEmpty) {
-              return  Center(
+                return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -196,54 +164,8 @@ class _WorkoutViewState extends State<WorkoutView> {
   }
 
   bool _hasChanges() {
-    return _textController.text.isNotEmpty &&
-        widget.workout.name != _textController.text;
-  }
-
-  void _displayChangesDialog(context) {
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Save changes?'),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('DISCARD'),
-                onPressed: () {
-                  //go back to previous page
-                  Navigator.pop(context);
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeView(),
-                    ),
-                  );
-                  //toast "changes not saved"
-                },
-              ),
-              FlatButton(
-                child: new Text('OK'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeView(),
-                    ),
-                  );
-
-                  var w = Workout(_textController.text);
-                  w.id = widget.workout.id;
-                  //update workout db
-                  _workoutBloc.valUpdate(w);
-
-                  //toast "changes saved."
-                },
-              )
-            ],
-          );
-        });
+    return _workoutNameController.text.isNotEmpty &&
+        widget.workout.name != _workoutNameController.text;
   }
 
   void _displayDeleteDialog() {
@@ -313,7 +235,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                       _exerciseBloc.valCreate(
                         Exercise(
                           name: _exerciseNameFieldController.text,
-                          workSets: [WorkSet(set: "1").toMap()], //empty placeholder as initial workSet
+                          workSets: [WorkSet(set: "1").toMap()],
+                          //empty placeholder as initial workSet
                           weightUnit: "Kgs",
                         ),
                       );
@@ -334,4 +257,3 @@ class _WorkoutViewState extends State<WorkoutView> {
   }
 }
 
-//TODO WORKOUTVIEW... FIX MISSING EXERCISES WHEN WORKOUT PROGRAM CHANGES

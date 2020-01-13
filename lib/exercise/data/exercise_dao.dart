@@ -3,6 +3,7 @@ import 'package:sembast/utils/value_utils.dart';
 import 'package:strongr/app_db_interface.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
+import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
 
 class ExerciseDao {
@@ -25,9 +26,9 @@ class ExerciseDao {
 
   Exercise get exercise => null;
 
-  Future<List<Exercise>> getExercises(String workoutName) async {
+  Future<List<Exercise>> getExercises(Workout workout) async {
     //INIT THE STORE , [workoutName] as store ref
-    _exercisesStore = intMapStoreFactory.store(workoutName);
+    _exercisesStore = intMapStoreFactory.store(workout.id.toString());
 
     // Finder object can also sort data.
     final finder = Finder(sortOrders: [

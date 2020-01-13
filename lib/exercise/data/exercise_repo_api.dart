@@ -1,4 +1,5 @@
 import 'package:strongr/exercise/models/exercise.dart';
+import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
 
 abstract class ExerciseRepoApi {
@@ -17,7 +18,7 @@ abstract class ExerciseRepoApi {
   //delete exercise(Exercise)
   Future<dynamic> deleteExercise(Exercise exercise);
 
-  Future<List<Exercise>> getExercises(String workoutName);
+  Future<List<Exercise>> getExercises(Workout workout);
 
   Future<dynamic> searchExercise(Exercise exercise);
 

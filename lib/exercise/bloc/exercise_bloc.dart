@@ -4,6 +4,7 @@ import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/data/exercise_repo_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
+import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
 
 class ExerciseBloc implements ExerciseBlocApi {
@@ -76,8 +77,8 @@ class ExerciseBloc implements ExerciseBlocApi {
   }
 
   @override
-  void initExercises(String workoutName) {
-    _exerciseRepo.getExercises(workoutName).then((exercises) {
+  void initExercises(Workout workout) {
+    _exerciseRepo.getExercises(workout).then((exercises) {
       //trigger stream
       _exercises.clear();
       _exercises.addAll(exercises);
