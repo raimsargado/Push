@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
@@ -11,7 +10,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData.fallback(),
+      theme: ThemeData.dark(),
       home: WorkoutListView(), /**[WorkoutListView] as home page**/
     );
   }
