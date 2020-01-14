@@ -103,14 +103,14 @@ class _ExerciseItemState extends State<ExerciseItem> {
                           ),
                           onPressed: () {
                             switch (_defaultWeightUnit) {
-                              case "Kgs":
-                                _defaultWeightUnit = "Lbs";
+                              case "Kg":
+                                _defaultWeightUnit = "Lb";
                                 break;
-                              case "Lbs":
+                              case "Lb":
                                 _defaultWeightUnit = "Lvl";
                                 break;
                               case "Lvl":
-                                _defaultWeightUnit = "Kgs";
+                                _defaultWeightUnit = "Kg";
                                 break;
                             }
                             setState(() {});

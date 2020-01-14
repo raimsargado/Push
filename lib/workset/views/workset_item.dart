@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
@@ -77,10 +78,13 @@ class _WorkSetItemState extends State<WorkSetItem> {
                 child: Center(
                   child: TextField(
                     textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     decoration:
                         InputDecoration(alignLabelWithHint: true, hintText: ""),
                     controller: _weightFieldController,
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
                   ),
                 ),
               ),
@@ -95,10 +99,13 @@ class _WorkSetItemState extends State<WorkSetItem> {
                 padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
                 child: TextField(
                   textAlign: TextAlign.center,
-                  keyboardType: TextInputType.text,
                   decoration:
                       InputDecoration(alignLabelWithHint: true, hintText: ""),
                   controller: _repsFieldController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    WhitelistingTextInputFormatter.digitsOnly
+                  ],
                 ),
               ),
             ),

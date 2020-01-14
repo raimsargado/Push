@@ -237,7 +237,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                           name: _exerciseNameFieldController.text,
                           workSets: [WorkSet(set: "1").toMap()],
                           //empty placeholder as initial workSet
-                          weightUnit: "Kgs",
+                          weightUnit: "Kg",
                         ),
                       );
                       Navigator.of(context, rootNavigator: true).pop();
