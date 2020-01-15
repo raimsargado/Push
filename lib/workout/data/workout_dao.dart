@@ -1,5 +1,6 @@
 import 'package:sembast/sembast.dart';
 import 'package:strongr/app_db_interface.dart';
+import 'package:strongr/exercise/data/exercise_dao.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
 
@@ -7,7 +8,7 @@ class WorkoutDao {
   //
   Future<Database> get _database async =>
       await serviceLocator.get<AppDatabaseApi>().database;
-
+  var _exerdao = ExerciseDao();
   //workout_store
   //exercise_store
   //workSet_store
@@ -111,12 +112,19 @@ class WorkoutDao {
     );
   }
 
-  Future<dynamic> deleteWorkout(Workout workOut) async {
-    final finder = Finder(filter: Filter.byKey(workOut.id));
+  Future<dynamic> deleteWorkout(Workout workout) async {
+    final finder = Finder(filter: Filter.byKey(workout.id));
     return await _newWorkoutStore.delete(
       await _database,
       finder: finder,
-    );
+    ).then((_){
+      //delete exercises
+      _exerdao.getExercises(workout).then((exers){
+        exers.forEach((exercise){
+          _exerdao.deleteExercise(exercise);
+        });
+      });
+    });
   }
 
   Future<List<Workout>> getWorkoutsFromDao() async {
