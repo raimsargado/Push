@@ -9,6 +9,8 @@ import 'package:strongr/workset/models/workset.dart';
 class ExerciseDao {
   StoreRef _exercisesStore;
 
+  var TAG = "EXERDAO";
+
   Future<Database> get _database async =>
       await serviceLocator.get<AppDatabaseApi>().database;
 
@@ -28,6 +30,7 @@ class ExerciseDao {
 
   Future<List<Exercise>> getExercises(Workout workout) async {
     //INIT THE STORE , [workoutName] as store ref
+    print("$TAG get exers workout ${workout.toMap()}");
     _exercisesStore = intMapStoreFactory.store(workout.id.toString());
 
     // Finder object can also sort data.
@@ -40,7 +43,7 @@ class ExerciseDao {
       finder: finder,
     );
 
-    // Making a List<Workout> out of List<RecordSnapshot>
+    // Making a List<Exercise> out of List<RecordSnapshot>
     return recordSnapshots.map((snapshot) {
       final exercise = Exercise.fromMap(snapshot.value);
       // An ID is a key of a record from the database.

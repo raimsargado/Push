@@ -30,8 +30,10 @@ class WorkoutBloc implements WorkoutBlocApi {
   @override
   void valCreate(dynamic any) {
     var workout = any as Workout;
-    _workoutRepo.addWorkout(workout).then((_) {
+    _workoutRepo.addWorkout(workout).then((key) {
       //update view after adding workout
+      print("workout bloc workout key: $key");
+      workout.id = key;
       _workoutList.add(workout);
       valController.sink.add(_workoutList); //update list
     });
@@ -76,7 +78,8 @@ class WorkoutBloc implements WorkoutBlocApi {
         print("workout exists: isNotEmpty _workoutList ${w.name}");
       });
       var filtered = _workoutList.firstWhere(
-          (w) =>  w.name.trim() == workout.name.trim()  , orElse: () => null);
+          (w) => w.name.trim() == workout.name.trim(),
+          orElse: () => null);
       exists = filtered != null;
       print("workout exists: isNotEmpty $exists");
       print("workout exists: filtered ${filtered}");

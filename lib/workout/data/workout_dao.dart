@@ -96,8 +96,8 @@ class WorkoutDao {
   static const String WORKOUT_STORE_NAME = 'WORKOUTS';
   final _newWorkoutStore = intMapStoreFactory.store(WORKOUT_STORE_NAME);
 
-  Future addWorkout(Workout workout) async {
-    await _newWorkoutStore.add(await _database, workout.toMap());
+  Future<int> addWorkout(Workout workout) async {
+   return await _newWorkoutStore.add(await _database, workout.toMap());
   }
 
   Future update(Workout workout) async {
@@ -135,6 +135,8 @@ class WorkoutDao {
       final workout = Workout.fromMap(snapshot.value);
       // An ID is a key of a record from the database.
       workout.id = snapshot.key;
+      print("workout dao : ${workout.toMap()}");
+      print("workout dao : snapshot.key ${snapshot.key}");
       return workout;
     }).toList();
   }

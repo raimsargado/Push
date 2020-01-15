@@ -13,7 +13,7 @@ class WorkoutRepo implements WorkoutRepoApi {
   }
 
   @override
-  Future<dynamic> addWorkout(Workout workout) async {
+  Future<int> addWorkout(Workout workout) async {
     return dao.addWorkout(workout);
   }
 
