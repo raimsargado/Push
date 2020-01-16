@@ -142,7 +142,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           ),
           _isWorkoutStarted ? Padding(
             padding: const EdgeInsets.fromLTRB(0,0,14,0),
-            child: Center(child: Text("$_timeCount")),
+            child: Center(child: Text("${format(Duration(seconds: _timeCount))}")),
           ) : Container()
         ],
       ),
@@ -287,6 +287,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   Timer _timer;
   int _timeCount = 0;
+  String _timeOutput = "";
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
@@ -303,4 +304,6 @@ class _WorkoutViewState extends State<WorkoutView> {
     setState(() {});
     _timer.cancel();
   }
+
+  format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
 }
