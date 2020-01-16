@@ -129,7 +129,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                     icon: Icon(Icons.pause_circle_outline),
                     onPressed: () {
                       //stop workout
-                      _stopWorkout();
+                      stopWorkout();
                     },
                   )
                 : IconButton(
@@ -140,10 +140,13 @@ class _WorkoutViewState extends State<WorkoutView> {
                     },
                   ),
           ),
-          _isWorkoutStarted ? Padding(
-            padding: const EdgeInsets.fromLTRB(0,0,14,0),
-            child: Center(child: Text("${format(Duration(seconds: _timeCount))}")),
-          ) : Container()
+          _isWorkoutStarted
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
+                  child: Center(
+                      child: Text("${format(Duration(seconds: _timeCount))}")),
+                )
+              : Container()
         ],
       ),
       body: StreamBuilder<List<Exercise>>(
@@ -288,6 +291,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   Timer _timer;
   int _timeCount = 0;
   String _timeOutput = "";
+
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
@@ -298,12 +302,44 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  void _stopWorkout() {
+  void stopWorkout() {
     //set state icon
-    _isWorkoutStarted = false;
-    setState(() {});
-    _timer.cancel();
+    _displayStopWorkoutDialog();
   }
 
   format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
+
+  void _displayStopWorkoutDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return new AlertDialog(
+            title: Container(child: Text('😒😒😒😒😒😒')),
+            content: Text(
+              'Are you sure to \nstop your workout?',
+              textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('CANCEL'),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              ),
+              FlatButton(
+                child: new Text('OK'),
+                onPressed: () {
+                  //stop workout
+                  _isWorkoutStarted = false;
+                  setState(() {});
+                  _timer.cancel();
+                  _timeCount = 0;
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
 }
