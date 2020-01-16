@@ -35,6 +35,8 @@ class _WorkoutViewState extends State<WorkoutView> {
   String newWorkoutName;
   var progressBar = CustomProgressBar();
 
+  bool _isWorkoutStarted = false;
+
   @override
   // ignore: must_call_super
   void initState() {
@@ -101,6 +103,7 @@ class _WorkoutViewState extends State<WorkoutView> {
         centerTitle: false,
         title: Row(
           children: <Widget>[
+            //WORKOUT TITLE
             Expanded(
               flex: 1,
               child: TextField(
@@ -110,17 +113,38 @@ class _WorkoutViewState extends State<WorkoutView> {
                 controller: _workoutNameController,
               ),
             ),
-            Expanded(
-              flex: 0,
-              child: IconButton(
-                icon: Icon(Icons.delete_outline),
-                onPressed: () {
-                  _displayDeleteDialog();
-                },
-              ),
-            )
           ],
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.delete_outline),
+            onPressed: () {
+              _displayDeleteDialog();
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
+            child: _isWorkoutStarted
+                ? IconButton(
+                    icon: Icon(Icons.pause_circle_outline),
+                    onPressed: () {
+                      //stop workout
+                      _stopWorkout();
+                    },
+                  )
+                : IconButton(
+                    icon: Icon(Icons.play_circle_outline),
+                    onPressed: () {
+                      //start workout
+                      _startWorkout();
+                    },
+                  ),
+          ),
+          _isWorkoutStarted ? Padding(
+            padding: const EdgeInsets.fromLTRB(0,0,14,0),
+            child: Center(child: Text("$_timeCount")),
+          ) : Container()
+        ],
       ),
       body: StreamBuilder<List<Exercise>>(
           stream: _exerciseBloc.valOutput,
@@ -196,8 +220,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                   );
 
                   _workoutBloc.valDelete(widget.workout);
-
-                  //TODO toast "changes saved."
                 },
               )
             ],
@@ -255,5 +277,30 @@ class _WorkoutViewState extends State<WorkoutView> {
           );
         });
   }
-}
 
+  void _startWorkout() {
+    //set state icon
+    _isWorkoutStarted = true;
+    setState(() {});
+    startTimer();
+  }
+
+  Timer _timer;
+  int _timeCount = 0;
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) => setState(() {
+        _timeCount = ++_timeCount;
+      }),
+    );
+  }
+
+  void _stopWorkout() {
+    //set state icon
+    _isWorkoutStarted = false;
+    setState(() {});
+    _timer.cancel();
+  }
+}
