@@ -336,6 +336,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                   _timer.cancel();
                   _timeCount = 0;
                   Navigator.of(context, rootNavigator: true).pop();
+                  //save all progress
+                  //update each exercise
+                  //update each workSet on each exercise
+                  _exerciseBloc.saveAllProgress();
                 },
               )
             ],

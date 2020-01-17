@@ -153,4 +153,11 @@ class ExerciseDao {
       });
     }
   }
+
+  void saveAllProgress() {
+    //save all progress
+    //update each exercise
+    //update each workSet on each exercise
+    
+  }
 }
