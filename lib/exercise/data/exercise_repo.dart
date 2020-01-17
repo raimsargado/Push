@@ -60,7 +60,7 @@ class ExerciseRepo implements ExerciseRepoApi {
   }
 
   @override
-  void saveAllProgress() {
+  void saveAllProgress(exer) {
     dao.saveAllProgress();
   }
 }

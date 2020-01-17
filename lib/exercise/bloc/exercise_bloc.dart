@@ -45,7 +45,8 @@ class ExerciseBloc implements ExerciseBlocApi {
   void valDelete(any) {
     var exercise = any as Exercise;
     _exerciseRepo.deleteExercise(exercise).then((_) {
-      var filteredExercise = _exercises.firstWhere((exer) => exer.name == exercise.name);
+      var filteredExercise =
+          _exercises.firstWhere((exer) => exer.name == exercise.name);
       print("filteredworkout ${filteredExercise.name}");
       print("removed workout: ${exercise.name}");
       //remove workout
@@ -56,7 +57,7 @@ class ExerciseBloc implements ExerciseBlocApi {
 
   @override
   void valUpdate(any) {
-    var exer  = any as Exercise;
+    var exer = any as Exercise;
     _exerciseRepo.updateExercise(exer);
   }
 
@@ -107,6 +108,8 @@ class ExerciseBloc implements ExerciseBlocApi {
 
   @override
   void saveAllProgress() {
-    _exerciseRepo.saveAllProgress();
+    _exercises.forEach((exer) {
+      _exerciseRepo.saveAllProgress(exer);
+    });
   }
 }

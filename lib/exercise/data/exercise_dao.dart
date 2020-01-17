@@ -158,6 +158,6 @@ class ExerciseDao {
     //save all progress
     //update each exercise
     //update each workSet on each exercise
-    
+
   }
 }
