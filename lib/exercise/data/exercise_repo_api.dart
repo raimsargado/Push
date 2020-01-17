@@ -28,7 +28,7 @@ abstract class ExerciseRepoApi {
 
   List<WorkSet> getWorkSets(Exercise exercise);
 
-  void saveAllProgress(Exercise exer);
+  Future<void> saveAllProgress(Exercise exer);
 
 
 }

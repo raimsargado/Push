@@ -107,9 +107,10 @@ class ExerciseBloc implements ExerciseBlocApi {
   }
 
   @override
-  void saveAllProgress() {
+  Future<void> saveAllProgress() {
     _exercises.forEach((exer) {
       _exerciseRepo.saveAllProgress(exer);
     });
+    return Future<void>.value();
   }
 }

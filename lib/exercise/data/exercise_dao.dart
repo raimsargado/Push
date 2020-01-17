@@ -125,8 +125,8 @@ class ExerciseDao {
     var _exercise =
         await _exercisesStore.findFirst(await _database, finder: finder);
 
-// record snapshot are read-only.
-// If you want to modify it you should clone it
+    // record snapshot are read-only.
+    // If you want to modify it you should clone it
     if (_exercise != null) {
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
@@ -154,10 +154,56 @@ class ExerciseDao {
     }
   }
 
-  void saveAllProgress() {
+  Future<void> saveAllProgress(Exercise exercise) async {
     //save all progress
     //update each exercise
     //update each workSet on each exercise
+    print("exercise input saveAllProgress: id: ${exercise.name}");
 
+    final finder = Finder(filter: Filter.equals("name", exercise.name));
+
+    // find a record
+    var _exercise =
+        await _exercisesStore.findFirst(await _database, finder: finder);
+
+    // record snapshot are read-only.
+    // If you want to modify it you should clone it
+    if (_exercise != null) {
+      var map = cloneMap(_exercise.value);
+      var newExercise = Exercise.fromMap(map);
+
+      var newWorkSets  = List<WorkSet>();
+      newExercise.workSets.forEach((workSet){
+        var oldWorkSet = WorkSet.fromMap(workSet);
+        var newWorkSet = WorkSet(set: oldWorkSet.set,recent: oldWorkSet.weight + "X" + oldWorkSet.reps);
+        newWorkSets.add(newWorkSet);
+      });
+
+      newWorkSets.forEach((newWorkSet){
+        //removing old
+        newExercise.workSets.removeWhere(
+          ((workSet) => workSet['set'] == newWorkSet.set),
+        );
+        //adding new
+        newExercise.workSets.add(newWorkSet.toMap());
+      });
+
+
+      print(
+          "exercise not null ,saveAllProgress replace by newExercise: ${newExercise.toMap()}");
+      return await _exercisesStore
+          .update(await _database, newExercise.toMap(), finder: finder)
+          .then((_) {
+        return Future<Exercise>.value(newExercise);
+      });
+    } else {
+      print(
+          "exercise is null ,saveAllProgress data exercise: ${exercise.toMap()}");
+      return await _exercisesStore
+          .add(await _database, exercise.toMap())
+          .then((_) {
+        return Future<Exercise>.value(exercise);
+      });
+    }
   }
 }

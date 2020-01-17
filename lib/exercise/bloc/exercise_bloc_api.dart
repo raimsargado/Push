@@ -10,5 +10,5 @@ abstract class ExerciseBlocApi with AppBloc {
 
   Future<Exercise> updateWorkSet(Exercise exercise, WorkSet newWorkSet);
 
-  void saveAllProgress();
+  Future<void> saveAllProgress();
 }

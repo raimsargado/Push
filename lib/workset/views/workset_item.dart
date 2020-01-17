@@ -21,7 +21,6 @@ class WorkSetItem extends StatefulWidget {
 class _WorkSetItemState extends State<WorkSetItem> {
   //
   var _setFieldController = TextEditingController();
-  String _workSetText;
   bool _checkboxTag = false; //todo catch the value from exercise object
   var _recentFieldController = TextEditingController();
   var _weightFieldController = TextEditingController();
@@ -32,12 +31,14 @@ class _WorkSetItemState extends State<WorkSetItem> {
 
   Timer _debounce;
 
+  String _workSetText;
+
   @override
   // ignore: must_call_super
   void initState() {
     var wSet = widget.set;
     _workSetText = wSet.set;
-    _recentFieldController.text = wSet.previous;
+    _recentFieldController.text = wSet.recent;
     _weightFieldController.text = wSet.weight;
     _repsFieldController.text = wSet.reps;
 
@@ -91,7 +92,11 @@ class _WorkSetItemState extends State<WorkSetItem> {
             ),
             Expanded(
               flex: 0,
-              child: Icon(Icons.clear, color: Colors.grey,size: 20,),
+              child: Icon(
+                Icons.clear,
+                color: Colors.grey,
+                size: 20,
+              ),
             ),
             Expanded(
               flex: 1,
@@ -146,7 +151,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
         widget.exercise,
         WorkSet(
           set: _workSetText,
-          previous: _recentFieldController.text.trim(),
+          recent: _recentFieldController.text.trim(),
           weight: _weightFieldController.text.trim(),
           reps: _repsFieldController.text.trim(),
         ),

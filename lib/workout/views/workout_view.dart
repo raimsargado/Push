@@ -339,7 +339,9 @@ class _WorkoutViewState extends State<WorkoutView> {
                   //save all progress
                   //update each exercise
                   //update each workSet on each exercise
-                  _exerciseBloc.saveAllProgress();
+                  _exerciseBloc.saveAllProgress().then((_) {
+                    setState(() {});
+                  });
                 },
               )
             ],

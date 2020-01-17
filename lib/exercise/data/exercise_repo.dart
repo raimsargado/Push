@@ -60,7 +60,7 @@ class ExerciseRepo implements ExerciseRepoApi {
   }
 
   @override
-  void saveAllProgress(exer) {
-    dao.saveAllProgress();
+  Future<void> saveAllProgress(Exercise exercise) async {
+    return await dao.saveAllProgress(exercise);
   }
 }
