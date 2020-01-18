@@ -53,7 +53,7 @@ class ExerciseDao {
   }
 
   Future<void> updateExercise(Exercise exercise) async {
-    print("exercise input updateWorkSet: id: ${exercise.name}");
+    print("exercise input updateExercise: id: ${exercise.name}");
 
     final finder = Finder(filter: Filter.equals("name", exercise.name));
 
@@ -154,11 +154,11 @@ class ExerciseDao {
     }
   }
 
-  Future<void> saveAllProgress(Exercise exercise) async {
+  Future<Exercise> saveExerciseProgress(Exercise exercise) async {
     //save all progress
     //update each exercise
     //update each workSet on each exercise
-    print("exercise input saveAllProgress: id: ${exercise.name}");
+    print("exercise input saveExerciseProgress: id: ${exercise.name}");
 
     final finder = Finder(filter: Filter.equals("name", exercise.name));
 
@@ -172,14 +172,18 @@ class ExerciseDao {
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
 
-      var newWorkSets  = List<WorkSet>();
-      newExercise.workSets.forEach((workSet){
+      var newWorkSets = List<WorkSet>();
+      newExercise.workSets.forEach((workSet) {
         var oldWorkSet = WorkSet.fromMap(workSet);
-        var newWorkSet = WorkSet(set: oldWorkSet.set,recent: oldWorkSet.weight + "X" + oldWorkSet.reps);
-        newWorkSets.add(newWorkSet);
+        if (oldWorkSet.weight != null && oldWorkSet.reps != null) {
+          var newWorkSet = WorkSet(
+              set: oldWorkSet.set,
+              recent: oldWorkSet.weight + "X" + oldWorkSet.reps);
+          newWorkSets.add(newWorkSet);
+        }
       });
 
-      newWorkSets.forEach((newWorkSet){
+      newWorkSets.forEach((newWorkSet) {
         //removing old
         newExercise.workSets.removeWhere(
           ((workSet) => workSet['set'] == newWorkSet.set),
@@ -188,9 +192,8 @@ class ExerciseDao {
         newExercise.workSets.add(newWorkSet.toMap());
       });
 
-
       print(
-          "exercise not null ,saveAllProgress replace by newExercise: ${newExercise.toMap()}");
+          "exercise not null ,saveExerciseProgress replace by newExercise: ${newExercise.toMap()}");
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
@@ -198,7 +201,7 @@ class ExerciseDao {
       });
     } else {
       print(
-          "exercise is null ,saveAllProgress data exercise: ${exercise.toMap()}");
+          "exercise is null ,saveExerciseProgress data exercise: ${exercise.toMap()}");
       return await _exercisesStore
           .add(await _database, exercise.toMap())
           .then((_) {

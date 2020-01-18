@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/data/exercise_repo_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
@@ -106,11 +107,24 @@ class ExerciseBloc implements ExerciseBlocApi {
     });
   }
 
+  Timer _debounce;
+
   @override
-  Future<void> saveAllProgress() {
-    _exercises.forEach((exer) {
-      _exerciseRepo.saveAllProgress(exer);
+  void saveAllProgress() {
+    var newExercises = List<Exercise>();
+    _exercises.forEach((exercise) {
+      _exerciseRepo.saveExerciseProgress(exercise).then((newExer) {
+        //put debounce
+        newExercises.add(newExer);
+        print("$TAG saveAllProgress newexercises: ${newExercises.length}");
+        print("$TAG  saveAllProgress _exercises: ${_exercises.length}");
+        if (newExercises.length == _exercises.length) {
+          //remove workout
+          _exercises.clear();
+          _exercises.addAll(newExercises);
+          valController.sink.add(_exercises); //update list
+        }
+      });
     });
-    return Future<void>.value();
   }
 }

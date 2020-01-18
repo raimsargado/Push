@@ -30,18 +30,20 @@ class _WorkoutViewState extends State<WorkoutView> {
   var _exerciseNameFieldController = TextEditingController();
 
   var _workoutNameController = TextEditingController();
-  FocusNode _textFocus = new FocusNode();
+  FocusNode _workoutTextFocus = new FocusNode();
   Timer _debounce;
   String newWorkoutName;
   var progressBar = CustomProgressBar();
 
   bool _isWorkoutStarted = false;
 
+  var TAG = "WORKOUTVIEW";
+
   @override
   // ignore: must_call_super
   void initState() {
     _workoutNameController.addListener(_onChange);
-    _textFocus.addListener(_onChange);
+//    _textFocus.addListener(_onChange);
     _workoutNameController.text = widget.workout.name;
     _exerciseBloc.initExercises(widget.workout);
   }
@@ -50,7 +52,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   void dispose() {
     super.dispose();
     _workoutNameController.removeListener(_onChange);
-    _textFocus.removeListener(_onChange);
+//    _textFocus.removeListener(_onChange);
   }
 
   void _onChange() {
@@ -71,7 +73,12 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   @override
   Widget build(BuildContext context) {
-    //
+
+    //focus cursor to workoutname before updating
+    //so workset item wont update itself on onChange listener
+    if (_workoutTextFocus != null && !_isWorkoutStarted)
+      FocusScope.of(context).requestFocus(_workoutTextFocus);
+
     return _scaffold();
   }
 
@@ -111,6 +118,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 decoration: InputDecoration(
                     alignLabelWithHint: true, hintText: widget.workout.name),
                 controller: _workoutNameController,
+                focusNode: _workoutTextFocus,
               ),
             ),
           ],
@@ -175,6 +183,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
                         var _exercise = exercises?.elementAt(index);
+                        print("$TAG _exercise: ${_exercise.toMap()}");
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
                           child: ExerciseItem(
@@ -330,18 +339,20 @@ class _WorkoutViewState extends State<WorkoutView> {
               FlatButton(
                 child: new Text('OK'),
                 onPressed: () {
-                  //stop workout
-                  _isWorkoutStarted = false;
-                  setState(() {});
-                  _timer.cancel();
-                  _timeCount = 0;
+
+                  setState(() {
+                    //stop workout
+                    _isWorkoutStarted = false;
+                    _timer.cancel();
+                    _timeCount = 0;
+                  });
+
                   Navigator.of(context, rootNavigator: true).pop();
+
                   //save all progress
                   //update each exercise
                   //update each workSet on each exercise
-                  _exerciseBloc.saveAllProgress().then((_) {
-                    setState(() {});
-                  });
+                  _exerciseBloc.saveAllProgress();
                 },
               )
             ],
