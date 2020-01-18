@@ -30,12 +30,12 @@ class _WorkoutViewState extends State<WorkoutView> {
   var _exerciseNameFieldController = TextEditingController();
 
   var _workoutNameController = TextEditingController();
-  FocusNode _workoutTextFocus = new FocusNode();
   Timer _debounce;
   String newWorkoutName;
   var progressBar = CustomProgressBar();
 
   bool _isWorkoutStarted = false;
+  bool _isAddingExercise = false;
 
   var TAG = "WORKOUTVIEW";
 
@@ -73,11 +73,10 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   @override
   Widget build(BuildContext context) {
-
-    //focus cursor to workoutname before updating
+    //focus clear before updating
     //so workset item wont update itself on onChange listener
-    if (_workoutTextFocus != null && !_isWorkoutStarted)
-      FocusScope.of(context).requestFocus(_workoutTextFocus);
+    if (!_isWorkoutStarted && !_isAddingExercise)
+      FocusScope.of(context).requestFocus(new FocusNode());
 
     return _scaffold();
   }
@@ -118,7 +117,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                 decoration: InputDecoration(
                     alignLabelWithHint: true, hintText: widget.workout.name),
                 controller: _workoutNameController,
-                focusNode: _workoutTextFocus,
               ),
             ),
           ],
@@ -160,7 +158,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       body: StreamBuilder<List<Exercise>>(
           stream: _exerciseBloc.valOutput,
           builder: (context, snapshot) {
-            print("exercises: ${snapshot.data}");
+            print("$TAG _exerciseBloc.valOutput exercises: ${snapshot.data}");
 
             if (snapshot.data == null) {
               return Center(child: CircularProgressIndicator());
@@ -240,9 +238,10 @@ class _WorkoutViewState extends State<WorkoutView> {
   }
 
   _displayAddExerciseDialog(BuildContext context) async {
+    _isAddingExercise = true;
     showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: false,
         builder: (context) {
           _exerciseNameFieldController.text = "";
           return new AlertDialog(
@@ -256,6 +255,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 child: new Text('CANCEL'),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
+                  _isAddingExercise = false;
                 },
               ),
               FlatButton(
@@ -283,6 +283,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                     }
                     //TODO TOAAST EXIST OR NOT EXIST
                   });
+
+                  _isAddingExercise = false;
                 },
               )
             ],
@@ -339,7 +341,6 @@ class _WorkoutViewState extends State<WorkoutView> {
               FlatButton(
                 child: new Text('OK'),
                 onPressed: () {
-
                   setState(() {
                     //stop workout
                     _isWorkoutStarted = false;
