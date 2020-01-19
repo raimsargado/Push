@@ -110,21 +110,20 @@ class ExerciseBloc implements ExerciseBlocApi {
   Timer _debounce;
 
   @override
-  void saveAllProgress() {
+  Future<void> saveAllProgress() async {
     var newExercises = List<Exercise>();
-    _exercises.forEach((exercise) {
-      _exerciseRepo.saveExerciseProgress(exercise).then((newExer) {
-        //put debounce
-        newExercises.add(newExer);
-        print("$TAG saveAllProgress newexercises: ${newExercises.length}");
-        print("$TAG  saveAllProgress _exercises: ${_exercises.length}");
-        if (newExercises.length == _exercises.length) {
-          //remove workout
-          _exercises.clear();
-          _exercises.addAll(newExercises);
-          valController.sink.add(_exercises); //update list
-        }
-      });
-    });
+    for (final exercise in _exercises) {
+      //put debounce
+      newExercises.add(await _exerciseRepo.saveExerciseProgress(exercise));
+      print("$TAG saveAllProgress newexercises: ${newExercises.length}");
+      print("$TAG  saveAllProgress _exercises: ${_exercises.length}");
+      if (newExercises.length == _exercises.length) {
+        //remove workout
+        _exercises.clear();
+        _exercises.addAll(newExercises);
+        valController.sink.add(_exercises); //update list
+        return Future<void>.value(null);
+      }
+    }
   }
 }

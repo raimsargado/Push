@@ -27,7 +27,10 @@ class _WorkoutViewState extends State<WorkoutView> {
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
 
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
+
   var _exerciseNameFieldController = TextEditingController();
+
+  var _exercises = List<Exercise>();
 
   var _workoutNameController = TextEditingController();
   Timer _debounce;
@@ -159,7 +162,6 @@ class _WorkoutViewState extends State<WorkoutView> {
           stream: _exerciseBloc.valOutput,
           builder: (context, snapshot) {
             print("$TAG _exerciseBloc.valOutput exercises: ${snapshot.data}");
-
             if (snapshot.data == null) {
               return Center(child: CircularProgressIndicator());
             } else {
@@ -174,20 +176,25 @@ class _WorkoutViewState extends State<WorkoutView> {
                   ),
                 );
               } else {
+                //TODO FIX LIST REFRESH
                 var exercises = snapshot.data;
+                _exercises.clear();
+                _exercises.addAll(exercises);
                 return CustomScrollView(
                   slivers: <Widget>[
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        var _exercise = exercises?.elementAt(index);
-                        print("$TAG _exercise: ${_exercise.toMap()}");
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                          child: ExerciseItem(
-                              workout: widget.workout, exercise: _exercise),
-                        );
-                      }, childCount: exercises?.length),
+                        (BuildContext context, int index) {
+                          var _exercise = _exercises?.elementAt(index);
+                          print("$TAG _exercise: ${_exercise.toMap()}");
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                            child: ExerciseItem(
+                                workout: widget.workout, exercise: _exercise),
+                          );
+                        },
+                        childCount: exercises?.length,
+                      ),
                     ),
                   ],
                 );
@@ -353,11 +360,20 @@ class _WorkoutViewState extends State<WorkoutView> {
                   //save all progress
                   //update each exercise
                   //update each workSet on each exercise
-                  _exerciseBloc.saveAllProgress();
+                  _exerciseBloc.saveAllProgress().then((_) {
+                    print("saveAllProgress : done");
+                    _exerciseBloc.initExercises(widget.workout);
+                  });
                 },
               )
             ],
           );
         });
+  }
+
+  @override
+  void didUpdateWidget(WorkoutView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("$TAG didupdatewidget:  _exercises: $_exercises");
   }
 }
