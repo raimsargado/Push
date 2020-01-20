@@ -8,13 +8,13 @@ class ExerciseRepo implements ExerciseRepoApi {
   var dao = ExerciseDao();
 
   @override
-  Future addExercise(Exercise exercise) async {
-    await dao.addExercise(exercise);
+  Future<dynamic> addExercise(Exercise exercise, Workout workout) async {
+    return await dao.addExercise(exercise, workout);
   }
 
   @override
-  Future<dynamic> deleteExercise(Exercise exercise) {
-    return dao.deleteExercise(exercise);
+  Future<dynamic> deleteExercise(Exercise exercise, Workout workout) async {
+    return await dao.deleteExercise(exercise, workout);
   }
 
   @override
@@ -35,8 +35,8 @@ class ExerciseRepo implements ExerciseRepoApi {
   }
 
   @override
-  Future searchExercise(Exercise exercise) async {
-    return await dao.hasExercise(exercise);
+  Future<bool> searchExercise(exerciseName) async {
+    return await dao.hasExercise(exerciseName);
   }
 
   @override
@@ -55,12 +55,18 @@ class ExerciseRepo implements ExerciseRepoApi {
   }
 
   @override
-  Future<Exercise> updateWorkSet(Exercise exercise,WorkSet newWorkSet) async {
-    return await dao.updateWorkSet(exercise,newWorkSet);
+  Future<List<Exercise>> updateWorkSet(
+      Exercise exercise, WorkSet newWorkSet,Workout workout) async {
+    return await dao.updateWorkSet(exercise, newWorkSet, workout);
   }
 
   @override
   Future<Exercise> saveExerciseProgress(Exercise exercise) async {
     return await dao.saveExerciseProgress(exercise);
+  }
+
+  @override
+  Future saveAllProgress(Workout workout) async {
+    return await dao.saveAllProgress(workout);
   }
 }

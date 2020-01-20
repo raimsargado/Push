@@ -40,7 +40,7 @@ class WorkoutDao {
       //delete exercises
       _exerdao.getExercises(workout).then((exers){
         exers.forEach((exercise){
-          _exerdao.deleteExercise(exercise);
+          _exerdao.deleteExercise(exercise, workout);
         });
       });
     });

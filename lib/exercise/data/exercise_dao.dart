@@ -14,16 +14,24 @@ class ExerciseDao {
   Future<Database> get _database async =>
       await serviceLocator.get<AppDatabaseApi>().database;
 
-  Future addExercise(Exercise exercise) async {
-    await _exercisesStore.add(await _database, exercise.toMap());
+  Future<dynamic> addExercise(Exercise exercise, Workout workout) async {
+    return await _exercisesStore
+        .add(await _database, exercise.toMap())
+        .then((_) {
+      return getExercises(workout);
+    });
   }
 
-  Future<dynamic> deleteExercise(Exercise exercise) async {
+  Future<dynamic> deleteExercise(Exercise exercise, Workout workout) async {
     final finder = Finder(filter: Filter.equals("name", exercise.name));
-    return await _exercisesStore.delete(
+    return await _exercisesStore
+        .delete(
       await _database,
       finder: finder,
-    );
+    )
+        .then((_) {
+      return getExercises(workout);
+    });
   }
 
   Exercise get exercise => null;
@@ -64,8 +72,8 @@ class ExerciseDao {
     });
   }
 
-  Future<bool> hasExercise(Exercise exercise) async {
-    final finder = Finder(filter: Filter.equals("name", exercise.name));
+  Future<bool> hasExercise(String exerciseName) async {
+    final finder = Finder(filter: Filter.equals("name", exerciseName));
     var _exercises =
         await _exercisesStore.find(await _database, finder: finder);
 
@@ -94,6 +102,8 @@ class ExerciseDao {
 // record snapshot are read-only.
 // If you want to modify it you should clone it
     if (_exercise != null) {
+      print("$TAG exercise not null ${_exercise}");
+
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
       var newSetId =
@@ -116,7 +126,8 @@ class ExerciseDao {
     }
   }
 
-  Future<Exercise> updateWorkSet(Exercise exercise, WorkSet newWorkSet) async {
+  Future<List<Exercise>> updateWorkSet(
+      Exercise exercise, WorkSet newWorkSet, Workout workout) async {
     print("exercise input updateWorkSet: id: ${exercise.name}");
 
     final finder = Finder(filter: Filter.equals("name", exercise.name));
@@ -141,7 +152,7 @@ class ExerciseDao {
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
-        return Future<Exercise>.value(newExercise);
+        return getExercises(workout);
       });
     } else {
       print(
@@ -149,7 +160,7 @@ class ExerciseDao {
       return await _exercisesStore
           .add(await _database, exercise.toMap())
           .then((_) {
-        return Future<Exercise>.value(exercise);
+        return getExercises(workout);
       });
     }
   }
@@ -179,6 +190,7 @@ class ExerciseDao {
           var newWorkSet = WorkSet(
               set: oldWorkSet.set,
               recent: oldWorkSet.weight + "X" + oldWorkSet.reps);
+          newWorkSet.id = oldWorkSet.id;
           newWorkSets.add(newWorkSet);
         }
       });
@@ -191,6 +203,9 @@ class ExerciseDao {
         //adding new
         newExercise.workSets.add(newWorkSet.toMap());
       });
+
+      //plotting the id from old exercise
+      newExercise.id = exercise.id;
 
       print(
           "exercise not null ,saveExerciseProgress replace by newExercise: ${newExercise.toMap()}");
@@ -208,5 +223,20 @@ class ExerciseDao {
         return Future<Exercise>.value(exercise);
       });
     }
+  }
+
+  Future<dynamic> saveAllProgress(Workout workout) async {
+    return await getExercises(workout).then((exercises) async {
+      var newExercises = List<Exercise>();
+      for (final exercise in exercises) {
+        //put debounce
+        newExercises.add(await saveExerciseProgress(exercise));
+        print("$TAG saveAllProgress newexercises: ${newExercises.length}");
+        if (newExercises.length == exercises.length) {
+          //remove workout
+          return Future<dynamic>.value(newExercises);
+        }
+      }
+    });
   }
 }

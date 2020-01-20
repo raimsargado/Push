@@ -42,20 +42,25 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   var TAG = "WORKOUTVIEW";
 
+  var _scrollController = ScrollController();
+
+  var _textFocus = FocusNode();
+
   @override
   // ignore: must_call_super
   void initState() {
     _workoutNameController.addListener(_onChange);
-//    _textFocus.addListener(_onChange);
     _workoutNameController.text = widget.workout.name;
     _exerciseBloc.initExercises(widget.workout);
+    _scrollController.addListener(() {
+      _textFocus.requestFocus(new FocusNode());
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
     _workoutNameController.removeListener(_onChange);
-//    _textFocus.removeListener(_onChange);
   }
 
   void _onChange() {
@@ -120,6 +125,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 decoration: InputDecoration(
                     alignLabelWithHint: true, hintText: widget.workout.name),
                 controller: _workoutNameController,
+                focusNode: _textFocus,
               ),
             ),
           ],
@@ -163,6 +169,8 @@ class _WorkoutViewState extends State<WorkoutView> {
           builder: (context, snapshot) {
             print("$TAG _exerciseBloc.valOutput exercises: ${snapshot.data}");
             if (snapshot.data == null) {
+              print(
+                  "$TAG _exerciseBloc.valOutput exercises NULL loading..: ${snapshot.data}");
               return Center(child: CircularProgressIndicator());
             } else {
               if (snapshot.data.isEmpty) {
@@ -178,26 +186,21 @@ class _WorkoutViewState extends State<WorkoutView> {
               } else {
                 //TODO FIX LIST REFRESH
                 var exercises = snapshot.data;
-                _exercises.clear();
-                _exercises.addAll(exercises);
-                return CustomScrollView(
-                  slivers: <Widget>[
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          var _exercise = _exercises?.elementAt(index);
-                          print("$TAG _exercise: ${_exercise.toMap()}");
-                          return Padding(
-                            padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                            child: ExerciseItem(
-                                workout: widget.workout, exercise: _exercise),
-                          );
-                        },
-                        childCount: exercises?.length,
-                      ),
-                    ),
-                  ],
-                );
+                exercises.sort((a, b) {
+                  print("$TAG TOSORT : A: ${a.toMap()} , B: ${b.toMap()}");
+                  return a.id.compareTo(b.id);
+                });
+                return ListView.builder(
+                    itemCount: exercises?.length,
+                    itemBuilder: (BuildContext context, int position) {
+                      var _exercise = exercises?.elementAt(position);
+                      print("$TAG _exercise: ${_exercise.toMap()}");
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                        child: ExerciseItem(
+                            workout: widget.workout, exercise: _exercise),
+                      );
+                    });
               }
             }
           }),
@@ -208,6 +211,20 @@ class _WorkoutViewState extends State<WorkoutView> {
     return _workoutNameController.text.isNotEmpty &&
         widget.workout.name != _workoutNameController.text;
   }
+
+//  ListView _listViewBuilder(){
+//    return ListView.builder(
+//        itemCount: exercises?.length,
+//        itemBuilder: (BuildContext context, int position) {
+//          var _exercise = _exercises?.elementAt(position);
+//          print("$TAG _exercise: ${_exercise.toMap()}");
+//          return Padding(
+//            padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+//            child: ExerciseItem(
+//                workout: widget.workout, exercise: _exercise),
+//          );
+//        });
+//  }
 
   void _displayDeleteDialog() {
     showDialog(
@@ -269,18 +286,18 @@ class _WorkoutViewState extends State<WorkoutView> {
                 child: new Text('OK'),
                 onPressed: () {
                   _exerciseBloc
-                      .valSearch(_exerciseNameFieldController.text)
+                      .searchExercise(_exerciseNameFieldController.text)
                       .then((isExist) {
                     print("exercise exist: $isExist");
                     if (!isExist) {
-                      _exerciseBloc.valCreate(
-                        Exercise(
-                          name: _exerciseNameFieldController.text,
-                          workSets: [WorkSet(set: "1").toMap()],
-                          //empty placeholder as initial workSet
-                          weightUnit: "Kg",
-                        ),
-                      );
+                      _exerciseBloc.createExercise(
+                          Exercise(
+                            name: _exerciseNameFieldController.text,
+                            workSets: [WorkSet(set: "1").toMap()],
+                            //empty placeholder as initial workSet
+                            weightUnit: "Kg",
+                          ),
+                          widget.workout);
                       Navigator.of(context, rootNavigator: true).pop();
                     } else {
                       Fluttertoast.showToast(
@@ -360,10 +377,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   //save all progress
                   //update each exercise
                   //update each workSet on each exercise
-                  _exerciseBloc.saveAllProgress().then((_) {
-                    print("saveAllProgress : done");
-                    _exerciseBloc.initExercises(widget.workout);
-                  });
+                  _exerciseBloc.saveAllProgress(widget.workout);
                 },
               )
             ],

@@ -1,14 +1,23 @@
-import 'package:strongr/app_bloc.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
 
-abstract class ExerciseBlocApi with AppBloc {
+abstract class ExerciseBlocApi {
   void initExercises(Workout workout);
 
   Future<Exercise> addWorkSet(Exercise exercise);
 
-  Future<Exercise> updateWorkSet(Exercise exercise, WorkSet newWorkSet);
+  Stream<dynamic> get valOutput;
 
-  Future<void> saveAllProgress();
+  void updateWorkSet(Exercise exercise, WorkSet newWorkSet, Workout workout);
+
+  void deleteExercise(any, workout);
+
+  void saveAllProgress(Workout workout);
+
+  void createExercise(any, workout);
+
+  void updateExercise(dynamic any);
+
+  Future<bool> searchExercise(exerciseName);
 }

@@ -8,6 +8,7 @@ import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/models/workset.dart';
 import 'package:strongr/workset/views/workset_item.dart';
 
+//TODO WORKSETS ARE CHANGING ON SCROLL
 class ExerciseItem extends StatefulWidget {
   final Exercise exercise;
   final Workout workout;
@@ -28,22 +29,26 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   var TAG = "EXER ITEM";
 
+  Exercise _exercise;
+
   @override
   void initState() {
+    _exercise = widget.exercise;
     print("$TAG exercise: ${widget.exercise.toMap()}");
-    widget.exercise.workSets.forEach((workSetMap) {
+    _exercise.workSets.forEach((workSetMap) {
       _wSets.add(WorkSet.fromMap(workSetMap));
     });
     _wSets.sort(
       (a, b) => a.set.toString().compareTo(b.set.toString()),
     );
-    _defaultWeightUnit = widget.exercise.weightUnit;
+    _defaultWeightUnit = _exercise.weightUnit;
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print("c: ontap");
 //        Navigator.push(
 //          context,
 //          MaterialPageRoute(
@@ -67,14 +72,14 @@ class _ExerciseItemState extends State<ExerciseItem> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
                       child: Text(
-                        widget.exercise.name,
+                        _exercise.name,
                       ),
                     ),
                   ),
                   IconButton(
                     icon: Icon(Icons.delete_outline),
                     onPressed: () {
-                      _exerciseBloc.valDelete(widget.exercise);
+                      _exerciseBloc.deleteExercise(_exercise, widget.workout);
                     },
                   )
                 ],
@@ -94,7 +99,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   Expanded(
                     flex: 1,
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(0,0,14,0),
+                      padding: EdgeInsets.fromLTRB(0, 0, 14, 0),
                       child: Card(
                         child: MaterialButton(
                           child: Text(
@@ -114,9 +119,10 @@ class _ExerciseItemState extends State<ExerciseItem> {
                                 break;
                             }
                             setState(() {});
-                            var exer = widget.exercise.toMap();
+                            var exer = _exercise.toMap();
                             exer['weightUnit'] = _defaultWeightUnit;
-                            _exerciseBloc.valUpdate(Exercise.fromMap(exer));
+                            _exerciseBloc
+                                .updateExercise(Exercise.fromMap(exer));
                           },
                         ),
                       ),
@@ -135,6 +141,18 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   ),
                 ],
               ),
+              //listview
+//              ListView.builder(
+//                  physics: NeverScrollableScrollPhysics(),
+//                  shrinkWrap: true,
+//                  itemCount: _wSets?.length,
+//                  itemBuilder: (BuildContext context, int position) {
+//                    var _workSet = _wSets?.elementAt(position);
+//                    return WorkSetItem(
+//                      set: _workSet,
+//                      exercise: widget.exercise,
+//                    );
+//                  }),
               //WORKSET LIST
               CustomScrollView(
                 physics: NeverScrollableScrollPhysics(),
@@ -146,7 +164,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
                       var _workSet = _wSets?.elementAt(index);
                       return WorkSetItem(
                         set: _workSet,
-                        exercise: widget.exercise,
+                        exercise: _exercise,
+                        workout: widget.workout,
                       );
                     }, childCount: _wSets?.length),
                   ),
@@ -161,8 +180,10 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   lastSetId++;
                   _wSets.add(WorkSet(set: lastSetId.toString()));
 //
-                  _exerciseBloc.addWorkSet(widget.exercise).then((newExercise) {
-                    setState(() {});
+                  _exerciseBloc.addWorkSet(_exercise).then((newExercise) {
+                    setState(() {
+                      _exercise = newExercise;
+                    });
                   });
 
                   //UPDATE THE WORKSET LIST BY ADDING ONE WORKSET

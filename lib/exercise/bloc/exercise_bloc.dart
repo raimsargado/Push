@@ -11,7 +11,6 @@ import 'package:strongr/workset/models/workset.dart';
 class ExerciseBloc implements ExerciseBlocApi {
   //
   static const TAG = "EXERBLOC";
-  var _exercises = List<Exercise>();
   var _exerciseRepo = serviceLocator.get<ExerciseRepoApi>();
   var valController = new StreamController<List<Exercise>>.broadcast();
   var valControllerOutput = new StreamController<List<Exercise>>.broadcast();
@@ -25,66 +24,53 @@ class ExerciseBloc implements ExerciseBlocApi {
   @override
   Stream get valOutput => valControllerOutput.stream;
 
-  @override
   void dispose() {
     valControllerOutput.close();
     valController.close();
   }
 
   @override
-  void valCreate(dynamic any) {
-    var exercise = any as Exercise;
-    print("$TAG valcreate: ${exercise.workSets}");
-    _exerciseRepo.addExercise(exercise).then((_) {
-      //update exercise list and the view via stream
-      _exercises.add(exercise);
-      valController.sink.add(_exercises);
+  void createExercise(exercise, workout) {
+//    print("$TAG valcreate: ${exercise.workSets}");
+    _exerciseRepo.addExercise(exercise, workout).then((exercises) {
+      valController.sink.add(null);
+      Timer(Duration(milliseconds: 100), () {
+        print("Yeah, this line is printed after 3 seconds");
+        valController.sink.add(exercises);
+      });
     });
   }
 
   @override
-  void valDelete(any) {
+  void deleteExercise(any, workout) {
     var exercise = any as Exercise;
-    _exerciseRepo.deleteExercise(exercise).then((_) {
-      var filteredExercise =
-          _exercises.firstWhere((exer) => exer.name == exercise.name);
-      print("filteredworkout ${filteredExercise.name}");
-      print("removed workout: ${exercise.name}");
-      //remove workout
-      _exercises.remove(filteredExercise);
-      valController.sink.add(_exercises); //update list
+    _exerciseRepo.deleteExercise(exercise, workout).then((exercises) {
+      valController.sink.add(null);
+      Timer(Duration(milliseconds: 100), () {
+        print("Yeah, this line is printed after 3 seconds");
+        valController.sink.add(exercises);
+      });
     });
   }
 
   @override
-  void valUpdate(any) {
+  void updateExercise(any) {
     var exer = any as Exercise;
     _exerciseRepo.updateExercise(exer);
   }
 
   @override
-  Future<bool> valSearch(any) async {
-    var exerciseName = any as String;
-    bool exists = false;
-    if (_exercises.isNotEmpty) {
-      var filtered = _exercises.firstWhere(
-          (w) => w.name.trim() == exerciseName.trim(),
-          orElse: () => null);
-      exists = filtered != null;
-    } else {
-      exists = false;
-    }
-
-    return exists;
+  Future<bool> searchExercise(exerciseName) async {
+    return await _exerciseRepo.searchExercise(exerciseName).then((isExisting) {
+      return isExisting;
+    });
   }
 
   @override
   void initExercises(Workout workout) {
     _exerciseRepo.getExercises(workout).then((exercises) {
       //trigger stream
-      _exercises.clear();
-      _exercises.addAll(exercises);
-      valController.sink.add(_exercises);
+      valController.sink.add(exercises);
     });
   }
 
@@ -96,34 +82,24 @@ class ExerciseBloc implements ExerciseBlocApi {
   }
 
   @override
-  var outWorkSets;
-
-  @override
-  Future<Exercise> updateWorkSet(Exercise exercise, WorkSet newWorkSet) async {
-    return await _exerciseRepo
-        .updateWorkSet(exercise, newWorkSet)
-        .then((newExercise) async {
-      return Future<Exercise>.value(newExercise);
+  void updateWorkSet(
+      Exercise exercise, WorkSet newWorkSet, Workout workout) async {
+    await _exerciseRepo
+        .updateWorkSet(exercise, newWorkSet, workout)
+        .then((newExercises) {
+      //push new list
+      valController.sink.add(newExercises);
     });
   }
 
-  Timer _debounce;
-
   @override
-  Future<void> saveAllProgress() async {
-    var newExercises = List<Exercise>();
-    for (final exercise in _exercises) {
-      //put debounce
-      newExercises.add(await _exerciseRepo.saveExerciseProgress(exercise));
-      print("$TAG saveAllProgress newexercises: ${newExercises.length}");
-      print("$TAG  saveAllProgress _exercises: ${_exercises.length}");
-      if (newExercises.length == _exercises.length) {
-        //remove workout
-        _exercises.clear();
-        _exercises.addAll(newExercises);
-        valController.sink.add(_exercises); //update list
-        return Future<void>.value(null);
-      }
-    }
+  void saveAllProgress(workout) async {
+    await _exerciseRepo.saveAllProgress(workout).then((exercises) {
+      valController.sink.add(null);
+      Timer(Duration(milliseconds: 100), () {
+        print("Yeah, this line is printed after 3 seconds");
+        valController.sink.add(exercises);
+      });
+    });
   }
 }

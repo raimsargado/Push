@@ -10,25 +10,26 @@ abstract class ExerciseRepoApi {
   Future<Exercise> getExercise(exercise);
 
   //add exercise(Exercise)
-  Future addExercise(Exercise exercise);
+  Future addExercise(Exercise exercise, Workout workout);
 
   //update exercise(Exercise)
   void updateExercise(Exercise exercise);
 
   //delete exercise(Exercise)
-  Future<dynamic> deleteExercise(Exercise exercise);
+  Future<dynamic> deleteExercise(Exercise exercise, Workout workout);
 
   Future<List<Exercise>> getExercises(Workout workout);
 
-  Future<dynamic> searchExercise(Exercise exercise);
+  Future<dynamic> searchExercise(String exerciseName);
 
   Future<Exercise> addWorkSet(Exercise exercise);
 
-  Future<Exercise> updateWorkSet(Exercise exercise,WorkSet newWorkSet);
+  Future<List<Exercise>> updateWorkSet(
+      Exercise exercise, WorkSet newWorkSet, Workout workout);
 
   List<WorkSet> getWorkSets(Exercise exercise);
 
   Future<Exercise> saveExerciseProgress(Exercise exer);
 
-
+  Future<dynamic> saveAllProgress(Workout workout);
 }
