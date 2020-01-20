@@ -84,13 +84,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
               ),
               Expanded(
                 flex: 1,
-                child: TextField(
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.text,
-                  decoration:
-                      InputDecoration(alignLabelWithHint: true, hintText: ""),
-                  controller: _recentFieldController,
-                ),
+                child: Center(child: Text(_recentText))
               ),
               Expanded(
                 flex: 1,
@@ -105,7 +99,8 @@ class _WorkSetItemState extends State<WorkSetItem> {
                       controller: _weightFieldController,
 //                    focusNode: _weightFieldFocus,
                       inputFormatters: <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
+                        WhitelistingTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(3)
                       ],
                     ),
                   ),
@@ -131,7 +126,8 @@ class _WorkSetItemState extends State<WorkSetItem> {
 //                  focusNode: _repsFieldFocus,
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
-                      WhitelistingTextInputFormatter.digitsOnly
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(3)
                     ],
                   ),
                 ),

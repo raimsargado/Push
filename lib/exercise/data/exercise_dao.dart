@@ -186,18 +186,21 @@ class ExerciseDao {
       var newWorkSets = List<WorkSet>();
       newExercise.workSets.forEach((workSet) {
         var oldWorkSet = WorkSet.fromMap(workSet);
-        var fieldsNotNull =
-            oldWorkSet.weight != null && oldWorkSet.reps != null;
 
-        if (fieldsNotNull) {
-          var fieldsNotEmpty = oldWorkSet.weight.isNotEmpty && oldWorkSet.reps.isNotEmpty;
-          if (fieldsNotEmpty) {
-            var newWorkSet = WorkSet(
-                set: oldWorkSet.set,
-                recent: oldWorkSet.weight + "X" + oldWorkSet.reps);
-            newWorkSet.id = oldWorkSet.id;
-            newWorkSets.add(newWorkSet);
-          }
+        if ((oldWorkSet.weight != null && oldWorkSet.reps != null) &&
+            (oldWorkSet.weight.isNotEmpty && oldWorkSet.reps.isNotEmpty)) {
+          var newWorkSet = WorkSet(
+              set: oldWorkSet.set,
+              recent: oldWorkSet.weight + "X" + oldWorkSet.reps);
+          newWorkSet.id = oldWorkSet.id;
+          newWorkSets.add(newWorkSet);
+        } else {
+          var newWorkSet = WorkSet(
+            set: oldWorkSet.set,
+            recent: oldWorkSet.recent, //retain the old recent
+          );
+          newWorkSet.id = oldWorkSet.id;
+          newWorkSets.add(newWorkSet);
         }
       });
 
