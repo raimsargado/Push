@@ -13,7 +13,7 @@ abstract class ExerciseRepoApi {
   Future addExercise(Exercise exercise, Workout workout);
 
   //update exercise(Exercise)
-  void updateExercise(Exercise exercise);
+  Future<dynamic> updateExercise(Exercise exercise, Workout workout);
 
   //delete exercise(Exercise)
   Future<dynamic> deleteExercise(Exercise exercise, Workout workout);

@@ -24,8 +24,8 @@ class ExerciseRepo implements ExerciseRepoApi {
   List<Exercise> get exercises => null;
 
   @override
-  void updateExercise(Exercise exercise) {
-    dao.updateExercise(exercise);
+  Future<dynamic> updateExercise(Exercise exercise, Workout workout) async {
+    return await dao.updateExercise(exercise,workout);
   }
 
   @override
@@ -56,7 +56,7 @@ class ExerciseRepo implements ExerciseRepoApi {
 
   @override
   Future<List<Exercise>> updateWorkSet(
-      Exercise exercise, WorkSet newWorkSet,Workout workout) async {
+      Exercise exercise, WorkSet newWorkSet, Workout workout) async {
     return await dao.updateWorkSet(exercise, newWorkSet, workout);
   }
 

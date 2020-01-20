@@ -121,8 +121,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
                             setState(() {});
                             var exer = _exercise.toMap();
                             exer['weightUnit'] = _defaultWeightUnit;
-                            _exerciseBloc
-                                .updateExercise(Exercise.fromMap(exer));
+                            _exerciseBloc.updateExercise(
+                                Exercise.fromMap(exer), widget.workout);
                           },
                         ),
                       ),

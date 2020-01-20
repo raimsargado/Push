@@ -17,7 +17,7 @@ abstract class ExerciseBlocApi {
 
   void createExercise(any, workout);
 
-  void updateExercise(dynamic any);
+  void updateExercise(dynamic any, Workout workout);
 
   Future<bool> searchExercise(exerciseName);
 }

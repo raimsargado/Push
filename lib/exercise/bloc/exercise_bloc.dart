@@ -54,9 +54,11 @@ class ExerciseBloc implements ExerciseBlocApi {
   }
 
   @override
-  void updateExercise(any) {
+  void updateExercise(any, workout) {
     var exer = any as Exercise;
-    _exerciseRepo.updateExercise(exer);
+    _exerciseRepo.updateExercise(exer, workout).then((exercises){
+      valController.sink.add(exercises);
+    });
   }
 
   @override

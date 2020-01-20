@@ -60,15 +60,15 @@ class ExerciseDao {
     }).toList();
   }
 
-  Future<void> updateExercise(Exercise exercise) async {
+  Future<dynamic> updateExercise(Exercise exercise, Workout workout) async {
     print("exercise input updateExercise: id: ${exercise.name}");
 
     final finder = Finder(filter: Filter.equals("name", exercise.name));
 
     return await _exercisesStore
         .update(await _database, exercise.toMap(), finder: finder)
-        .then((_) {
-      return Future<Exercise>.value(exercise);
+        .then((_) async {
+      return await getExercises(workout);
     });
   }
 
