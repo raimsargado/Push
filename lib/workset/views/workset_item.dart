@@ -7,7 +7,6 @@ import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/models/workset.dart';
 
 class WorkSetItem extends StatefulWidget {
@@ -24,17 +23,13 @@ class WorkSetItem extends StatefulWidget {
 
 class _WorkSetItemState extends State<WorkSetItem> {
   //
-  var _setFieldController = TextEditingController();
   bool _checkboxTag = false; //todo catch the value from exercise object
+
+  var _setFieldController = TextEditingController();
   var _recentFieldController = TextEditingController();
   var _weightFieldController = TextEditingController();
-
-//  var _weightFieldFocus = FocusNode();
   var _repsFieldController = TextEditingController();
 
-//  var _repsFieldFocus = FocusNode();
-
-  var _workSetBloc = serviceLocator.get<WorkSetBlocApi>();
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
 
   Timer _debounce;
@@ -46,18 +41,22 @@ class _WorkSetItemState extends State<WorkSetItem> {
   @override
   // ignore: must_call_super
   void initState() {
+    //
     var wSet = widget.set;
     _workSetText = wSet.set;
     _recentText = wSet.recent;
     _weightText = wSet.weight;
     _repsText = wSet.reps;
+    _checkboxTag = wSet.tag ?? false;
+
+    ///
     _workSetText = _workSetText;
     _recentFieldController.text = _recentText;
     _weightFieldController.text = _weightText;
     _repsFieldController.text = _repsText;
-    _setFieldController.addListener(_onChange);
 
     ///
+    _setFieldController.addListener(_onChange);
     _recentFieldController.addListener(_onChange);
     _weightFieldController.addListener(_onChange);
     _repsFieldController.addListener(_onChange);
@@ -147,6 +146,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
                       print("onchange $value");
                       setState(() {
                         _checkboxTag = value;
+                        _onChange();
                       });
                     },
                   ),
@@ -186,6 +186,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
             recent: _recentText,
             weight: _weightText,
             reps: _repsText,
+            tag: _checkboxTag,
           ),
           widget.workout);
     });

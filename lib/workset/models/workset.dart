@@ -4,7 +4,7 @@ class WorkSet {
   final String recent;
   final String weight;
   final String reps;
-  final String tag;
+  final bool tag;
 
   WorkSet({
     this.set,

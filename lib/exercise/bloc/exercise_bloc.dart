@@ -97,7 +97,7 @@ class ExerciseBloc implements ExerciseBlocApi {
   @override
   void saveAllProgress(workout) async {
     await _exerciseRepo.saveAllProgress(workout).then((exercises) {
-      valController.sink.add(null);
+      valController.sink.add(null); //clear the pipe
       Timer(Duration(milliseconds: 100), () {
         print("Yeah, this line is printed after 3 seconds");
         valController.sink.add(exercises);
