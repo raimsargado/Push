@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:strongr/custom_widgets/overlay_progressbar.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
@@ -32,6 +33,8 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   var _exercises = List<Exercise>();
 
+  var _scrollController = new ScrollController();
+
   var _workoutNameController = TextEditingController();
   Timer _debounce;
   String newWorkoutName;
@@ -42,8 +45,6 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   var TAG = "WORKOUTVIEW";
 
-  var _scrollController = ScrollController();
-
   var _textFocus = FocusNode();
 
   @override
@@ -52,9 +53,6 @@ class _WorkoutViewState extends State<WorkoutView> {
     _workoutNameController.addListener(_onChange);
     _workoutNameController.text = widget.workout.name;
     _exerciseBloc.initExercises(widget.workout);
-    _scrollController.addListener(() {
-      _textFocus.requestFocus(new FocusNode());
-    });
   }
 
   @override
@@ -186,21 +184,29 @@ class _WorkoutViewState extends State<WorkoutView> {
               } else {
                 //TODO FIX LIST REFRESH
                 var exercises = snapshot.data;
+                _exercises.addAll(exercises);
                 exercises.sort((a, b) {
                   print("$TAG TOSORT : A: ${a.toMap()} , B: ${b.toMap()}");
                   return a.id.compareTo(b.id);
                 });
-                return ListView.builder(
-                    itemCount: exercises?.length,
-                    itemBuilder: (BuildContext context, int position) {
-                      var _exercise = exercises?.elementAt(position);
-                      print("$TAG _exercise: ${_exercise.toMap()}");
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                        child: ExerciseItem(
-                            workout: widget.workout, exercise: _exercise),
-                      );
-                    });
+
+                return CustomScrollView(
+                  controller: _scrollController,
+                  slivers: <Widget>[
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        var _exercise = exercises?.elementAt(index);
+                        print("$TAG _exercise: ${_exercise.toMap()}");
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                          child: ExerciseItem(
+                              workout: widget.workout, exercise: _exercise),
+                        );
+                      }, childCount: exercises?.length),
+                    ),
+                  ],
+                );
               }
             }
           }),
@@ -299,6 +305,14 @@ class _WorkoutViewState extends State<WorkoutView> {
                           ),
                           widget.workout);
                       Navigator.of(context, rootNavigator: true).pop();
+                      Timer(Duration(milliseconds: 1000), () {
+                        _scrollController.animateTo(
+                          _scrollController.position.maxScrollExtent,
+                          duration: const Duration(milliseconds: 100),
+                          curve: Curves.ease,
+                        );
+                        print("scroll to end");
+                      });
                     } else {
                       Fluttertoast.showToast(
                         msg: "Sorry dude, this exercise exists!",
