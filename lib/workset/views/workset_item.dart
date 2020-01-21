@@ -10,11 +10,11 @@ import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
 
 class WorkSetItem extends StatefulWidget {
-  final WorkSet set;
+  final WorkSet workSet;
   final Exercise exercise;
   final Workout workout;
 
-  const WorkSetItem({Key key, this.set, this.exercise, this.workout})
+  const WorkSetItem({Key key, this.workSet, this.exercise, this.workout})
       : super(key: key);
 
   @override
@@ -42,11 +42,11 @@ class _WorkSetItemState extends State<WorkSetItem> {
   // ignore: must_call_super
   void initState() {
     //
-    var wSet = widget.set;
+    var wSet = widget.workSet;
     _workSetText = wSet.set;
-    _recentText = wSet.recent;
-    _weightText = wSet.weight;
-    _repsText = wSet.reps;
+    _recentText = wSet.recent ?? "";
+    _weightText = wSet.weight?? "";
+    _repsText = wSet.reps?? "";
     _checkboxTag = wSet.tag ?? false;
 
     ///
@@ -68,7 +68,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
       key: Key("unique key"),
       onVisibilityChanged: (VisibilityInfo info) {
         print("$TAG ${info.visibleFraction} of my widget is visible");
-        print("$TAG SET : ${widget.set.toMap()} ");
+        print("$TAG SET : ${widget.workSet.toMap()} ");
       },
       child: GestureDetector(
         onTap: () {},

@@ -163,7 +163,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                         (BuildContext context, int index) {
                       var _workSet = _wSets?.elementAt(index);
                       return WorkSetItem(
-                        set: _workSet,
+                        workSet: _workSet,
                         exercise: _exercise,
                         workout: widget.workout,
                       );
