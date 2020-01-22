@@ -162,10 +162,25 @@ class _ExerciseItemState extends State<ExerciseItem> {
                     delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       var _workSet = _wSets?.elementAt(index);
-                      return WorkSetItem(
-                        workSet: _workSet,
-                        exercise: _exercise,
-                        workout: widget.workout,
+                      return Dismissible(
+                        direction: DismissDirection.endToStart,
+                        key: Key(_workSet.set),
+                        onDismissed: (direction) {
+                          // Removes that item the list on swipwe
+                          setState(() {
+                            _exerciseBloc.deleteWorkSet(
+                                widget.exercise, _workSet, widget.workout);
+                            _wSets.removeAt(index);
+                          });
+                          // Shows the information on Snackbar
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(content: Text("Item removed.")));
+                        },
+                        child: WorkSetItem(
+                          workSet: _workSet,
+                          exercise: _exercise,
+                          workout: widget.workout,
+                        ),
                       );
                     }, childCount: _wSets?.length),
                   ),
