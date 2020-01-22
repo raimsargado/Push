@@ -95,6 +95,17 @@ class ExerciseBloc implements ExerciseBlocApi {
   }
 
   @override
+  void deleteWorkSet(
+      Exercise exercise, WorkSet workSetToRemove, Workout workout) async {
+    await _exerciseRepo
+        .deleteWorkSet(exercise, workSetToRemove, workout)
+        .then((newExercises) {
+      //push new list
+      valController.sink.add(newExercises);
+    });
+  }
+
+  @override
   void saveAllProgress(workout) async {
     await _exerciseRepo.saveAllProgress(workout).then((exercises) {
       valController.sink.add(null); //clear the pipe

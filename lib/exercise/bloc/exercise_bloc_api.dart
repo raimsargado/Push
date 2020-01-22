@@ -11,6 +11,8 @@ abstract class ExerciseBlocApi {
 
   void updateWorkSet(Exercise exercise, WorkSet newWorkSet, Workout workout);
 
+  void deleteWorkSet(Exercise exercise, WorkSet workSetToRemove, Workout workout);
+
   void deleteExercise(any, workout);
 
   void saveAllProgress(Workout workout);
