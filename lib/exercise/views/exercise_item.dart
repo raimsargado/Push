@@ -191,10 +191,15 @@ class _ExerciseItemState extends State<ExerciseItem> {
                 child: Text("Add Set"),
                 onPressed: () {
                   //GET UPDATED WORKSETS AFTER EXERCISE UPDATE
-                  var lastSetId = int.tryParse(_wSets.last.set.toString());
-                  lastSetId++;
-                  _wSets.add(WorkSet(set: lastSetId.toString()));
+                  if (_wSets.isNotEmpty) {
+                    var lastSetId = int.tryParse(_wSets.last.set.toString());
+                    lastSetId++;
+                    _wSets.add(WorkSet(set: lastSetId.toString()));
 //
+                  } else {
+                    _wSets.add(WorkSet(set: "1"));
+                  }
+
                   _exerciseBloc.addWorkSet(_exercise).then((newExercise) {
                     setState(() {
                       _exercise = newExercise;

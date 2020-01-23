@@ -103,12 +103,18 @@ class ExerciseDao {
 // If you want to modify it you should clone it
     if (_exercise != null) {
       print("$TAG exercise not null ${_exercise}");
-
+//TODO FIX COMPILE ERR
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
-      var newSetId =
-          int.tryParse(WorkSet.fromMap(newExercise.workSets.last).set);
+      int newSetId;
+      if (newExercise.workSets.isNotEmpty) {
+        newSetId = int.tryParse(WorkSet.fromMap(newExercise.workSets.last).set);
+      } else {
+        newSetId = 1;
+      }
+
       newExercise.workSets.add(WorkSet(set: "${++newSetId}").toMap());
+
       print(
           "exercise not null , replace by newExercise: ${newExercise.toMap()}");
       return await _exercisesStore
