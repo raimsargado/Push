@@ -5,6 +5,7 @@ import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workset/models/workset.dart';
+//TODO ALTERNATIVE IN BACKGROUND TIMER
 
 class ExerciseDao {
   StoreRef _exercisesStore;
