@@ -77,9 +77,14 @@ class ExerciseBloc implements ExerciseBlocApi {
   }
 
   @override
-  Future<Exercise> addWorkSet(exercise) async {
-    return await _exerciseRepo.addWorkSet(exercise).then((newExercise) async {
-      return Future<Exercise>.value(newExercise);
+  void addWorkSet(exercise,workout) async {
+     await _exerciseRepo.addWorkSet(exercise,workout).then((exercises) async {
+       //push new list
+       valController.sink.add(null);
+       Timer(Duration(milliseconds: 20), () {
+         print("Yeah, this line is printed after 3 seconds");
+         valController.sink.add(exercises);
+       });
     });
   }
 
