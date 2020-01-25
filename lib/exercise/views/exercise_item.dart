@@ -30,17 +30,21 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   Exercise _exercise;
 
+  bool _isFromBlocUpdate = false;
+
   @override
   void initState() {
-    _exercise = widget.exercise;
-    print("$TAG exercise: ${widget.exercise.toMap()}");
-    _exercise.workSets.forEach((workSetMap) {
-      _wSets.add(WorkSet.fromMap(workSetMap));
-    });
-    _wSets.sort(
-      (a, b) => a.set.toString().compareTo(b.set.toString()),
-    );
-    _defaultWeightUnit = _exercise.weightUnit;
+    if(!_isFromBlocUpdate){
+      _exercise = widget.exercise;
+      print("$TAG exercise: ${widget.exercise.toMap()}");
+      _exercise.workSets.forEach((workSetMap) {
+        _wSets.add(WorkSet.fromMap(workSetMap));
+      });
+      _wSets.sort(
+            (a, b) => a.set.toString().compareTo(b.set.toString()),
+      );
+      _defaultWeightUnit = _exercise.weightUnit;
+    }
   }
 
   @override
@@ -212,11 +216,18 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   }
 
                   _exerciseBloc.addWorkSet(_exercise).then((newExercise) {
+                    _wSets.clear();
+                    _exercise = newExercise;
+                    _exercise.workSets.forEach((workSetMap) {
+                      _wSets.add(WorkSet.fromMap(workSetMap));
+                    });
+                    _wSets.sort(
+                      (a, b) => a.set.toString().compareTo(b.set.toString()),
+                    );
+                    _isFromBlocUpdate = true;
                     setState(() {
-                      _exercise = newExercise;
                     });
                   });
-
                   //UPDATE THE WORKSET LIST BY ADDING ONE WORKSET
                 },
               )
