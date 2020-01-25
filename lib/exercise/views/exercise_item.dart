@@ -192,9 +192,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   //GET UPDATED WORKSETS AFTER EXERCISE UPDATE
                   String weightHint;
                   String repsHint;
-                  var lasWorkSet = _wSets.last;
 
                   if (_wSets.isNotEmpty) {
+                    var lasWorkSet = _wSets.last;
                     var lastSetId = int.tryParse(lasWorkSet.set.toString());
                     lastSetId++;
                     weightHint = lasWorkSet.weight ?? "";
@@ -211,11 +211,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
                     _wSets.add(WorkSet(set: "1"));
                   }
 
-                  _exerciseBloc.addWorkSet(_exercise).then((newExercise) {
-                    setState(() {
-                      _exercise = newExercise;
-                    });
-                  });
+                  _exerciseBloc
+                      .addWorkSet(_exercise, widget.workout);
 
                   //UPDATE THE WORKSET LIST BY ADDING ONE WORKSET
                 },

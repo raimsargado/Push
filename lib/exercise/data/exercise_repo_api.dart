@@ -22,7 +22,7 @@ abstract class ExerciseRepoApi {
 
   Future<dynamic> searchExercise(String exerciseName);
 
-  Future<Exercise> addWorkSet(Exercise exercise);
+  Future<List<Exercise>> addWorkSet(Exercise exercise, Workout workout);
 
   Future<List<Exercise>> updateWorkSet(
       Exercise exercise, WorkSet newWorkSet, Workout workout);
