@@ -104,7 +104,7 @@ class ExerciseDao {
 // If you want to modify it you should clone it
     if (_exercise != null) {
       print("$TAG exercise not null ${_exercise}");
-//TODO FIX COMPILE ERR
+
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
       int newSetId;

@@ -182,7 +182,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                   ),
                 );
               } else {
-                //TODO FIX LIST REFRESH
                 var exercises = snapshot.data;
                 _exercises.addAll(exercises);
                 exercises.sort((a, b) {

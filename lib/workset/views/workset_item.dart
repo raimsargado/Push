@@ -23,7 +23,7 @@ class WorkSetItem extends StatefulWidget {
 
 class _WorkSetItemState extends State<WorkSetItem> {
   //
-  bool _checkboxTag = false; //todo catch the value from exercise object
+  bool _checkboxTag;
 
   var _setFieldController = TextEditingController();
   var _recentFieldController = TextEditingController();

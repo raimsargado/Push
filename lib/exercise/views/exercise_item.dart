@@ -8,7 +8,6 @@ import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/models/workset.dart';
 import 'package:strongr/workset/views/workset_item.dart';
 
-//TODO WORKSETS ARE CHANGING ON SCROLL
 class ExerciseItem extends StatefulWidget {
   final Exercise exercise;
   final Workout workout;
