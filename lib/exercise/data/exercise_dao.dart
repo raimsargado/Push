@@ -91,7 +91,7 @@ class ExerciseDao {
     return _exercise.value;
   }
 
-  Future<List<Exercise>> addWorkSet(Exercise exercise, Workout workout) async {
+  Future<Exercise> addWorkSet(Exercise exercise) async {
     print("exercise input addWorkSet: id: ${exercise.name}");
 
     final finder = Finder(filter: Filter.equals("name", exercise.name));
@@ -132,14 +132,14 @@ class ExerciseDao {
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
-        return getExercises(workout);
+        return Future<Exercise>.value(newExercise);
       });
     } else {
       print("exercise is null , data exercise: ${exercise.toMap()}");
       return await _exercisesStore
           .add(await _database, exercise.toMap())
           .then((_) {
-        return getExercises(workout);
+        return Future<Exercise>.value(exercise);
       });
     }
   }
