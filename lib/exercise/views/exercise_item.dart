@@ -190,10 +190,22 @@ class _ExerciseItemState extends State<ExerciseItem> {
                 child: Text("Add Set"),
                 onPressed: () {
                   //GET UPDATED WORKSETS AFTER EXERCISE UPDATE
+                  String weightHint;
+                  String repsHint;
+                  var lasWorkSet = _wSets.last;
+
                   if (_wSets.isNotEmpty) {
-                    var lastSetId = int.tryParse(_wSets.last.set.toString());
+                    var lastSetId = int.tryParse(lasWorkSet.set.toString());
                     lastSetId++;
-                    _wSets.add(WorkSet(set: lastSetId.toString()));
+                    weightHint = lasWorkSet.weight ?? "";
+                    repsHint = lasWorkSet.reps ?? "";
+                    _wSets.add(
+                      WorkSet(
+                        set: lastSetId.toString(),
+                        weight: weightHint,
+                        reps: repsHint,
+                      ),
+                    );
 //
                   } else {
                     _wSets.add(WorkSet(set: "1"));

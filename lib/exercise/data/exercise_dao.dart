@@ -108,13 +108,24 @@ class ExerciseDao {
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
       int newSetId;
+      String weightHint;
+      String repsHint;
       if (newExercise.workSets.isNotEmpty) {
-        newSetId = int.tryParse(WorkSet.fromMap(newExercise.workSets.last).set);
+        var lasWorkSet = WorkSet.fromMap(newExercise.workSets.last);
+        newSetId = int.tryParse(lasWorkSet.set);
+        weightHint = lasWorkSet.weight ?? "";
+        repsHint = lasWorkSet.reps ?? "";
       } else {
         newSetId = 1;
       }
 
-      newExercise.workSets.add(WorkSet(set: "${++newSetId}").toMap());
+      newExercise.workSets.add(
+        WorkSet(
+          set: "${++newSetId}",
+          weight: weightHint,
+          reps: repsHint,
+        ).toMap(),
+      );
 
       print(
           "exercise not null , replace by newExercise: ${newExercise.toMap()}");
