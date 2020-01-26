@@ -287,6 +287,24 @@ class ExerciseDao {
         ((workSet) => workSet["set"] == workSetToRemove.set),
       );
 
+      int newId = 0;
+      var newWSets = List<Map>();
+      newExercise.workSets.forEach((w) {
+        var wSet = WorkSet.fromMap(w);
+        newWSets.add(
+            WorkSet(
+                set: "${++newId}",
+                recent: wSet.recent ?? "",
+                weight: wSet.weight ?? "",
+                reps: wSet.reps ?? "",
+                tag: wSet.tag ?? false
+            ).toMap()
+        );
+      });
+
+      newExercise.workSets.clear();
+      newExercise.workSets.addAll(newWSets);
+
       print(
           "exercise not null ,updateWorkSet replace by newExercise: ${newExercise.toMap()}");
       return await _exercisesStore

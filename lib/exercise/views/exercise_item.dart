@@ -34,14 +34,14 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   @override
   void initState() {
-    if(!_isFromBlocUpdate){
+    if (!_isFromBlocUpdate) {
       _exercise = widget.exercise;
       print("$TAG exercise: ${widget.exercise.toMap()}");
       _exercise.workSets.forEach((workSetMap) {
         _wSets.add(WorkSet.fromMap(workSetMap));
       });
       _wSets.sort(
-            (a, b) => a.set.toString().compareTo(b.set.toString()),
+        (a, b) => a.set.toString().compareTo(b.set.toString()),
       );
       _defaultWeightUnit = _exercise.weightUnit;
     }
@@ -175,6 +175,21 @@ class _ExerciseItemState extends State<ExerciseItem> {
                                 widget.exercise, _workSet, widget.workout);
                             _wSets.removeAt(index);
                           });
+//                          int newId = 0;
+//                          var newWSets = List<WorkSet>();
+//                          _wSets.forEach((w) {
+//                            newWSets.add(
+//                                WorkSet(
+//                                    set: "${++newId}",
+//                                    recent: w.recent ?? "",
+//                                    weight: w.weight ?? "",
+//                                    reps: w.reps ?? "",
+//                                    tag: w.tag ?? false
+//                                )
+//                            );
+//                          });
+//                          _wSets.clear();
+//                          _wSets.addAll(newWSets);
                           // Shows the information on Snackbar
                           Scaffold.of(context).showSnackBar(
                               SnackBar(content: Text("Item removed.")));
@@ -196,9 +211,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   //GET UPDATED WORKSETS AFTER EXERCISE UPDATE
                   String weightHint;
                   String repsHint;
-                  var lasWorkSet = _wSets.last;
 
                   if (_wSets.isNotEmpty) {
+                    var lasWorkSet = _wSets.last;
                     var lastSetId = int.tryParse(lasWorkSet.set.toString());
                     lastSetId++;
                     weightHint = lasWorkSet.weight ?? "";
@@ -225,8 +240,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                       (a, b) => a.set.toString().compareTo(b.set.toString()),
                     );
                     _isFromBlocUpdate = true;
-                    setState(() {
-                    });
+                    setState(() {});
                   });
                   //UPDATE THE WORKSET LIST BY ADDING ONE WORKSET
                 },
