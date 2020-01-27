@@ -165,7 +165,10 @@ class _WorkoutViewState extends State<WorkoutView> {
       body: StreamBuilder<List<Exercise>>(
           stream: _exerciseBloc.valOutput,
           builder: (context, snapshot) {
-            print("$TAG _exerciseBloc.valOutput exercises: ${snapshot.data}");
+            var listExers = snapshot.data;
+            listExers?.forEach((exer){
+              print("$TAG _exerciseBloc.valOutput exercises: ${exer.toMap()}");
+            });
             if (snapshot.data == null) {
               print(
                   "$TAG _exerciseBloc.valOutput exercises NULL loading..: ${snapshot.data}");
@@ -183,7 +186,9 @@ class _WorkoutViewState extends State<WorkoutView> {
                 );
               } else {
                 var exercises = snapshot.data;
-                _exercises.addAll(exercises);
+                exercises.forEach((exer){
+                  print("$TAG NOT EMPTY _exerciseBloc.valOutput exercises: ${exer.toMap()}");
+                });
                 exercises.sort((a, b) {
                   print("$TAG TOSORT : A: ${a.toMap()} , B: ${b.toMap()}");
                   return a.id.compareTo(b.id);
@@ -396,11 +401,5 @@ class _WorkoutViewState extends State<WorkoutView> {
             ],
           );
         });
-  }
-
-  @override
-  void didUpdateWidget(WorkoutView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    print("$TAG didupdatewidget:  _exercises: $_exercises");
   }
 }

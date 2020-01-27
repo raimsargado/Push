@@ -27,7 +27,7 @@ abstract class ExerciseRepoApi {
   Future<List<Exercise>> updateWorkSet(
       Exercise exercise, WorkSet newWorkSet, Workout workout);
 
-  Future<List<Exercise>> deleteWorkSet(
+  Future<Exercise> deleteWorkSet(
       Exercise exercise, WorkSet newWorkSet, Workout workout);
 
   List<WorkSet> getWorkSets(Exercise exercise);

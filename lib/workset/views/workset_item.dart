@@ -45,8 +45,8 @@ class _WorkSetItemState extends State<WorkSetItem> {
     var wSet = widget.workSet;
     _workSetText = wSet.set;
     _recentText = wSet.recent ?? "";
-    _weightText = wSet.weight?? "";
-    _repsText = wSet.reps?? "";
+    _weightText = wSet.weight ?? "";
+    _repsText = wSet.reps ?? "";
     _checkboxTag = wSet.tag ?? false;
 
     ///
@@ -82,10 +82,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
                 flex: 1,
                 child: Center(child: Text(_workSetText)),
               ),
-              Expanded(
-                flex: 1,
-                child: Center(child: Text(_recentText))
-              ),
+              Expanded(flex: 1, child: Center(child: Text(_recentText))),
               Expanded(
                 flex: 1,
                 child: Padding(

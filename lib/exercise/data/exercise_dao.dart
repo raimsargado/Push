@@ -107,25 +107,59 @@ class ExerciseDao {
 
       var map = cloneMap(_exercise.value);
       var newExercise = Exercise.fromMap(map);
+      print(
+          "$TAG newExercise not null cloneMap workSets ${newExercise.workSets}");
       int newSetId;
       String weightHint;
       String repsHint;
+      String recent;
+      bool tag;
       if (newExercise.workSets.isNotEmpty) {
+        int newId = 0;
+        var newWSets = List<Map>();
+        newExercise.workSets.forEach((w) {
+          var wSet = WorkSet.fromMap(w);
+          newWSets.add(WorkSet(
+                  set: "${++newId}",
+                  recent: wSet.recent ?? "",
+                  weight: wSet.weight ?? "",
+                  reps: wSet.reps ?? "",
+                  tag: wSet.tag ?? false)
+              .toMap());
+        });
+
+        newExercise.workSets.clear();
+        newExercise.workSets.addAll(newWSets);
+
         var lasWorkSet = WorkSet.fromMap(newExercise.workSets.last);
-        newSetId = int.tryParse(lasWorkSet.set);
+        newSetId = int.tryParse(newExercise.workSets.last["set"]);
+        ++newSetId;
+        recent = lasWorkSet.recent ?? "";
         weightHint = lasWorkSet.weight ?? "";
         repsHint = lasWorkSet.reps ?? "";
-      } else {
-        newSetId = 1;
-      }
-
-      newExercise.workSets.add(
-        WorkSet(
-          set: "${++newSetId}",
+        var newWorkSet = WorkSet(
+          set: newSetId.toString(),
+          recent: recent,
           weight: weightHint,
           reps: repsHint,
-        ).toMap(),
-      );
+          tag: false,
+        ).toMap();
+        //
+        newExercise.workSets.add(newWorkSet);
+        //
+//        updateWorkSetWithoutFuture(newExercise, WorkSet.fromMap(newWorkSet));
+        //
+      } else {
+        //
+        newSetId = 1;
+        newExercise.workSets.add(
+          WorkSet(
+            set: newSetId.toString(),
+            weight: weightHint,
+            reps: repsHint,
+          ).toMap(),
+        );
+      }
 
       print(
           "exercise not null , replace by newExercise: ${newExercise.toMap()}");
@@ -141,6 +175,38 @@ class ExerciseDao {
           .then((_) {
         return Future<Exercise>.value(exercise);
       });
+    }
+  }
+
+  Future<void> updateWorkSetWithoutFuture(
+      Exercise exercise, WorkSet newWorkSet) async {
+    print("exercise input updateWorkSet: id: ${exercise.name}");
+
+    final finder = Finder(filter: Filter.equals("name", exercise.name));
+
+    // find a record
+    var _exercise =
+        await _exercisesStore.findFirst(await _database, finder: finder);
+
+    // record snapshot are read-only.
+    // If you want to modify it you should clone it
+    if (_exercise != null) {
+      var map = cloneMap(_exercise.value);
+      var newExercise = Exercise.fromMap(map);
+      //removing old
+      newExercise.workSets.removeWhere(
+        ((workSet) => workSet["set"] == newWorkSet.set),
+      );
+      //adding new
+      newExercise.workSets.add(newWorkSet.toMap());
+      print(
+          "exercise not null ,updateWorkSet replace by newExercise: ${newExercise.toMap()}");
+      await _exercisesStore.update(await _database, newExercise.toMap(),
+          finder: finder);
+    } else {
+      print(
+          "exercise is null ,updateWorkSet data exercise: ${exercise.toMap()}");
+      await _exercisesStore.add(await _database, exercise.toMap());
     }
   }
 
@@ -267,9 +333,9 @@ class ExerciseDao {
     });
   }
 
-  Future<List<Exercise>> deleteWorkSet(
+  Future<Exercise> deleteWorkSet(
       Exercise exercise, WorkSet workSetToRemove, Workout workout) async {
-    print("exercise input updateWorkSet: id: ${exercise.name}");
+    print("exercise input delete workset:: id: ${exercise.name}");
 
     final finder = Finder(filter: Filter.equals("name", exercise.name));
 
@@ -287,38 +353,22 @@ class ExerciseDao {
         ((workSet) => workSet["set"] == workSetToRemove.set),
       );
 
-      int newId = 0;
-      var newWSets = List<Map>();
-      newExercise.workSets.forEach((w) {
-        var wSet = WorkSet.fromMap(w);
-        newWSets.add(
-            WorkSet(
-                set: "${++newId}",
-                recent: wSet.recent ?? "",
-                weight: wSet.weight ?? "",
-                reps: wSet.reps ?? "",
-                tag: wSet.tag ?? false
-            ).toMap()
-        );
-      });
-
-      newExercise.workSets.clear();
-      newExercise.workSets.addAll(newWSets);
+      print("$TAG delete workset: updated worksets: ${newExercise.workSets}");
 
       print(
-          "exercise not null ,updateWorkSet replace by newExercise: ${newExercise.toMap()}");
+          "exercise not null ,delete workset: replace by newExercise: ${newExercise.toMap()}");
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
-        return getExercises(workout);
+        return Future<Exercise>.value(newExercise);
       });
     } else {
       print(
-          "exercise is null ,updateWorkSet data exercise: ${exercise.toMap()}");
+          "exercise is null ,delete workset: data exercise: ${exercise.toMap()}");
       return await _exercisesStore
           .add(await _database, exercise.toMap())
           .then((_) {
-        return getExercises(workout);
+        return Future<Exercise>.value(exercise);
       });
     }
   }

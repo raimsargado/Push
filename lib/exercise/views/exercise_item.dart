@@ -24,6 +24,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
   var _weightFieldController = TextEditingController();
   Exercise _currentExercise; //placeholder of currentexercise
   var _wSets = List<WorkSet>();
+  var newWorkSets = List<WorkSet>();
   String _defaultWeightUnit;
 
   var TAG = "EXER ITEM";
@@ -34,7 +35,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   @override
   void initState() {
-    if (!_isFromBlocUpdate) {
+//    if (!_isFromBlocUpdate) {
       _exercise = widget.exercise;
       print("$TAG exercise: ${widget.exercise.toMap()}");
       _exercise.workSets.forEach((workSetMap) {
@@ -44,11 +45,30 @@ class _ExerciseItemState extends State<ExerciseItem> {
         (a, b) => a.set.toString().compareTo(b.set.toString()),
       );
       _defaultWeightUnit = _exercise.weightUnit;
-    }
+//    }
+  }
+
+
+  @override
+  void didUpdateWidget(ExerciseItem oldWidget) {
+    print("did update widget widget.exercise : ${widget.exercise.toMap()}");
+    _exercise = widget.exercise;
+    print("$TAG exercise: ${widget.exercise.toMap()}");
+    _wSets.clear();
+    _exercise.workSets.forEach((workSetMap) {
+      _wSets.add(WorkSet.fromMap(workSetMap));
+    });
+    _wSets.sort(
+          (a, b) => a.set.toString().compareTo(b.set.toString()),
+    );
+    _defaultWeightUnit = _exercise.weightUnit;
   }
 
   @override
   Widget build(BuildContext context) {
+    _wSets?.forEach((w){
+      print("$TAG updated wsets : ${w.toMap()}");
+    });
     return GestureDetector(
       onTap: () {
         print("c: ontap");
@@ -169,27 +189,27 @@ class _ExerciseItemState extends State<ExerciseItem> {
                         direction: DismissDirection.endToStart,
                         key: Key(_workSet.set),
                         onDismissed: (direction) {
-                          // Removes that item the list on swipwe
-                          setState(() {
-                            _exerciseBloc.deleteWorkSet(
-                                widget.exercise, _workSet, widget.workout);
-                            _wSets.removeAt(index);
+                          //
+                          _wSets.removeAt(index);
+                          _wSets.forEach((w){
+                            print("DELETE: AFTER REMOVED ; set: ${w.toMap()}");
                           });
-//                          int newId = 0;
-//                          var newWSets = List<WorkSet>();
-//                          _wSets.forEach((w) {
-//                            newWSets.add(
-//                                WorkSet(
-//                                    set: "${++newId}",
-//                                    recent: w.recent ?? "",
-//                                    weight: w.weight ?? "",
-//                                    reps: w.reps ?? "",
-//                                    tag: w.tag ?? false
-//                                )
-//                            );
-//                          });
-//                          _wSets.clear();
-//                          _wSets.addAll(newWSets);
+                          _exerciseBloc
+                              .deleteWorkSet(_exercise, _workSet, widget.workout)
+                              .then((newExercise) {
+                                //
+                            _exercise = newExercise;
+                            print("DELETE: AFTER REMOVED then ; clear ${_exercise.workSets}");
+                            var newSets = newExercise.workSets?.length;
+                            print("DELETE: AFTER REMOVED then ; clear newExercise.workSets $newSets");
+//                            _exercise.workSets.addAll(newSets);
+                            print("DELETE: AFTER REMOVED then ; ${_exercise.workSets}");
+                            setState(() {
+                              _isFromBlocUpdate = true;
+                            });
+                          });
+
+
                           // Shows the information on Snackbar
                           Scaffold.of(context).showSnackBar(
                               SnackBar(content: Text("Item removed.")));
@@ -212,6 +232,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   String weightHint;
                   String repsHint;
 
+                  print("$TAG add set : current sets : ${_wSets.length}");
                   if (_wSets.isNotEmpty) {
                     var lasWorkSet = _wSets.last;
                     var lastSetId = int.tryParse(lasWorkSet.set.toString());
