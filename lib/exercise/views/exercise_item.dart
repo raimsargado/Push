@@ -195,19 +195,22 @@ class _ExerciseItemState extends State<ExerciseItem> {
                             print("DELETE: AFTER REMOVED ; set: ${w.toMap()}");
                           });
                           _exerciseBloc
-                              .deleteWorkSet(_exercise, _workSet, widget.workout)
-                              .then((newExercise) {
-                                //
-                            _exercise = newExercise;
-                            print("DELETE: AFTER REMOVED then ; clear ${_exercise.workSets}");
-                            var newSets = newExercise.workSets?.length;
-                            print("DELETE: AFTER REMOVED then ; clear newExercise.workSets $newSets");
-//                            _exercise.workSets.addAll(newSets);
-                            print("DELETE: AFTER REMOVED then ; ${_exercise.workSets}");
-                            setState(() {
-                              _isFromBlocUpdate = true;
-                            });
-                          });
+                              .deleteWorkSet(
+                              _exercise, _workSet, widget.workout);
+//                          _exerciseBloc
+//                              .deleteWorkSet(_exercise, _workSet, widget.workout)
+//                              .then((newExercise) {
+//                                //
+//                            _exercise = newExercise;
+//                            print("DELETE: AFTER REMOVED then ; clear ${_exercise.workSets}");
+//                            var newSets = newExercise.workSets?.length;
+//                            print("DELETE: AFTER REMOVED then ; clear newExercise.workSets $newSets");
+////                            _exercise.workSets.addAll(newSets);
+//                            print("DELETE: AFTER REMOVED then ; ${_exercise.workSets}");
+//                            setState(() {
+//                              _isFromBlocUpdate = true;
+//                            });
+//                          });
 
 
                           // Shows the information on Snackbar

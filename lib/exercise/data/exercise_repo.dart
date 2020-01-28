@@ -61,7 +61,7 @@ class ExerciseRepo implements ExerciseRepoApi {
   }
 
   @override
-  Future<Exercise> deleteWorkSet(
+  Future<List<Exercise>> deleteWorkSet(
       Exercise exercise, WorkSet newWorkSet, Workout workout) async {
     return await dao.deleteWorkSet(exercise, newWorkSet, workout);
   }

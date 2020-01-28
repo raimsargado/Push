@@ -332,8 +332,8 @@ class ExerciseDao {
       }
     });
   }
-
-  Future<Exercise> deleteWorkSet(
+//TODO UPDATE STREAM UPON DELETE WORKSET
+  Future<List<Exercise>> deleteWorkSet(
       Exercise exercise, WorkSet workSetToRemove, Workout workout) async {
     print("exercise input delete workset:: id: ${exercise.name}");
 
@@ -360,7 +360,7 @@ class ExerciseDao {
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
-        return Future<Exercise>.value(newExercise);
+        return getExercises(workout);
       });
     } else {
       print(
@@ -368,7 +368,7 @@ class ExerciseDao {
       return await _exercisesStore
           .add(await _database, exercise.toMap())
           .then((_) {
-        return Future<Exercise>.value(exercise);
+        return getExercises(workout);
       });
     }
   }
