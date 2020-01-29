@@ -77,9 +77,12 @@ class ExerciseBloc implements ExerciseBlocApi {
   }
 
   @override
-  Future<Exercise> addWorkSet(exercise) async {
-    return await _exerciseRepo.addWorkSet(exercise).then((newExercise) async {
-      return Future<Exercise>.value(newExercise);
+  void addWorkSet(exercise, workout) async {
+    return await _exerciseRepo
+        .addWorkSet(exercise, workout)
+        .then((newExercises) async {
+      //push new list
+      valController.sink.add(newExercises); //clear the pipe
     });
   }
 
@@ -90,7 +93,7 @@ class ExerciseBloc implements ExerciseBlocApi {
         .updateWorkSet(exercise, newWorkSet, workout)
         .then((newExercises) {
       //push new list
-      valController.sink.add(newExercises); //clear the pipe
+      valController.sink.add(newExercises);
     });
   }
 

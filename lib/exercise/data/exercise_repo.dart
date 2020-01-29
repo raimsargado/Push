@@ -40,8 +40,8 @@ class ExerciseRepo implements ExerciseRepoApi {
   }
 
   @override
-  Future<Exercise> addWorkSet(exercise) async {
-    return await dao.addWorkSet(exercise);
+  Future<List<Exercise>> addWorkSet(exercise,workout) async {
+    return await dao.addWorkSet(exercise,workout);
   }
 
   @override

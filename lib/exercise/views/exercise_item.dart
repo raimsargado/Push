@@ -35,40 +35,22 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   @override
   void initState() {
-//    if (!_isFromBlocUpdate) {
-      _exercise = widget.exercise;
-      print("$TAG exercise: ${widget.exercise.toMap()}");
-      _exercise.workSets.forEach((workSetMap) {
-        _wSets.add(WorkSet.fromMap(workSetMap));
-      });
-      _wSets.sort(
-        (a, b) => a.set.toString().compareTo(b.set.toString()),
-      );
-      _defaultWeightUnit = _exercise.weightUnit;
-//    }
+    _initWidgets();
   }
-
 
   @override
   void didUpdateWidget(ExerciseItem oldWidget) {
     print("did update widget widget.exercise : ${widget.exercise.toMap()}");
-    _exercise = widget.exercise;
-    print("$TAG exercise: ${widget.exercise.toMap()}");
-    _wSets.clear();
-    _exercise.workSets.forEach((workSetMap) {
-      _wSets.add(WorkSet.fromMap(workSetMap));
+    _initWidgets();
+    setState(() {
+      _wSets?.forEach((w) {
+        print("$TAG setState updated wsets : ${w.toMap()}");
+      });
     });
-    _wSets.sort(
-          (a, b) => a.set.toString().compareTo(b.set.toString()),
-    );
-    _defaultWeightUnit = _exercise.weightUnit;
   }
 
   @override
   Widget build(BuildContext context) {
-    _wSets?.forEach((w){
-      print("$TAG updated wsets : ${w.toMap()}");
-    });
     return GestureDetector(
       onTap: () {
         print("c: ontap");
@@ -164,18 +146,6 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   ),
                 ],
               ),
-              //listview
-//              ListView.builder(
-//                  physics: NeverScrollableScrollPhysics(),
-//                  shrinkWrap: true,
-//                  itemCount: _wSets?.length,
-//                  itemBuilder: (BuildContext context, int position) {
-//                    var _workSet = _wSets?.elementAt(position);
-//                    return WorkSetItem(
-//                      set: _workSet,
-//                      exercise: widget.exercise,
-//                    );
-//                  }),
               //WORKSET LIST
               CustomScrollView(
                 physics: NeverScrollableScrollPhysics(),
@@ -189,30 +159,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
                         direction: DismissDirection.endToStart,
                         key: Key(_workSet.set),
                         onDismissed: (direction) {
-                          //
-                          _wSets.removeAt(index);
-                          _wSets.forEach((w){
-                            print("DELETE: AFTER REMOVED ; set: ${w.toMap()}");
-                          });
-                          _exerciseBloc
-                              .deleteWorkSet(
+                          _exerciseBloc.deleteWorkSet(
                               _exercise, _workSet, widget.workout);
-//                          _exerciseBloc
-//                              .deleteWorkSet(_exercise, _workSet, widget.workout)
-//                              .then((newExercise) {
-//                                //
-//                            _exercise = newExercise;
-//                            print("DELETE: AFTER REMOVED then ; clear ${_exercise.workSets}");
-//                            var newSets = newExercise.workSets?.length;
-//                            print("DELETE: AFTER REMOVED then ; clear newExercise.workSets $newSets");
-////                            _exercise.workSets.addAll(newSets);
-//                            print("DELETE: AFTER REMOVED then ; ${_exercise.workSets}");
-//                            setState(() {
-//                              _isFromBlocUpdate = true;
-//                            });
-//                          });
-
-
                           // Shows the information on Snackbar
                           Scaffold.of(context).showSnackBar(
                               SnackBar(content: Text("Item removed.")));
@@ -231,42 +179,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
               FlatButton(
                 child: Text("Add Set"),
                 onPressed: () {
-                  //GET UPDATED WORKSETS AFTER EXERCISE UPDATE
-                  String weightHint;
-                  String repsHint;
-
-                  print("$TAG add set : current sets : ${_wSets.length}");
-                  if (_wSets.isNotEmpty) {
-                    var lasWorkSet = _wSets.last;
-                    var lastSetId = int.tryParse(lasWorkSet.set.toString());
-                    lastSetId++;
-                    weightHint = lasWorkSet.weight ?? "";
-                    repsHint = lasWorkSet.reps ?? "";
-                    _wSets.add(
-                      WorkSet(
-                        set: lastSetId.toString(),
-                        weight: weightHint,
-                        reps: repsHint,
-                      ),
-                    );
-//
-                  } else {
-                    _wSets.add(WorkSet(set: "1"));
-                  }
-
-                  _exerciseBloc.addWorkSet(_exercise).then((newExercise) {
-                    _wSets.clear();
-                    _exercise = newExercise;
-                    _exercise.workSets.forEach((workSetMap) {
-                      _wSets.add(WorkSet.fromMap(workSetMap));
-                    });
-                    _wSets.sort(
-                      (a, b) => a.set.toString().compareTo(b.set.toString()),
-                    );
-                    _isFromBlocUpdate = true;
-                    setState(() {});
-                  });
-                  //UPDATE THE WORKSET LIST BY ADDING ONE WORKSET
+                  _exerciseBloc.addWorkSet(_exercise, widget.workout);
                 },
               )
             ],
@@ -274,5 +187,17 @@ class _ExerciseItemState extends State<ExerciseItem> {
         ),
       ),
     );
+  }
+
+  _initWidgets() {
+    _exercise = widget.exercise;
+    _wSets.clear();
+    _exercise.workSets.forEach((workSetMap) {
+      _wSets.add(WorkSet.fromMap(workSetMap));
+    });
+    _wSets.sort(
+      (a, b) => a.set.toString().compareTo(b.set.toString()),
+    );
+    _defaultWeightUnit = _exercise.weightUnit;
   }
 }
