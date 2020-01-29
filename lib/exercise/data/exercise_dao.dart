@@ -117,7 +117,15 @@ class ExerciseDao {
       if (newExercise.workSets.isNotEmpty) {
         int newId = 0;
         var newWSets = List<Map>();
+        var orderedSets = List<Map>();
         newExercise.workSets.forEach((w) {
+          orderedSets.add(w);
+          orderedSets.sort(
+            (a, b) => WorkSet.fromMap(a).set.toString().compareTo(
+                  WorkSet.fromMap(b).set.toString()),
+          );
+        });
+        orderedSets.forEach((w) {
           var wSet = WorkSet.fromMap(w);
           newWSets.add(WorkSet(
                   set: "${++newId}",
@@ -332,6 +340,7 @@ class ExerciseDao {
       }
     });
   }
+
 //TODO UPDATE STREAM UPON DELETE WORKSET
   Future<List<Exercise>> deleteWorkSet(
       Exercise exercise, WorkSet workSetToRemove, Workout workout) async {

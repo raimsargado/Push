@@ -1,10 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/bloc/workset_bloc_api.dart';
 import 'package:strongr/workset/models/workset.dart';
 import 'package:strongr/workset/views/workset_item.dart';
 
@@ -20,18 +21,11 @@ class ExerciseItem extends StatefulWidget {
 
 class _ExerciseItemState extends State<ExerciseItem> {
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
-  var _workSetBloc = serviceLocator.get<WorkSetBlocApi>();
-  var _weightFieldController = TextEditingController();
-  Exercise _currentExercise; //placeholder of currentexercise
   var _wSets = List<WorkSet>();
   var newWorkSets = List<WorkSet>();
   String _defaultWeightUnit;
-
   var TAG = "EXER ITEM";
-
   Exercise _exercise;
-
-  bool _isFromBlocUpdate = false;
 
   @override
   void initState() {
@@ -54,15 +48,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
     return GestureDetector(
       onTap: () {
         print("c: ontap");
-//        Navigator.push(
-//          context,
-//          MaterialPageRoute(
-//            builder: (context) => WorkoutView(workout: workout),
-//          ),
-//        );
       },
       child: Card(
-//        margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Container(
@@ -157,7 +144,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                       var _workSet = _wSets?.elementAt(index);
                       return Dismissible(
                         direction: DismissDirection.endToStart,
-                        key: Key(_workSet.set),
+                        key: Key(_workSet.set + "${Random(10000)}"),
                         onDismissed: (direction) {
                           _exerciseBloc.deleteWorkSet(
                               _exercise, _workSet, widget.workout);
