@@ -323,7 +323,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                         gravity: ToastGravity.CENTER,
                       );
                     }
-                    //TODO TOAAST EXIST OR NOT EXIST
                   });
 
                   _isAddingExercise = false;

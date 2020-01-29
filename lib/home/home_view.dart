@@ -126,7 +126,6 @@ class WorkoutListView extends StatelessWidget {
                         gravity: ToastGravity.CENTER,
                       );
                     }
-                    //TODO TOAAST EXIST OR NOT EXIST
                   });
                 },
               )

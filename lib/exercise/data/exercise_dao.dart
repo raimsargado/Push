@@ -341,7 +341,6 @@ class ExerciseDao {
     });
   }
 
-//TODO UPDATE STREAM UPON DELETE WORKSET
   Future<List<Exercise>> deleteWorkSet(
       Exercise exercise, WorkSet workSetToRemove, Workout workout) async {
     print("exercise input delete workset:: id: ${exercise.name}");
