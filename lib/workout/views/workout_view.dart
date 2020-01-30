@@ -199,7 +199,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   controller: _scrollController,
                   slivers: <Widget>[
                     ReorderableSliverList(
-                      delegate: SliverChildBuilderDelegate(
+                      delegate: ReorderableSliverChildBuilderDelegate(
                           (BuildContext context, int index) {
                         var _exercise = exercises?.elementAt(index);
                         print("$TAG _exercise: ${_exercise.toMap()}");
