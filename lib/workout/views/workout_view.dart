@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:reorderables/reorderables.dart';
 import 'package:strongr/custom_widgets/overlay_progressbar.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
@@ -197,7 +198,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 return CustomScrollView(
                   controller: _scrollController,
                   slivers: <Widget>[
-                    SliverList(
+                    ReorderableSliverList(
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
                         var _exercise = exercises?.elementAt(index);
@@ -207,7 +208,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                           child: ExerciseItem(
                               workout: widget.workout, exercise: _exercise),
                         );
-                      }, childCount: exercises?.length),
+                      }, childCount: exercises?.length), onReorder: (int oldIndex, int newIndex) {},
                     ),
                   ],
                 );
