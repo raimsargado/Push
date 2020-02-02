@@ -186,9 +186,7 @@ class ExerciseDao {
         ).toMap();
         //
         newExercise.workSets.add(newWorkSet);
-        //
-//        updateWorkSetWithoutFuture(newExercise, WorkSet.fromMap(newWorkSet));
-        //
+
       } else {
         //
         newSetId = 1;
@@ -215,38 +213,6 @@ class ExerciseDao {
           .then((_) {
         return getExercises(workout);
       });
-    }
-  }
-
-  Future<void> updateWorkSetWithoutFuture(
-      Exercise exercise, WorkSet newWorkSet) async {
-    print("exercise input updateWorkSet: id: ${exercise.name}");
-
-    final finder = Finder(filter: Filter.equals("name", exercise.name));
-
-    // find a record
-    var _exercise =
-        await _exercisesStore.findFirst(await _database, finder: finder);
-
-    // record snapshot are read-only.
-    // If you want to modify it you should clone it
-    if (_exercise != null) {
-      var map = cloneMap(_exercise.value);
-      var newExercise = Exercise.fromMap(map);
-      //removing old
-      newExercise.workSets.removeWhere(
-        ((workSet) => workSet["set"] == newWorkSet.set),
-      );
-      //adding new
-      newExercise.workSets.add(newWorkSet.toMap());
-      print(
-          "exercise not null ,updateWorkSet replace by newExercise: ${newExercise.toMap()}");
-      await _exercisesStore.update(await _database, newExercise.toMap(),
-          finder: finder);
-    } else {
-      print(
-          "exercise is null ,updateWorkSet data exercise: ${exercise.toMap()}");
-      await _exercisesStore.add(await _database, exercise.toMap());
     }
   }
 

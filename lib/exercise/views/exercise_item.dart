@@ -42,12 +42,13 @@ class _ExerciseItemState extends State<ExerciseItem> {
       });
     });
   }
-
+//todo DONE TAG IS REMOVING AFTER LONG PRESS
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print("c: ontap");
+      onTapDown: (details) {
+        print("$TAG onTapDown");
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Card(
         shape:

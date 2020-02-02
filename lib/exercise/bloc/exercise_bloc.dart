@@ -99,7 +99,7 @@ class ExerciseBloc implements ExerciseBlocApi {
         .updateWorkSet(exercise, newWorkSet, workout)
         .then((newExercises) {
       //push new list
-      valController.sink.add(newExercises);
+//      valController.sink.add(newExercises);
     });
   }
 

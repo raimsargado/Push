@@ -44,7 +44,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   var TAG = "WORKOUTVIEW";
 
-  var _textFocus = FocusNode();
+//  var _textFocus = FocusNode();
 
   var _currentExer;
 
@@ -125,7 +125,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 decoration: InputDecoration(
                     alignLabelWithHint: true, hintText: widget.workout.name),
                 controller: _workoutNameController,
-                focusNode: _textFocus,
+//                focusNode: _textFocus,
               ),
             ),
           ],
@@ -302,13 +302,6 @@ class _WorkoutViewState extends State<WorkoutView> {
             ],
           );
         });
-  }
-
-  @override
-  void didUpdateWidget(WorkoutView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    print("didUpdateWidget _isAddingExercise: $_isAddingExercise");
-    _initWidgets();
   }
 
   _displayAddExerciseDialog(BuildContext context) async {

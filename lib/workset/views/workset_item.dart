@@ -38,9 +38,16 @@ class _WorkSetItemState extends State<WorkSetItem> {
 
   var TAG = "WORKSET ITEM";
 
+  bool _hasChanges() {
+    return _recentFieldController.text != _recentText ||
+        _weightFieldController.text != _weightText ||
+        _repsFieldController.text != _repsText;
+  }
+
   @override
   // ignore: must_call_super
   void initState() {
+    print("$TAG initState");
     //
     var wSet = widget.workSet;
     _workSetText = wSet.set;
@@ -56,7 +63,6 @@ class _WorkSetItemState extends State<WorkSetItem> {
     _repsFieldController.text = _repsText;
 
     ///
-    _setFieldController.addListener(_onChange);
     _recentFieldController.addListener(_onChange);
     _weightFieldController.addListener(_onChange);
     _repsFieldController.addListener(_onChange);
@@ -166,22 +172,24 @@ class _WorkSetItemState extends State<WorkSetItem> {
   String _repsText;
 
   void _onChange() {
-    if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 100), () {
-      _workSetText = _workSetText;
-      _recentText = _recentFieldController.text.trim() ?? _recentText;
-      _weightText = _weightFieldController.text.trim() ?? _weightText;
-      _repsText = _repsFieldController.text.trim() ?? _repsText;
-      _exerciseBloc.updateWorkSet(
-          widget.exercise,
-          WorkSet(
-            set: _workSetText,
-            recent: _recentText,
-            weight: _weightText,
-            reps: _repsText,
-            tag: _checkboxTag,
-          ),
-          widget.workout);
-    });
+    if (_hasChanges()) {
+      if (_debounce?.isActive ?? false) _debounce.cancel();
+      _debounce = Timer(const Duration(milliseconds: 100), () {
+        _workSetText = _workSetText;
+        _recentText = _recentFieldController.text.trim() ?? _recentText;
+        _weightText = _weightFieldController.text.trim() ?? _weightText;
+        _repsText = _repsFieldController.text.trim() ?? _repsText;
+        _exerciseBloc.updateWorkSet(
+            widget.exercise,
+            WorkSet(
+              set: _workSetText,
+              recent: _recentText,
+              weight: _weightText,
+              reps: _repsText,
+              tag: _checkboxTag,
+            ),
+            widget.workout);
+      });
+    }
   }
 }
