@@ -43,12 +43,13 @@ class _ExerciseItemState extends State<ExerciseItem> {
     });
   }
 //todo DONE TAG IS REMOVING AFTER LONG PRESS
+  //todo minimize item on press .. before reordering
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (details) {
         print("$TAG onTapDown");
-        FocusScope.of(context).requestFocus(FocusNode());
+//        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Card(
         shape:
