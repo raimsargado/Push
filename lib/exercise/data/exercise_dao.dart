@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:strongr/app_db_interface.dart';
@@ -16,10 +17,25 @@ class ExerciseDao {
       await serviceLocator.get<AppDatabaseApi>().database;
 
   Future<dynamic> addExercise(Exercise exercise, Workout workout) async {
-    return await _exercisesStore
-        .add(await _database, exercise.toMap())
-        .then((_) {
-      return getExercises(workout);
+    return getExercises(workout).then((oldExers) async {
+      var lastExer = Exercise();
+      var sortId = 0;
+      if (oldExers.isNotEmpty) {
+        lastExer = oldExers.last;
+        sortId = ++lastExer.toMap()['sortId'];
+      } else {
+        sortId = 0;
+      }
+      exercise = Exercise(
+          sortId: sortId,
+          name: exercise.name,
+          workSets: exercise.workSets,
+          weightUnit: exercise.weightUnit);
+      return await _exercisesStore
+          .add(await _database, exercise.toMap())
+          .then((_) {
+        return getExercises(workout);
+      });
     });
   }
 
@@ -35,6 +51,20 @@ class ExerciseDao {
     });
   }
 
+  Future<dynamic> addExerciseVoidReturn(
+      Exercise exercise, Workout workout) async {
+    return await _exercisesStore.add(await _database, exercise.toMap());
+  }
+
+  Future<dynamic> deleteExerciseVoidReturn(
+      Exercise exercise, Workout workout) async {
+    final finder = Finder(filter: Filter.equals("name", exercise.name));
+    return await _exercisesStore.delete(
+      await _database,
+      finder: finder,
+    );
+  }
+
   Exercise get exercise => null;
 
   Future<List<Exercise>> getExercises(Workout workout) async {
@@ -44,7 +74,7 @@ class ExerciseDao {
 
     // Finder object can also sort data.
     final finder = Finder(sortOrders: [
-      SortOrder('name'),
+      SortOrder('sortId', true),
     ]);
 
     final recordSnapshots = await _exercisesStore.find(
@@ -383,18 +413,74 @@ class ExerciseDao {
     }
   }
 
-  Future<List<Exercise>> reorder(
+  Future<List<Exercise>> reorderExercises(
       int oldIndex, int newIndex, List<Exercise> exercises, workout) {
-    if (newIndex > exercises.length) newIndex = exercises.length;
-    if (oldIndex < newIndex) newIndex--;
+    return getExercises(workout).then((oldExercises) {
+      if (newIndex > oldExercises.length) newIndex = oldExercises.length;
+      if (oldIndex < newIndex) newIndex--;
 
-    var exercise = exercises[oldIndex];
-    exercises.remove(exercise);
-    exercises.insert(newIndex, exercise);
-    var newOrderId = 0;
-    exercises.forEach((exer) {
-      print("$TAG reorder exercises: ${exer.toMap()}");
+      var exercise = oldExercises[oldIndex];
+      oldExercises.remove(exercise);
+      oldExercises.insert(newIndex, exercise);
+      var sortId;
+      var newExercises = List<Exercise>();
+      oldExercises.forEach((exer) {
+        print("$TAG reorderexer exercises: ${exer.toMap()}");
+        sortId = sortId == null ? 0 : ++sortId;
+        newExercises.add(
+          Exercise(
+              sortId: sortId,
+              name: exer.name,
+              workSets: exer.workSets,
+              weightUnit: exer.weightUnit),
+        );
+      });
+
+      return newExercises;
+    }).then((newExers) {
+      newExers.forEach((exer) {
+        print("$TAG reorderexer newExercises : ${exer.toMap()}");
+      });
+
+      //replace outdated exers
+      return replaceExercises(newExers, workout).then((_) {
+        //get updated exers with updated sortId
+        return getExercises(workout).then((exers) {
+          exers.forEach((e) {
+            print("$TAG reorderexer before push getExercises : ${e.toMap()}");
+          });
+          return exers;
+        });
+      });
     });
-    return getExercises(workout);
+  }
+
+  Future<dynamic> replaceExercises(
+      List<Exercise> newExercises, Workout workout) async {
+    return await getExercises(workout).then((exers) async {
+      //delete old
+      var processCount = 0;
+      for (final exercise in exers) {
+        final finder = Finder(filter: Filter.equals("name", exercise.name));
+        _exercisesStore.delete(await _database, finder: finder).then((_) {
+          ++processCount;
+        });
+
+        if (processCount == newExercises.length) {
+          return Future<void>.value();
+        }
+      }
+    }).then((_) async {
+      var processCount = 0;
+      for (final exercise in newExercises) {
+        await _exercisesStore.add(await _database, exercise.toMap()).then((_) {
+          ++processCount;
+        });
+
+        if (processCount == newExercises.length) {
+          return Future<void>.value();
+        }
+      }
+    });
   }
 }

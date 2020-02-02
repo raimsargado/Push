@@ -1,16 +1,16 @@
-
-
 class Exercise {
   final String name;
   final String weightUnit;
   final List<dynamic> workSets;
+  final int sortId;
 
   int id;
 
-  Exercise({this.name, this.workSets, this.weightUnit});
+  Exercise({this.sortId, this.name, this.workSets, this.weightUnit});
 
   Map<String, dynamic> toMap() {
     return {
+      'sortId': sortId,
       'name': name,
       'workSets': workSets,
       'weightUnit': weightUnit,
@@ -19,7 +19,8 @@ class Exercise {
 
   static Exercise fromMap(Map<String, dynamic> map) {
     return Exercise(
-     name: map['name'],
+      sortId: map['sortId'],
+      name: map['name'],
       workSets: map['workSets'],
       weightUnit: map['weightUnit'],
     );

@@ -188,7 +188,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 exercises = snapshot.data;
                 exercises.forEach((exer) {
                   print(
-                      "$TAG NOT EMPTY _exerciseBloc.valOutput exercises: ${exer.toMap()}");
+                      "$TAG NOT EMPTY reorderexer _exerciseBloc.valOutput exercises: ${exer.toMap()}");
                 });
                 exercises.sort((a, b) {
                   print("$TAG TOSORT : A: ${a.toMap()} , B: ${b.toMap()}");
@@ -308,7 +308,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   void didUpdateWidget(WorkoutView oldWidget) {
     super.didUpdateWidget(oldWidget);
     print("didUpdateWidget _isAddingExercise: $_isAddingExercise");
-//    _initWidgets();
+    _initWidgets();
   }
 
   _displayAddExerciseDialog(BuildContext context) async {

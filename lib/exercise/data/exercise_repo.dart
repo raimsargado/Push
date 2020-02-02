@@ -79,6 +79,6 @@ class ExerciseRepo implements ExerciseRepoApi {
   @override
   Future<List<Exercise>> reorder(
       int oldIndex, int newIndex, exercises, workout) async {
-    return await dao.reorder(oldIndex, newIndex, exercises, workout);
+    return await dao.reorderExercises(oldIndex, newIndex, exercises, workout);
   }
 }
