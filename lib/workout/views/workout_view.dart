@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:reorderables/reorderables.dart';
 import 'package:strongr/custom_widgets/overlay_progressbar.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
@@ -48,12 +46,15 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   var _textFocus = FocusNode();
 
+  var _currentExer;
+
+  List<Exercise> exercises;
+
   @override
   // ignore: must_call_super
   void initState() {
-    _workoutNameController.addListener(_onChange);
-    _workoutNameController.text = widget.workout.name;
-    _exerciseBloc.initExercises(widget.workout);
+    _initWidgets();
+    print("$TAG init state");
   }
 
   @override
@@ -167,9 +168,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           stream: _exerciseBloc.valOutput,
           builder: (context, snapshot) {
             var listExers = snapshot.data;
-            listExers?.forEach((exer){
-              print("$TAG _exerciseBloc.valOutput exercises: ${exer.toMap()}");
-            });
+
             if (snapshot.data == null) {
               print(
                   "$TAG _exerciseBloc.valOutput exercises NULL loading..: ${snapshot.data}");
@@ -186,32 +185,65 @@ class _WorkoutViewState extends State<WorkoutView> {
                   ),
                 );
               } else {
-                var exercises = snapshot.data;
-                exercises.forEach((exer){
-                  print("$TAG NOT EMPTY _exerciseBloc.valOutput exercises: ${exer.toMap()}");
+                exercises = snapshot.data;
+                exercises.forEach((exer) {
+                  print(
+                      "$TAG NOT EMPTY _exerciseBloc.valOutput exercises: ${exer.toMap()}");
                 });
                 exercises.sort((a, b) {
                   print("$TAG TOSORT : A: ${a.toMap()} , B: ${b.toMap()}");
                   return a.id.compareTo(b.id);
                 });
+                print("$TAG ADDING EXER: $_isAddingExercise");
+                return _isAddingExercise
+                    ? CustomScrollView(
+                        controller: _scrollController,
+                        slivers: <Widget>[
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                                (BuildContext context, int index) {
+                              var _exercise = exercises?.elementAt(index);
+                              print("$TAG _exercise: ${_exercise.toMap()}");
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                                child: ExerciseItem(
+                                    workout: widget.workout,
+                                    exercise: _exercise),
+                              );
+                            }, childCount: exercises?.length),
+                          ),
+                        ],
+                      )
+                    : PrimaryScrollController(
+                        controller: _scrollController,
+                        child: ReorderableListView(
+                            children: [
+                              for (final exer in exercises)
+                                Padding(
+                                  key: ValueKey(exer.id),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                                  child: ExerciseItem(
+                                      workout: widget.workout, exercise: exer),
+                                ),
+                            ],
+                            onReorder: (oldIndex, newIndex) {
+                              // These two lines are workarounds for ReorderableListView problems
+//                              if (newIndex > exercises.length)
+//                                newIndex = exercises.length;
+//                              if (oldIndex < newIndex) newIndex--;
+//
+//                              var exercise = exercises[oldIndex];
+//                              exercises.remove(exercise);
+//                              exercises.insert(newIndex, exercise);
 
-                return CustomScrollView(
-                  controller: _scrollController,
-                  slivers: <Widget>[
-                    ReorderableSliverList(
-                      delegate: ReorderableSliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        var _exercise = exercises?.elementAt(index);
-                        print("$TAG _exercise: ${_exercise.toMap()}");
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                          child: ExerciseItem(
-                              workout: widget.workout, exercise: _exercise),
-                        );
-                      }, childCount: exercises?.length), onReorder: (int oldIndex, int newIndex) {},
-                    ),
-                  ],
-                );
+                              print("$TAG onReorder oldIndex: $oldIndex");
+                              print("$TAG onReorder newIndex $newIndex");
+
+                              _exerciseBloc.reorder(oldIndex, newIndex,
+                                  exercises, widget.workout);
+                            }),
+                      );
               }
             }
           }),
@@ -272,6 +304,13 @@ class _WorkoutViewState extends State<WorkoutView> {
         });
   }
 
+  @override
+  void didUpdateWidget(WorkoutView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("didUpdateWidget _isAddingExercise: $_isAddingExercise");
+//    _initWidgets();
+  }
+
   _displayAddExerciseDialog(BuildContext context) async {
     _isAddingExercise = true;
     showDialog(
@@ -310,23 +349,28 @@ class _WorkoutViewState extends State<WorkoutView> {
                           ),
                           widget.workout);
                       Navigator.of(context, rootNavigator: true).pop();
+                      _isAddingExercise = true;
                       Timer(Duration(milliseconds: 1000), () {
-                        _scrollController.animateTo(
+                        _scrollController
+                            .animateTo(
                           _scrollController.position.maxScrollExtent,
                           duration: const Duration(milliseconds: 100),
                           curve: Curves.ease,
-                        );
-                        print("scroll to end");
+                        )
+                            .then((_) {
+                          print("scroll to end");
+                          _isAddingExercise = false;
+                          setState(() {});
+                        });
                       });
                     } else {
                       Fluttertoast.showToast(
                         msg: "Sorry dude, this exercise exists!",
                         gravity: ToastGravity.CENTER,
                       );
+                      _isAddingExercise = false;
                     }
                   });
-
-                  _isAddingExercise = false;
                 },
               )
             ],
@@ -401,5 +445,11 @@ class _WorkoutViewState extends State<WorkoutView> {
             ],
           );
         });
+  }
+
+  void _initWidgets() {
+    _workoutNameController.addListener(_onChange);
+    _workoutNameController.text = widget.workout.name;
+    _exerciseBloc.initExercises(widget.workout);
   }
 }

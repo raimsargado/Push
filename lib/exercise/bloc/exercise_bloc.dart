@@ -73,6 +73,12 @@ class ExerciseBloc implements ExerciseBlocApi {
     _exerciseRepo.getExercises(workout).then((exercises) {
       //trigger stream
       valController.sink.add(exercises);
+//
+//      valController.sink.add(null); //clear the pipe
+//      Timer(Duration(milliseconds: 100), () {
+//        print("Yeah, this line is printed after 3 seconds");
+//        valController.sink.add(exercises);
+//      });
     });
   }
 
@@ -115,6 +121,16 @@ class ExerciseBloc implements ExerciseBlocApi {
         print("Yeah, this line is printed after 3 seconds");
         valController.sink.add(exercises);
       });
+    });
+  }
+
+  @override
+  void reorder(int oldIndex, int newIndex, exercises, workout) {
+    _exerciseRepo
+        .reorder(oldIndex, newIndex, exercises, workout)
+        .then((exercises) {
+      //
+      valController.sink.add(exercises);
     });
   }
 }

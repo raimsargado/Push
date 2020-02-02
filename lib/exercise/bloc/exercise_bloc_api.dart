@@ -23,4 +23,6 @@ abstract class ExerciseBlocApi {
   void updateExercise(dynamic any, Workout workout);
 
   Future<bool> searchExercise(exerciseName);
+
+  void reorder(int oldIndex, int newIndex, List<Exercise> exercises, Workout workout);
 }

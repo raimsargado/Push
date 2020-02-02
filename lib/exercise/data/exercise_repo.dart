@@ -40,8 +40,8 @@ class ExerciseRepo implements ExerciseRepoApi {
   }
 
   @override
-  Future<List<Exercise>> addWorkSet(exercise,workout) async {
-    return await dao.addWorkSet(exercise,workout);
+  Future<List<Exercise>> addWorkSet(exercise, workout) async {
+    return await dao.addWorkSet(exercise, workout);
   }
 
   @override
@@ -74,5 +74,11 @@ class ExerciseRepo implements ExerciseRepoApi {
   @override
   Future saveAllProgress(Workout workout) async {
     return await dao.saveAllProgress(workout);
+  }
+
+  @override
+  Future<List<Exercise>> reorder(
+      int oldIndex, int newIndex, exercises, workout) async {
+    return await dao.reorder(oldIndex, newIndex, exercises, workout);
   }
 }

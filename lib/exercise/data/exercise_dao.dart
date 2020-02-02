@@ -121,8 +121,10 @@ class ExerciseDao {
         newExercise.workSets.forEach((w) {
           orderedSets.add(w);
           orderedSets.sort(
-            (a, b) => WorkSet.fromMap(a).set.toString().compareTo(
-                  WorkSet.fromMap(b).set.toString()),
+            (a, b) => WorkSet.fromMap(a)
+                .set
+                .toString()
+                .compareTo(WorkSet.fromMap(b).set.toString()),
           );
         });
         orderedSets.forEach((w) {
@@ -379,5 +381,20 @@ class ExerciseDao {
         return getExercises(workout);
       });
     }
+  }
+
+  Future<List<Exercise>> reorder(
+      int oldIndex, int newIndex, List<Exercise> exercises, workout) {
+    if (newIndex > exercises.length) newIndex = exercises.length;
+    if (oldIndex < newIndex) newIndex--;
+
+    var exercise = exercises[oldIndex];
+    exercises.remove(exercise);
+    exercises.insert(newIndex, exercise);
+    var newOrderId = 0;
+    exercises.forEach((exer) {
+      print("$TAG reorder exercises: ${exer.toMap()}");
+    });
+    return getExercises(workout);
   }
 }
