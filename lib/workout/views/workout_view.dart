@@ -184,8 +184,6 @@ class _WorkoutViewState extends State<WorkoutView> {
       body: StreamBuilder<List<Exercise>>(
           stream: _exerciseBloc.valOutput,
           builder: (context, snapshot) {
-            var listExers = snapshot.data;
-
             if (snapshot.data == null) {
               print(
                   "$TAG _exerciseBloc.valOutput exercises NULL loading..: ${snapshot.data}");
@@ -212,58 +210,23 @@ class _WorkoutViewState extends State<WorkoutView> {
 //                  return a.id.compareTo(b.id);
 //                });
                 print("$TAG ADDING EXER: $_isAddingExercise");
-                return _isAddingExercise
-                    ? CustomScrollView(
-                        controller: _scrollController,
-                        slivers: <Widget>[
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                              var _exercise = _exercises?.elementAt(index);
-                              print("$TAG _exercise: ${_exercise.toMap()}");
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                                child: ExerciseItem(
-                                    workout: widget.workout,
-                                    exercise: _exercise),
-                              );
-                            }, childCount: _exercises?.length),
-                          ),
-                        ],
-                      )
-                    : PrimaryScrollController(
-                        controller: _scrollController,
-                        child: ReorderableListView(
-                            children: [
-                              for (final exer in _exercises)
-                                Padding(
-                                  key: ValueKey(exer.id),
-                                  padding:
-                                      const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                                  child: ExerciseItem(
-                                      workout: widget.workout, exercise: exer),
-                                ),
-                            ],
-                            onReorder: (oldIndex, newIndex) {
-                              // These two lines are workarounds for ReorderableListView problems
-//                              if (newIndex > exercises.length)
-//                                newIndex = exercises.length;
-//                              if (oldIndex < newIndex) newIndex--;
-//
-//                              var exercise = exercises[oldIndex];
-//                              exercises.remove(exercise);
-//                              exercises.insert(newIndex, exercise);
-
-                              print("$TAG onReorder oldIndex: $oldIndex");
-                              print("$TAG onReorder newIndex $newIndex");
-
-                              _exerciseBloc.reorder(
-                                oldIndex,
-                                newIndex,
-                                widget.workout,
-                              );
-                            }),
-                      );
+                return CustomScrollView(
+                  controller: _scrollController,
+                  slivers: <Widget>[
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        var _exercise = _exercises?.elementAt(index);
+                        print("$TAG _exercise: ${_exercise.toMap()}");
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                          child: ExerciseItem(
+                              workout: widget.workout, exercise: _exercise),
+                        );
+                      }, childCount: _exercises?.length),
+                    ),
+                  ],
+                );
               }
             }
           }),
@@ -274,20 +237,6 @@ class _WorkoutViewState extends State<WorkoutView> {
     return _workoutNameController.text.isNotEmpty &&
         widget.workout.name != _workoutNameController.text;
   }
-
-//  ListView _listViewBuilder(){
-//    return ListView.builder(
-//        itemCount: exercises?.length,
-//        itemBuilder: (BuildContext context, int position) {
-//          var _exercise = _exercises?.elementAt(position);
-//          print("$TAG _exercise: ${_exercise.toMap()}");
-//          return Padding(
-//            padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-//            child: ExerciseItem(
-//                workout: widget.workout, exercise: _exercise),
-//          );
-//        });
-//  }
 
   void _displayDeleteDialog() {
     showDialog(
