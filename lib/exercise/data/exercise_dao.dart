@@ -186,7 +186,6 @@ class ExerciseDao {
         ).toMap();
         //
         newExercise.workSets.add(newWorkSet);
-
       } else {
         //
         newSetId = 1;
@@ -200,7 +199,7 @@ class ExerciseDao {
       }
 
       print(
-          "exercise not null , replace by newExercise: ${newExercise.toMap()}");
+          "exercise not null , replace by newExercise: ${newExercise.toMap()}",);
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
@@ -380,7 +379,9 @@ class ExerciseDao {
   }
 
   Future<List<Exercise>> reorderExercises(
-      int oldIndex, int newIndex, List<Exercise> exercises, workout) {
+      int oldIndex, int newIndex, Workout workout) {
+    print(
+        "$TAG reorder oldIndex: $oldIndex , newIndex: $newIndex workout: ${workout.toMap()}");
     return getExercises(workout).then((oldExercises) {
       if (newIndex > oldExercises.length) newIndex = oldExercises.length;
       if (oldIndex < newIndex) newIndex--;

@@ -36,5 +36,5 @@ abstract class ExerciseRepoApi {
 
   Future<dynamic> saveAllProgress(Workout workout);
 
-  Future<List<Exercise>> reorder(int oldIndex, int newIndex, List<Exercise> exercises, Workout workout);
+  Future<List<Exercise>> reorder(int oldIndex, int newIndex, Workout workout);
 }

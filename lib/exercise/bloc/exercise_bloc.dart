@@ -125,9 +125,10 @@ class ExerciseBloc implements ExerciseBlocApi {
   }
 
   @override
-  void reorder(int oldIndex, int newIndex, exercises, workout) {
+  void reorder(int oldIndex, int newIndex, workout) {
+    print("$TAG reorder");
     _exerciseRepo
-        .reorder(oldIndex, newIndex, exercises, workout)
+        .reorder(oldIndex, newIndex, workout)
         .then((exercises) {
       //
       valController.sink.add(exercises);

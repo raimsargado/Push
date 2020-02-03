@@ -24,5 +24,5 @@ abstract class ExerciseBlocApi {
 
   Future<bool> searchExercise(exerciseName);
 
-  void reorder(int oldIndex, int newIndex, List<Exercise> exercises, Workout workout);
+  void reorder(int oldIndex, int newIndex, Workout workout);
 }

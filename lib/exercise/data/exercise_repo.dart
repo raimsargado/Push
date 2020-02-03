@@ -7,6 +7,8 @@ import 'package:strongr/workset/models/workset.dart';
 class ExerciseRepo implements ExerciseRepoApi {
   var dao = ExerciseDao();
 
+  var TAG = "ExerciseRepo";
+
   @override
   Future<dynamic> addExercise(Exercise exercise, Workout workout) async {
     return await dao.addExercise(exercise, workout);
@@ -78,7 +80,8 @@ class ExerciseRepo implements ExerciseRepoApi {
 
   @override
   Future<List<Exercise>> reorder(
-      int oldIndex, int newIndex, exercises, workout) async {
-    return await dao.reorderExercises(oldIndex, newIndex, exercises, workout);
+      int oldIndex, int newIndex, workout) async {
+    print("$TAG reorder");
+    return await dao.reorderExercises(oldIndex, newIndex, workout);
   }
 }

@@ -6,6 +6,7 @@ import 'package:strongr/custom_widgets/overlay_progressbar.dart';
 import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
 import 'package:strongr/exercise/models/exercise.dart';
 import 'package:strongr/exercise/views/exercise_item.dart';
+import 'package:strongr/exercise/views/exercise_reorder_view.dart';
 import 'package:strongr/home/home_view.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
@@ -30,8 +31,6 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   var _exerciseNameFieldController = TextEditingController();
 
-  var _exercises = List<Exercise>();
-
   var _scrollController = new ScrollController();
 
   var _workoutNameController = TextEditingController();
@@ -48,7 +47,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   var _currentExer;
 
-  List<Exercise> exercises;
+  List<Exercise> _exercises;
 
   @override
   // ignore: must_call_super
@@ -141,6 +140,20 @@ class _WorkoutViewState extends State<WorkoutView> {
               _displayDeleteDialog();
             },
           ),
+          IconButton(
+            icon: Icon(Icons.sort),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ExerciseReorderView(
+                    exercises: _exercises,
+                    workout: widget.workout,
+                  ),
+                ),
+              );
+            },
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
             child: _isWorkoutStarted
@@ -189,15 +202,15 @@ class _WorkoutViewState extends State<WorkoutView> {
                   ),
                 );
               } else {
-                exercises = snapshot.data;
-                exercises.forEach((exer) {
+                _exercises = snapshot.data;
+                _exercises.forEach((exer) {
                   print(
                       "$TAG NOT EMPTY reorderexer _exerciseBloc.valOutput exercises: ${exer.toMap()}");
                 });
-                exercises.sort((a, b) {
-                  print("$TAG TOSORT : A: ${a.toMap()} , B: ${b.toMap()}");
-                  return a.id.compareTo(b.id);
-                });
+//                _exercises.sort((a, b) {
+//                  print("$TAG TOSORT : A: ${a.toMap()} , B: ${b.toMap()}");
+//                  return a.id.compareTo(b.id);
+//                });
                 print("$TAG ADDING EXER: $_isAddingExercise");
                 return _isAddingExercise
                     ? CustomScrollView(
@@ -206,7 +219,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                           SliverList(
                             delegate: SliverChildBuilderDelegate(
                                 (BuildContext context, int index) {
-                              var _exercise = exercises?.elementAt(index);
+                              var _exercise = _exercises?.elementAt(index);
                               print("$TAG _exercise: ${_exercise.toMap()}");
                               return Padding(
                                 padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
@@ -214,7 +227,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                                     workout: widget.workout,
                                     exercise: _exercise),
                               );
-                            }, childCount: exercises?.length),
+                            }, childCount: _exercises?.length),
                           ),
                         ],
                       )
@@ -222,7 +235,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                         controller: _scrollController,
                         child: ReorderableListView(
                             children: [
-                              for (final exer in exercises)
+                              for (final exer in _exercises)
                                 Padding(
                                   key: ValueKey(exer.id),
                                   padding:
@@ -244,8 +257,11 @@ class _WorkoutViewState extends State<WorkoutView> {
                               print("$TAG onReorder oldIndex: $oldIndex");
                               print("$TAG onReorder newIndex $newIndex");
 
-                              _exerciseBloc.reorder(oldIndex, newIndex,
-                                  exercises, widget.workout);
+                              _exerciseBloc.reorder(
+                                oldIndex,
+                                newIndex,
+                                widget.workout,
+                              );
                             }),
                       );
               }
