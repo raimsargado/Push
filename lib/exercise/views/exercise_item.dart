@@ -19,8 +19,6 @@ class ExerciseItem extends StatefulWidget {
   _ExerciseItemState createState() => _ExerciseItemState();
 }
 
-//TODO SEPARATE REORDER PAGE!!!
-
 class _ExerciseItemState extends State<ExerciseItem> {
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
   var _wSets = List<WorkSet>();
@@ -48,7 +46,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
   }
 
 //todo DONE TAG IS REMOVING AFTER LONG PRESS
-  //todo minimize item on press .. before re¬ordering
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

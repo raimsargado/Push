@@ -38,16 +38,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
 
   var TAG = "WORKSET ITEM";
 
-  bool _hasChanges() {
-    return _recentFieldController.text != _recentText ||
-        _weightFieldController.text != _weightText ||
-        _repsFieldController.text != _repsText;
-  }
-
-  @override
-  // ignore: must_call_super
-  void initState() {
-    print("$TAG initState");
+  void _initWidgets(){
     //
     var wSet = widget.workSet;
     _workSetText = wSet.set;
@@ -69,6 +60,25 @@ class _WorkSetItemState extends State<WorkSetItem> {
   }
 
   @override
+  void didUpdateWidget(WorkSetItem oldWidget) {
+    _initWidgets();
+  } //
+//  bool _hasChanges() {
+//    return _recentFieldController.text != _recentText ||
+//        _weightFieldController.text != _weightText ||
+//        _repsFieldController.text != _repsText;
+//  }
+
+
+
+  @override
+  // ignore: must_call_super
+  void initState() {
+    print("$TAG initState");
+    _initWidgets();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
       key: Key("unique key"),
@@ -81,7 +91,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
         child: Card(
 //        margin: EdgeInsets.fromLTRB(4, 8, 16, 4),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           child: Row(
             children: <Widget>[
               Expanded(
@@ -124,7 +134,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
                   child: TextField(
                     textAlign: TextAlign.center,
                     decoration:
-                        InputDecoration(alignLabelWithHint: true, hintText: ""),
+                    InputDecoration(alignLabelWithHint: true, hintText: ""),
                     controller: _repsFieldController,
 //                  focusNode: _repsFieldFocus,
                     keyboardType: TextInputType.number,
@@ -172,24 +182,22 @@ class _WorkSetItemState extends State<WorkSetItem> {
   String _repsText;
 
   void _onChange() {
-    if (_hasChanges()) {
-      if (_debounce?.isActive ?? false) _debounce.cancel();
-      _debounce = Timer(const Duration(milliseconds: 100), () {
-        _workSetText = _workSetText;
-        _recentText = _recentFieldController.text.trim() ?? _recentText;
-        _weightText = _weightFieldController.text.trim() ?? _weightText;
-        _repsText = _repsFieldController.text.trim() ?? _repsText;
-        _exerciseBloc.updateWorkSet(
-            widget.exercise,
-            WorkSet(
-              set: _workSetText,
-              recent: _recentText,
-              weight: _weightText,
-              reps: _repsText,
-              tag: _checkboxTag,
-            ),
-            widget.workout);
-      });
-    }
+    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _debounce = Timer(const Duration(milliseconds: 100), () {
+      _workSetText = _workSetText;
+      _recentText = _recentFieldController.text.trim() ?? _recentText;
+      _weightText = _weightFieldController.text.trim() ?? _weightText;
+      _repsText = _repsFieldController.text.trim() ?? _repsText;
+      _exerciseBloc.updateWorkSet(
+          widget.exercise,
+          WorkSet(
+            set: _workSetText,
+            recent: _recentText,
+            weight: _weightText,
+            reps: _repsText,
+            tag: _checkboxTag,
+          ),
+          widget.workout);
+    });
   }
 }

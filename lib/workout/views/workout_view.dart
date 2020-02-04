@@ -54,10 +54,6 @@ class _WorkoutViewState extends State<WorkoutView> {
   void initState() {
     _initWidgets();
     print("$TAG init state");
-    _scrollController.addListener(() {
-      print("$TAG _scrollController");
-      FocusScope.of(context).requestFocus(FocusNode());
-    });
   }
 
   @override
