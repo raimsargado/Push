@@ -27,7 +27,17 @@ class _ExerciseItemState extends State<ExerciseItem> {
   var TAG = "EXER ITEM";
   Exercise _exercise;
 
-  bool _isPannedDown = false;
+  _initWidgets() {
+    _exercise = widget.exercise;
+    _wSets.clear();
+    _exercise.workSets.forEach((workSetMap) {
+      _wSets.add(WorkSet.fromMap(workSetMap));
+    });
+    _wSets.sort(
+      (a, b) => a.set.toString().compareTo(b.set.toString()),
+    );
+    _defaultWeightUnit = _exercise.weightUnit;
+  }
 
   @override
   void initState() {
@@ -45,173 +55,152 @@ class _ExerciseItemState extends State<ExerciseItem> {
     });
   }
 
-//todo DONE TAG IS REMOVING AFTER LONG PRESS
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanDown: (details) {
-        print("onPanDown");
-        _isPannedDown = true;
-      },
-      child: Card(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              //ITEM HEADER
-              Flexible(
-                fit: FlexFit.loose,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
-                        child: Text(
-                          _exercise.name,
-                        ),
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      child: Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            //ITEM HEADER
+            Flexible(
+              fit: FlexFit.loose,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
+                      child: Text(
+                        _exercise.name,
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.delete_outline),
-                      onPressed: () {
-                        _exerciseBloc.deleteExercise(_exercise, widget.workout);
-                      },
-                    )
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete_outline),
+                    onPressed: () {
+                      _exerciseBloc.deleteExercise(_exercise, widget.workout);
+                    },
+                  )
+                ],
               ),
+            ),
 
-              //CONTENTS FROM SUBHEADER TO ADD SET BUTTON
-              Flexible(
-                fit: FlexFit.loose,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    //ITEM SUBHEADER
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Center(child: Text("SET")),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Center(child: Text("RECENT")),
-                          ),
-                          //WEIGHT HEADER
-                          Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 14, 0),
-                              child: Card(
-                                child: MaterialButton(
-                                  child: Text(
-                                    _defaultWeightUnit,
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  onPressed: () {
-                                    switch (_defaultWeightUnit) {
-                                      case "Kg":
-                                        _defaultWeightUnit = "Lb";
-                                        break;
-                                      case "Lb":
-                                        _defaultWeightUnit = "Lvl";
-                                        break;
-                                      case "Lvl":
-                                        _defaultWeightUnit = "Kg";
-                                        break;
-                                    }
-                                    setState(() {});
-                                    var exer = _exercise.toMap();
-                                    exer['weightUnit'] = _defaultWeightUnit;
-                                    _exerciseBloc.updateExercise(
-                                        Exercise.fromMap(exer), widget.workout);
-                                  },
+            //CONTENTS FROM SUBHEADER TO ADD SET BUTTON
+            Flexible(
+              fit: FlexFit.loose,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  //ITEM SUBHEADER
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Center(child: Text("SET")),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Center(child: Text("RECENT")),
+                        ),
+                        //WEIGHT HEADER
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 14, 0),
+                            child: Card(
+                              child: MaterialButton(
+                                child: Text(
+                                  _defaultWeightUnit,
+                                  style: TextStyle(color: Colors.grey),
                                 ),
+                                onPressed: () {
+                                  switch (_defaultWeightUnit) {
+                                    case "Kg":
+                                      _defaultWeightUnit = "Lb";
+                                      break;
+                                    case "Lb":
+                                      _defaultWeightUnit = "Lvl";
+                                      break;
+                                    case "Lvl":
+                                      _defaultWeightUnit = "Kg";
+                                      break;
+                                  }
+                                  setState(() {});
+                                  var exer = _exercise.toMap();
+                                  exer['weightUnit'] = _defaultWeightUnit;
+                                  _exerciseBloc.updateExercise(
+                                      Exercise.fromMap(exer), widget.workout);
+                                },
                               ),
                             ),
                           ),
-                          //PADDING
-                          Expanded(flex: 0, child: Center(child: Text(" "))),
-                          //REPS HEADER
-                          Expanded(
-                            flex: 1,
-                            child: Center(child: Text("REPS")),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Container(),
-                          ),
-                        ],
-                      ),
+                        ),
+                        //PADDING
+                        Expanded(flex: 0, child: Center(child: Text(" "))),
+                        //REPS HEADER
+                        Expanded(
+                          flex: 1,
+                          child: Center(child: Text("REPS")),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(),
+                        ),
+                      ],
                     ),
-                    //WORKSET LIST
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: CustomScrollView(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        slivers: <Widget>[
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                              var _workSet = _wSets?.elementAt(index);
-                              return Dismissible(
-                                direction: DismissDirection.endToStart,
-                                key: Key(_workSet.set + "${Random(10000)}"),
-                                onDismissed: (direction) {
-                                  _exerciseBloc.deleteWorkSet(
-                                      _exercise, _workSet, widget.workout);
-                                  // Shows the information on Snackbar
-                                  Scaffold.of(context).showSnackBar(
-                                      SnackBar(content: Text("Item removed.")));
-                                },
-                                child: WorkSetItem(
-                                  workSet: _workSet,
-                                  exercise: _exercise,
-                                  workout: widget.workout,
-                                ),
-                              );
-                            }, childCount: _wSets?.length),
-                          ),
-                        ],
-                      ),
+                  ),
+                  //WORKSET LIST
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: CustomScrollView(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      slivers: <Widget>[
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                            var _workSet = _wSets?.elementAt(index);
+                            return Dismissible(
+                              direction: DismissDirection.endToStart,
+                              key: Key(_workSet.set + "${Random(10000)}"),
+                              onDismissed: (direction) {
+                                _exerciseBloc.deleteWorkSet(
+                                    _exercise, _workSet, widget.workout);
+                                // Shows the information on Snackbar
+                                Scaffold.of(context).showSnackBar(
+                                    SnackBar(content: Text("Item removed.")));
+                              },
+                              child: WorkSetItem(
+                                workSet: _workSet,
+                                exercise: _exercise,
+                                workout: widget.workout,
+                              ),
+                            );
+                          }, childCount: _wSets?.length),
+                        ),
+                      ],
                     ),
-                    //ADD BUTTON
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: FlatButton(
-                        child: Text("Add Set"),
-                        onPressed: () {
-                          _exerciseBloc.addWorkSet(_exercise, widget.workout);
-                        },
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
+                  ),
+                  //ADD BUTTON
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: FlatButton(
+                      child: Text("Add Set"),
+                      onPressed: () {
+                        _exerciseBloc.addWorkSet(_exercise, widget.workout);
+                      },
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
-  }
-
-  _initWidgets() {
-    _exercise = widget.exercise;
-    _wSets.clear();
-    _exercise.workSets.forEach((workSetMap) {
-      _wSets.add(WorkSet.fromMap(workSetMap));
-    });
-    _wSets.sort(
-      (a, b) => a.set.toString().compareTo(b.set.toString()),
-    );
-    _defaultWeightUnit = _exercise.weightUnit;
   }
 }
