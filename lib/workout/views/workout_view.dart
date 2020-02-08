@@ -12,6 +12,7 @@ import 'package:strongr/home/home_view.dart';
 import 'package:strongr/service_init.dart';
 import 'package:strongr/workout/bloc/workout_bloc_api.dart';
 import 'package:strongr/workout/models/workout.dart';
+import 'package:strongr/workout/views/workout_timer.dart';
 import 'package:strongr/workset/models/workset.dart';
 
 class WorkoutView extends StatefulWidget {
@@ -58,6 +59,10 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
 
   String IS_WORKOUT_STARTED = "IS_WORKOUT_STARTED";
 
+  refresh() {
+    print("$TAG, refresh");
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +72,8 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
       _prefs = prefs;
     }).then((_) {
       _initWidgets();
-      _startTimer();
+      //todo wip refact
+//      _startTimer();
     });
 
     print("$TAG init state");
@@ -94,7 +100,8 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         print("$TAG AppLifecycleState resumed");
-        _startTimer();
+        //todo wip refact
+//        _startTimer();
         break;
       case AppLifecycleState.inactive:
         print("$TAG AppLifecycleState inactive");
@@ -102,8 +109,9 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
         //store start time if inactive..
         _prefs.setString(START_TIME, _startedDateTime.toString()).then((b) {
           _prefs.setBool(IS_WORKOUT_STARTED, _isWorkoutStarted).then((b) {
-            _timer.cancel();
-            _timeCount = 0;
+            //todo wip refact
+//            _timer.cancel();
+//            _timeCount = 0;
           });
         });
 
@@ -211,33 +219,38 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
             },
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
-            child: _isWorkoutStarted
-                ? IconButton(
-                    icon: Icon(Icons.pause_circle_outline),
-                    onPressed: () {
-                      //stop workout
-                      _displayStopWorkoutDialog();
-                    },
-                  )
-                : IconButton(
-                    icon: Icon(Icons.play_circle_outline),
-                    onPressed: () {
-                      //start workout
-                      print(
-                          "$TAG start time: _startWorkout: timecount : $_timeCount");
-                      _startWorkout();
-//                      initPlatformState();
-                    },
-                  ),
-          ),
-          _isWorkoutStarted
-              ? Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
-                  child: Center(
-                      child: Text("${format(Duration(seconds: _timeCount))}")),
-                )
-              : Container()
+              padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
+              child: WorkoutTimer(
+                notifyParent: refresh, //will trigger the [refresh()]
+              )
+
+//            _isWorkoutStarted
+//                ? IconButton(
+//                    icon: Icon(Icons.pause_circle_outline),
+//                    onPressed: () {
+//                      //stop workout
+//                      _displayStopWorkoutDialog();
+//                    },
+//                  )
+//                : IconButton(
+//                    icon: Icon(Icons.play_circle_outline),
+//                    onPressed: () {
+//                      //start workout
+//                      print(
+//                          "$TAG start time: _startWorkout:");
+//                      //todo wip refact
+////                      _startWorkout();
+////                      initPlatformState();
+//                    },
+//                  ),
+              ),
+//          _isWorkoutStarted
+//              ? Padding(
+//                  padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
+//                  child: Center(
+//                    child: WorkoutTimer(notifyParent: refresh),
+//                  ))
+//              : Container()
         ],
       ),
       body: StreamBuilder<List<Exercise>>(
@@ -399,127 +412,10 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
         });
   }
 
-  void _startWorkout() {
-    //set state icon
-    print("$TAG _startWorkout: prefs: $_prefs");
-    _prefs.setBool(IS_WORKOUT_STARTED, true).then((b) {
-      print("$TAG _startWorkout: setBool _isWorkoutStarted: $b");
-
-      _isWorkoutStarted = true;
-      _startTimer();
-    });
-  }
-
-  Timer _timer;
-  int _timeCount = 0;
-  String _timeOutput = "";
-
-  void _startTimer() {
-    if (_prefs.getBool(IS_WORKOUT_STARTED) != null &&
-        _prefs.getBool(IS_WORKOUT_STARTED)) {
-      //..
-      //just if true
-      _isWorkoutStarted = true; //for widget filter
-
-      //if theres no stored start time
-      //..store the start time
-      var prevStartTime = _prefs.getString(START_TIME);
-      if (prevStartTime == null || prevStartTime.isEmpty) {
-        print("$TAG start time : isEmpty");
-        _startedDateTime = DateTime.now();
-        _prefs.setString(START_TIME, _startedDateTime.toString()).then((b) {
-          //start timer
-          //fresh start of timer
-          //..
-          _timeCount = 0;
-          print("date now : ${new DateTime.now().millisecondsSinceEpoch} ");
-          const oneSec = const Duration(seconds: 1);
-          _timer = new Timer.periodic(
-            oneSec,
-            (Timer timer) => setState(() {
-              _timeCount = ++_timeCount;
-            }),
-          );
-        });
-      } else {
-        //has started time stored
-        //..
-        //compute the current time count before continuing the timer
-        //..get the diff of start time vs the current date time
-        _startedDateTime = DateTime.parse(_prefs.getString(START_TIME));
-        print("$TAG start time : not empty: $_startedDateTime");
-        var dateNow = DateTime.now();
-        //..convert the diff to seconds
-
-        var usedTime = dateNow.difference(_startedDateTime).inSeconds;
-
-        //..convert into timer count
-        _timeCount = usedTime;
-        print("date now : ${new DateTime.now().millisecondsSinceEpoch} ");
-        const oneSec = const Duration(seconds: 1);
-        _timer = new Timer.periodic(
-          oneSec,
-          (Timer timer) => setState(() {
-            _timeCount = ++_timeCount;
-          }),
-        );
-        //..continue the timer count
-
-        print("$TAG , TIMER : usedtime: $usedTime");
-        print("$TAG , TIMER : _timeCount: $_timeCount");
-      }
-    }
-  }
-
-  format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
-
-  void _displayStopWorkoutDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return new AlertDialog(
-            title: Container(child: Text('😒😒😒😒😒😒')),
-            content: Text(
-              'Are you sure to \nstop your workout?',
-              textAlign: TextAlign.center,
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('CANCEL'),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-              ),
-              FlatButton(
-                child: new Text('OK'),
-                onPressed: () {
-                  _stopWorkout();
-                  Navigator.of(context, rootNavigator: true).pop();
-
-                  //save all progress
-                  //update each exercise
-                  //update each workSet on each exercise
-                  _exerciseBloc.saveAllProgress(widget.workout);
-                },
-              )
-            ],
-          );
-        });
-  }
 
   void _initWidgets() {
     _workoutNameController.addListener(_onChange);
     _workoutNameController.text = widget.workout.name;
     _exerciseBloc.initExercises(widget.workout);
-  }
-
-  Future<void> _stopWorkout() async {
-    _prefs.clear();
-    setState(() {
-      _isWorkoutStarted = false;
-      _timer.cancel();
-      _timeCount = 0;
-    });
   }
 }
