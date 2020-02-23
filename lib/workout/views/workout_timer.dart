@@ -52,9 +52,6 @@ class _WorkoutTimerState extends State<WorkoutTimer> {
                 onPressed: () {
                   //stop workout
                   _displayStopWorkoutDialog();
-                  setState(() {
-                    _isWorkoutStarted = false;
-                  });
                 },
               )
             : IconButton(

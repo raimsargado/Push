@@ -240,7 +240,8 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
 //                    icon: Icon(Icons.play_circle_outline),
 //                    onPressed: () {
 //                      //start workout
-//                      print(
+//                      print(ufgskfyeuitasuysdjfjqw[orusiofeiurgyfgsajhfgyfgsfgy
+
 //                          "$TAG start time: _startWorkout:");
 //                      //todo wip refact
 ////                      _startWorkout();
