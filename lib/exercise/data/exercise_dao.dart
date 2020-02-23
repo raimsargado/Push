@@ -17,6 +17,7 @@ class ExerciseDao {
       await serviceLocator.get<AppDatabaseApi>().database;
 
   Future<dynamic> addExercise(Exercise exercise, Workout workout) async {
+    print("$TAG , addExercise: $exercise");
     return getExercises(workout).then((oldExers) async {
       var lastExer = Exercise();
       var sortId = 0;

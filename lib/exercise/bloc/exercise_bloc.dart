@@ -99,7 +99,7 @@ class ExerciseBloc implements ExerciseBlocApi {
         .updateWorkSet(exercise, newWorkSet, workout)
         .then((newExercises) {
       //push new list
-//      valController.sink.add(newExercises);
+      valController.sink.add(newExercises);
     });
   }
 
@@ -127,9 +127,7 @@ class ExerciseBloc implements ExerciseBlocApi {
   @override
   void reorder(int oldIndex, int newIndex, workout) {
     print("$TAG reorder");
-    _exerciseRepo
-        .reorder(oldIndex, newIndex, workout)
-        .then((exercises) {
+    _exerciseRepo.reorder(oldIndex, newIndex, workout).then((exercises) {
       //
       valController.sink.add(exercises);
     });

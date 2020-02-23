@@ -46,13 +46,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   @override
   void didUpdateWidget(ExerciseItem oldWidget) {
-    print("did update widget widget.exercise : ${widget.exercise.toMap()}");
+    print("$TAG , did update widget widget.exercise : ${widget.exercise.toMap()}");
     _initWidgets();
-    setState(() {
-      _wSets?.forEach((w) {
-        print("$TAG setState updated wsets : ${w.toMap()}");
-      });
-    });
   }
 
   @override
@@ -131,6 +126,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                                   }
                                   setState(() {});
                                   var exer = _exercise.toMap();
+                                  print("$TAG onpress weight exer: $exer");
                                   exer['weightUnit'] = _defaultWeightUnit;
                                   _exerciseBloc.updateExercise(
                                       Exercise.fromMap(exer), widget.workout);

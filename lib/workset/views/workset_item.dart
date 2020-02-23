@@ -36,146 +36,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
 
   String _workSetText;
 
-  var TAG = "WORKSET ITEM";
-
-  void _initWidgets(){
-    //
-    var wSet = widget.workSet;
-    _workSetText = wSet.set;
-    _recentText = wSet.recent ?? "";
-    _weightText = wSet.weight ?? "";
-    _repsText = wSet.reps ?? "";
-    _checkboxTag = wSet.tag ?? false;
-
-    ///
-    _workSetText = _workSetText;
-    _recentFieldController.text = _recentText;
-    _weightFieldController.text = _weightText;
-    _repsFieldController.text = _repsText;
-
-    ///
-    _recentFieldController.addListener(_onChange);
-    _weightFieldController.addListener(_onChange);
-    _repsFieldController.addListener(_onChange);
-  }
-
-  @override
-  void didUpdateWidget(WorkSetItem oldWidget) {
-    _initWidgets();
-  } //
-//  bool _hasChanges() {
-//    return _recentFieldController.text != _recentText ||
-//        _weightFieldController.text != _weightText ||
-//        _repsFieldController.text != _repsText;
-//  }
-
-
-
-  @override
-  // ignore: must_call_super
-  void initState() {
-    print("$TAG initState");
-    _initWidgets();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return VisibilityDetector(
-      key: Key("unique key"),
-      onVisibilityChanged: (VisibilityInfo info) {
-        print("$TAG ${info.visibleFraction} of my widget is visible");
-        print("$TAG SET : ${widget.workSet.toMap()} ");
-      },
-      child: GestureDetector(
-        onTap: () {},
-        child: Card(
-//        margin: EdgeInsets.fromLTRB(4, 8, 16, 4),
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: Center(child: Text(_workSetText)),
-              ),
-              Expanded(flex: 1, child: Center(child: Text(_recentText))),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: TextField(
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true, hintText: ""),
-                      controller: _weightFieldController,
-//                    focusNode: _weightFieldFocus,
-                      inputFormatters: <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(3)
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 0,
-                child: Icon(
-                  Icons.clear,
-                  color: Colors.grey,
-                  size: 20,
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    decoration:
-                    InputDecoration(alignLabelWithHint: true, hintText: ""),
-                    controller: _repsFieldController,
-//                  focusNode: _repsFieldFocus,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      WhitelistingTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(3)
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Checkbox(
-                    value: _checkboxTag,
-                    onChanged: (bool value) {
-                      print("onchange $value");
-                      setState(() {
-                        _checkboxTag = value;
-                        _onChange();
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _setFieldController.removeListener(_onChange);
-    _recentFieldController.removeListener(_onChange);
-    _weightFieldController.removeListener(_onChange);
-    _repsFieldController.removeListener(_onChange);
-  }
+  var TAG = "WORKSET_ITEM";
 
   String _recentText;
   String _weightText;
@@ -199,5 +60,130 @@ class _WorkSetItemState extends State<WorkSetItem> {
           ),
           widget.workout);
     });
+  }
+
+  void _initWidgets() {
+    //
+    var wSet = widget.workSet;
+    _workSetText = wSet.set;
+    _recentText = wSet.recent ?? "";
+    _weightText = wSet.weight ?? "";
+    _repsText = wSet.reps ?? "";
+    _checkboxTag = wSet.tag ?? false;
+
+    ///
+    _workSetText = _workSetText;
+    _recentFieldController.text = _recentText;
+    _weightFieldController.text = _weightText;
+    _repsFieldController.text = _repsText;
+
+    ///
+    _recentFieldController.addListener(_onChange);
+    _weightFieldController.addListener(_onChange);
+    _repsFieldController.addListener(_onChange);
+  }
+
+  @override
+  void didUpdateWidget(WorkSetItem oldWidget) {
+    print('$TAG , didUpdateWidget: ');
+  }
+
+  @override
+  // ignore: must_call_super
+  void initState() {
+    print("$TAG initState");
+    _initWidgets();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {},
+      child: Card(
+//        margin: EdgeInsets.fromLTRB(4, 8, 16, 4),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(_workSetText)),
+            ),
+            Expanded(flex: 1, child: Center(child: Text(_recentText))),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    decoration:
+                        InputDecoration(alignLabelWithHint: true, hintText: ""),
+                    controller: _weightFieldController,
+//                    focusNode: _weightFieldFocus,
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(3)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 0,
+              child: Icon(
+                Icons.clear,
+                color: Colors.grey,
+                size: 20,
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12.0, 0, 0, 0),
+                child: TextField(
+                  textAlign: TextAlign.center,
+                  decoration:
+                      InputDecoration(alignLabelWithHint: true, hintText: ""),
+                  controller: _repsFieldController,
+//                  focusNode: _repsFieldFocus,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(3)
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Checkbox(
+                  value: _checkboxTag,
+                  onChanged: (bool value) {
+                    print("onchange $value");
+                    setState(() {
+                      _checkboxTag = value;
+                      _onChange();
+                    });
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _setFieldController.removeListener(_onChange);
+    _recentFieldController.removeListener(_onChange);
+    _weightFieldController.removeListener(_onChange);
+    _repsFieldController.removeListener(_onChange);
   }
 }
