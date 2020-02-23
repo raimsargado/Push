@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class WorkoutTimer extends StatefulWidget {
   final Function() notifyParent;
 
@@ -51,7 +52,6 @@ class _WorkoutTimerState extends State<WorkoutTimer> {
                 onPressed: () {
                   //stop workout
                   _displayStopWorkoutDialog();
-                  widget.notifyParent();
                   setState(() {
                     _isWorkoutStarted = false;
                   });
@@ -63,7 +63,7 @@ class _WorkoutTimerState extends State<WorkoutTimer> {
                   //start workout
                   print("$TAG start time: _startWorkout:");
                   //todo wip refact
-                  widget.notifyParent();
+//                  widget.notifyParent();
                   setState(() {
                     _isWorkoutStarted = true;
                   });
@@ -150,6 +150,7 @@ class _WorkoutTimerState extends State<WorkoutTimer> {
   }
 
   Future<void> _stopWorkout() async {
+    widget.notifyParent();
     _prefs.clear();
     setState(() {
       _isWorkoutStarted = false;
@@ -183,11 +184,6 @@ class _WorkoutTimerState extends State<WorkoutTimer> {
                   _stopWorkout();
                   Navigator.of(context, rootNavigator: true).pop();
 
-                  //save all progress
-                  //update each exercise
-                  //update each workSet on each exercise
-                  //todo timer refact
-//                  _exerciseBloc.saveAllProgress(widget.workout);
                 },
               )
             ],

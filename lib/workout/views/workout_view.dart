@@ -59,8 +59,12 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
 
   String IS_WORKOUT_STARTED = "IS_WORKOUT_STARTED";
 
-  refresh() {
-    print("$TAG, refresh");
+  _saveAllProgress() {
+    print("$TAG, refresh _saveAllProgress");
+    //save all progress
+    //update each exercise
+    //update each workSet on each exercise
+    _exerciseBloc.saveAllProgress(widget.workout);
   }
 
   @override
@@ -221,7 +225,7 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
           Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
               child: WorkoutTimer(
-                notifyParent: refresh, //will trigger the [refresh()]
+                notifyParent: _saveAllProgress, //will trigger the [refresh()]
               )
 
 //            _isWorkoutStarted
@@ -411,7 +415,6 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
           );
         });
   }
-
 
   void _initWidgets() {
     _workoutNameController.addListener(_onChange);
