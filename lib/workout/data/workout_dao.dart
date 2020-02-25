@@ -9,18 +9,22 @@ class WorkoutDao {
   Future<Database> get _database async =>
       await serviceLocator.get<AppDatabaseApi>().database;
   var _exerdao = ExerciseDao();
+
   //workout_store
   //exercise_store
   //workSet_store
 
   static const String WORKOUT_STORE_NAME = 'WORKOUTS';
+  static const String TAG = 'WorkoutDao';
   final _newWorkoutStore = intMapStoreFactory.store(WORKOUT_STORE_NAME);
 
   Future<int> addWorkout(Workout workout) async {
-   return await _newWorkoutStore.add(await _database, workout.toMap());
+    //returns the key
+    return await _newWorkoutStore.add(await _database, workout.toMap());
   }
 
-  Future update(Workout workout) async {
+  Future updateWorkout(Workout workout) async {
+    print("$TAG, updateworkout: ${workout.toMap()}");
     // For filtering by key (ID), RegEx, greater than, and many other criteria,
     // we use a Finder.
     final finder = Finder(filter: Filter.byKey(workout.id));
@@ -33,13 +37,15 @@ class WorkoutDao {
 
   Future<dynamic> deleteWorkout(Workout workout) async {
     final finder = Finder(filter: Filter.byKey(workout.id));
-    return await _newWorkoutStore.delete(
+    return await _newWorkoutStore
+        .delete(
       await _database,
       finder: finder,
-    ).then((_){
+    )
+        .then((_) {
       //delete exercises
-      _exerdao.getExercises(workout).then((exers){
-        exers.forEach((exercise){
+      _exerdao.getExercises(workout).then((exers) {
+        exers.forEach((exercise) {
           _exerdao.deleteExercise(exercise, workout);
         });
       });

@@ -8,6 +8,7 @@ import 'package:strongr/workout/models/workout.dart';
 
 class WorkoutBloc implements WorkoutBlocApi {
   var _workoutList = List<Workout>();
+  var TAG = "WorkoutBloc";
   var _workoutRepo = serviceLocator.get<WorkoutRepoApi>();
   var valController = new StreamController<List<Workout>>.broadcast();
   var valControllerOutput = new StreamController<List<Workout>>.broadcast();
@@ -55,6 +56,7 @@ class WorkoutBloc implements WorkoutBlocApi {
   @override
   void valUpdate(dynamic any) {
     var workout = any as Workout;
+    print("$TAG, valUpdate : WORKOUT : ${workout.toMap()}");
     _workoutRepo.updateWorkout(workout).then((_) {
       var filteredWorkout = _workoutList.firstWhere((w) => w.id == workout.id);
       print("filteredworkout ${filteredWorkout.name}");

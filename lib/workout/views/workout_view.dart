@@ -25,7 +25,7 @@ class WorkoutView extends StatefulWidget {
   _WorkoutViewState createState() => _WorkoutViewState();
 }
 
-class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
+class _WorkoutViewState extends State<WorkoutView> {
   //
   var _exerciseBloc = serviceLocator.get<ExerciseBlocApi>();
 
@@ -59,6 +59,8 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
 
   String IS_WORKOUT_STARTED = "IS_WORKOUT_STARTED";
 
+  String _startTime;
+
   _saveAllProgress() {
     print("$TAG, refresh _saveAllProgress");
     //save all progress
@@ -70,15 +72,15 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    _initWidgets();
 
-    SharedPreferences.getInstance().then((prefs) {
-      _prefs = prefs;
-    }).then((_) {
-      _initWidgets();
-      //todo wip refact
+//    SharedPreferences.getInstance().then((prefs) {
+//      _prefs = prefs;
+//    }).then((_) {
+//      _initWidgets();
+    //todo wip refact
 //      _startTimer();
-    });
+//    });
 
     print("$TAG init state");
   }
@@ -87,7 +89,6 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
   void dispose() {
     super.dispose();
     _workoutNameController.removeListener(_onChange);
-    WidgetsBinding.instance.removeObserver(this);
   }
 
   AppLifecycleState _notification;
@@ -99,41 +100,6 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
     _initWidgets();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        print("$TAG AppLifecycleState resumed");
-        //todo wip refact
-//        _startTimer();
-        break;
-      case AppLifecycleState.inactive:
-        print("$TAG AppLifecycleState inactive");
-        //todo
-        //store start time if inactive..
-        _prefs.setString(START_TIME, _startedDateTime.toString()).then((b) {
-          _prefs.setBool(IS_WORKOUT_STARTED, _isWorkoutStarted).then((b) {
-            //todo wip refact
-//            _timer.cancel();
-//            _timeCount = 0;
-          });
-        });
-
-        //if time stops or time terminated
-        //..store the date time now of start time
-
-        break;
-      case AppLifecycleState.paused:
-        print("$TAG AppLifecycleState paused");
-
-        break;
-      case AppLifecycleState.detached:
-        print("$TAG AppLifecycleState detached");
-
-        break;
-    }
-  }
-
   void _onChange() {
     newWorkoutName = _workoutNameController.text;
     print("_onChange orig workout name ${widget.workout.name}");
@@ -142,7 +108,7 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
     if (_hasChanges()) {
       if (_debounce?.isActive ?? false) _debounce.cancel();
       _debounce = Timer(const Duration(milliseconds: 1000), () {
-        var w = Workout(_workoutNameController.text);
+        var w = Workout(_workoutNameController.text, _startTime);
         w.id = widget.workout.id;
         //update workout db
         _workoutBloc.valUpdate(w);
@@ -225,8 +191,9 @@ class _WorkoutViewState extends State<WorkoutView> with WidgetsBindingObserver {
           Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
               child: WorkoutTimer(
-                notifyParent: _saveAllProgress, //will trigger the [refresh()]
-              )
+                  saveCallback: _saveAllProgress,
+                  //will trigger the [_saveAllProgress()]
+                  workout: widget.workout)
 
 //            _isWorkoutStarted
 //                ? IconButton(

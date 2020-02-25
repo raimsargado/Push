@@ -1,38 +1,66 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:strongr/service_init.dart';
+import 'package:strongr/workout/bloc/workout_bloc_api.dart';
+import 'package:strongr/workout/models/workout.dart';
 
 class WorkoutTimer extends StatefulWidget {
-  final Function() notifyParent;
+  final Function() saveCallback;
+  final Workout workout;
 
-  const WorkoutTimer({Key key, this.notifyParent}) : super(key: key);
+  const WorkoutTimer({Key key, this.saveCallback, this.workout})
+      : super(key: key);
 
   @override
   _WorkoutTimerState createState() => _WorkoutTimerState();
 }
 
-class _WorkoutTimerState extends State<WorkoutTimer> {
-  SharedPreferences _prefs;
+class _WorkoutTimerState extends State<WorkoutTimer>
+    with WidgetsBindingObserver {
+  var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
 
   DateTime _startedDateTime;
 
   String TAG = 'WorkoutTimer';
-  String START_TIME = 'START_TIME';
-  String IS_WORKOUT_STARTED = "IS_WORKOUT_STARTED";
 
   bool _isWorkoutStarted = false;
 
   @override
   void initState() {
-    SharedPreferences.getInstance().then((prefs) {
-      _prefs = prefs;
-    }).then((_) {
-//      _initWidgets();
-      //todo wip refact
-//      _startTimer();
-    });
+    if (widget.workout.startTime != null &&
+        widget.workout.startTime.isNotEmpty) {
+      _startedDateTime = DateTime.parse(widget.workout.startTime);
+    }
+    _startTimer();
+    print("$TAG , init state _startedDateTime : $_startedDateTime");
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("$TAG AppLifecycleState resumed");
+        _startTimer();
+        break;
+      case AppLifecycleState.inactive:
+        print("$TAG AppLifecycleState inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("$TAG AppLifecycleState paused");
+        break;
+      case AppLifecycleState.detached:
+        print("$TAG AppLifecycleState detached");
+        break;
+    }
   }
 
   @override
@@ -74,15 +102,20 @@ class _WorkoutTimerState extends State<WorkoutTimer> {
 
   format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
 
+  //this can only be triggered via play button for only once
   void _startWorkout() {
-    //set state icon
-    print("$TAG _startWorkout: prefs: $_prefs");
-    _prefs.setBool(IS_WORKOUT_STARTED, true).then((b) {
-      print("$TAG _startWorkout: setBool _isWorkoutStarted: $b");
-
-      _isWorkoutStarted = true;
-      _startTimer();
-    });
+    print("$TAG _startWorkout: _startedDateTime : $_startedDateTime");
+    //
+    _startedDateTime = DateTime.now();
+    //update the workout
+    var w = Workout(
+      widget.workout.name,
+      _startedDateTime.toString(),
+    );
+    w.id = widget.workout.id;
+    _workoutBloc.valUpdate(w);
+    //start timer
+    _startTimer();
   }
 
   Timer _timer;
@@ -90,65 +123,56 @@ class _WorkoutTimerState extends State<WorkoutTimer> {
   String _timeOutput = "";
 
   void _startTimer() {
-    if (_prefs.getBool(IS_WORKOUT_STARTED) != null &&
-        _prefs.getBool(IS_WORKOUT_STARTED)) {
+    if (_timer != null) {
+      //reset
+      _timer.cancel();
+    }
+    if (_startedDateTime != null) {
       //..
       //just if true
       _isWorkoutStarted = true; //for widget filter
 
-      //if theres no stored start time
-      //..store the start time
-      var prevStartTime = _prefs.getString(START_TIME);
-      if (prevStartTime == null || prevStartTime.isEmpty) {
-        print("$TAG start time : isEmpty");
-        _startedDateTime = DateTime.now();
-        _prefs.setString(START_TIME, _startedDateTime.toString()).then((b) {
-          //start timer
-          //fresh start of timer
-          //..
-          _timeCount = 0;
-          print("date now : ${new DateTime.now().millisecondsSinceEpoch} ");
-          const oneSec = const Duration(seconds: 1);
-          _timer = new Timer.periodic(
-            oneSec,
-            (Timer timer) => setState(() {
+      //has started time stored
+      //..
+      //compute the current time count before continuing the timer
+      //..get the diff of start time vs the current date time
+      print("$TAG start time : not empty: $_startedDateTime");
+      var dateNow = DateTime.now();
+      //..convert the diff to seconds
+
+      var usedTime = dateNow.difference(_startedDateTime).inSeconds;
+
+      //..convert into timer count
+      _timeCount = usedTime;
+      print("date now : ${new DateTime.now().millisecondsSinceEpoch} ");
+      const oneSec = const Duration(seconds: 1);
+      _timer = new Timer.periodic(
+        oneSec,
+        (Timer timer) {
+          if (mounted) {
+            setState(() {
               _timeCount = ++_timeCount;
-            }),
-          );
-        });
-      } else {
-        //has started time stored
-        //..
-        //compute the current time count before continuing the timer
-        //..get the diff of start time vs the current date time
-        _startedDateTime = DateTime.parse(_prefs.getString(START_TIME));
-        print("$TAG start time : not empty: $_startedDateTime");
-        var dateNow = DateTime.now();
-        //..convert the diff to seconds
-
-        var usedTime = dateNow.difference(_startedDateTime).inSeconds;
-
-        //..convert into timer count
-        _timeCount = usedTime;
-        print("date now : ${new DateTime.now().millisecondsSinceEpoch} ");
-        const oneSec = const Duration(seconds: 1);
-        _timer = new Timer.periodic(
-          oneSec,
-          (Timer timer) => setState(() {
-            _timeCount = ++_timeCount;
-          }),
-        );
-        //..continue the timer count
-
-        print("$TAG , TIMER : usedtime: $usedTime");
-        print("$TAG , TIMER : _timeCount: $_timeCount");
-      }
+            });
+          }
+        },
+      );
+      //..continue the timer count
+      print("$TAG , TIMER : usedtime: $usedTime");
+      print("$TAG , TIMER : _timeCount: $_timeCount");
     }
   }
 
   Future<void> _stopWorkout() async {
-    widget.notifyParent();
-    _prefs.clear();
+    //clear started time
+    var w = Workout(
+      widget.workout.name,
+      null,
+    );
+    w.id = widget.workout.id;
+    _workoutBloc.valUpdate(w);
+    //save
+    widget.saveCallback();
+    //reset vars
     setState(() {
       _isWorkoutStarted = false;
       _timer.cancel();
@@ -180,7 +204,6 @@ class _WorkoutTimerState extends State<WorkoutTimer> {
                   //todo wip refact
                   _stopWorkout();
                   Navigator.of(context, rootNavigator: true).pop();
-
                 },
               )
             ],
