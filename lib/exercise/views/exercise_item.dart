@@ -46,7 +46,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
 
   @override
   void didUpdateWidget(ExerciseItem oldWidget) {
-    print("$TAG , did update widget widget.exercise : ${widget.exercise.toMap()}");
+    print(
+        "$TAG , did update widget widget.exercise : ${widget.exercise.toMap()}");
     _initWidgets();
   }
 
@@ -75,7 +76,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   IconButton(
                     icon: Icon(Icons.delete_outline),
                     onPressed: () {
-                      _exerciseBloc.deleteExercise(_exercise, widget.workout);
+                      //displaydialog
+                      _displayDeleteExerDialog(
+                          context, _exercise, widget.workout);
                     },
                   )
                 ],
@@ -198,5 +201,40 @@ class _ExerciseItemState extends State<ExerciseItem> {
         ),
       ),
     );
+  }
+
+  _displayDeleteExerDialog(
+    BuildContext context,
+    Exercise exercise,
+    Workout workout,
+  ) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return new AlertDialog(
+            title: Text('Delete exercise: '),
+            content: Wrap(
+              children: [
+                Center(child: Text('${exercise.name.toUpperCase()}')),
+              ],
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('CANCEL'),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              ),
+              FlatButton(
+                child: new Text('OK'),
+                onPressed: () {
+                  _exerciseBloc.deleteExercise(exercise, workout);
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              )
+            ],
+          );
+        });
   }
 }

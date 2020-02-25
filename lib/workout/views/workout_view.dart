@@ -74,14 +74,6 @@ class _WorkoutViewState extends State<WorkoutView> {
     super.initState();
     _initWidgets();
 
-//    SharedPreferences.getInstance().then((prefs) {
-//      _prefs = prefs;
-//    }).then((_) {
-//      _initWidgets();
-    //todo wip refact
-//      _startTimer();
-//    });
-
     print("$TAG init state");
   }
 
@@ -195,34 +187,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   //will trigger the [_saveAllProgress()]
                   workout: widget.workout)
 
-//            _isWorkoutStarted
-//                ? IconButton(
-//                    icon: Icon(Icons.pause_circle_outline),
-//                    onPressed: () {
-//                      //stop workout
-//                      _displayStopWorkoutDialog();
-//                    },
-//                  )
-//                : IconButton(
-//                    icon: Icon(Icons.play_circle_outline),
-//                    onPressed: () {
-//                      //start workout
-//                      print(ufgskfyeuitasuysdjfjqw[orusiofeiurgyfgsajhfgyfgsfgy
-
-//                          "$TAG start time: _startWorkout:");
-//                      //todo wip refact
-////                      _startWorkout();
-////                      initPlatformState();
-//                    },
-//                  ),
               ),
-//          _isWorkoutStarted
-//              ? Padding(
-//                  padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
-//                  child: Center(
-//                    child: WorkoutTimer(notifyParent: refresh),
-//                  ))
-//              : Container()
         ],
       ),
       body: StreamBuilder<List<Exercise>>(
