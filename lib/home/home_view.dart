@@ -45,7 +45,7 @@ class WorkoutListView extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           } else {
             var workouts = snapshot.data as List<Workout>;
-            workouts.forEach((w){
+            workouts.forEach((w) {
               print("home_view workout: ${w.toMap()}");
             });
             if (workouts.isNotEmpty) {
@@ -115,12 +115,12 @@ class WorkoutListView extends StatelessWidget {
                 child: new Text('OK'),
                 onPressed: () {
                   _workoutBloc
-                      .valSearch(Workout(_textFieldController.text, ""))
+                      .valSearch(_textFieldController.text)
                       .then((isExist) {
                     print("workout exist: $isExist");
                     if (!isExist) {
-                      _workoutBloc
-                          .valCreate(Workout(_textFieldController.text, ""));
+                      _workoutBloc.valCreate(
+                          Workout(_textFieldController.text, "", null));
                       Navigator.of(context, rootNavigator: true).pop();
                     } else {
                       Fluttertoast.showToast(

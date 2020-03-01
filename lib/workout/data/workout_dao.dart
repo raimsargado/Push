@@ -1,4 +1,5 @@
 import 'package:sembast/sembast.dart';
+import 'package:sembast/utils/value_utils.dart';
 import 'package:strongr/app_db_interface.dart';
 import 'package:strongr/exercise/data/exercise_dao.dart';
 import 'package:strongr/service_init.dart';
@@ -35,6 +36,42 @@ class WorkoutDao {
     );
   }
 
+//  Future<List<Workout>> updateWorkout(Workout workout) async {
+//    print("$TAG : updateWorkSet: workout: ${workout.name}");
+//
+//    final finder = Finder(filter: Filter.equals("name", workout.name));
+//
+//    // find a record
+//    var _workout =
+//    await _newWorkoutStore.findFirst(await _database, finder: finder);
+//
+//    // record snapshot are read-only.
+//    // If you want to modify it you should clone it
+//    if (_workout != null) {
+//      var map = cloneMap(_workout.value);
+//      var newExercise = Workout.fromMap(map);
+//      //updating sortId
+//      newExercise.sortId
+//      //adding new
+//      newExercise.workSets.add(newWorkSet.toMap());
+//      print(
+//          "exercise not null ,updateWorkSet replace by newExercise: ${newExercise.toMap()}");
+//      return await _exercisesStore
+//          .update(await _database, newExercise.toMap(), finder: finder)
+//          .then((_) {
+//        return getExercises(workout);
+//      });
+//    } else {
+//      print(
+//          "exercise is null ,updateWorkSet data exercise: ${exercise.toMap()}");
+//      return await _exercisesStore
+//          .add(await _database, exercise.toMap())
+//          .then((_) {
+//        return getExercises(workout);
+//      });
+//    }
+//  }
+
   Future<dynamic> deleteWorkout(Workout workout) async {
     final finder = Finder(filter: Filter.byKey(workout.id));
     return await _newWorkoutStore
@@ -55,7 +92,7 @@ class WorkoutDao {
   Future<List<Workout>> getWorkoutsFromDao() async {
     // Finder object can also sort data.
     final finder = Finder(sortOrders: [
-      SortOrder('name'),
+      SortOrder('sortId'),
     ]);
 
     final recordSnapshots = await _newWorkoutStore.find(
@@ -74,11 +111,11 @@ class WorkoutDao {
     }).toList();
   }
 
-  Future<bool> hasWorkout(Workout workout) async {
+  Future<bool> hasWorkout(String workoutName) async {
     //
     final finder = Finder(
         filter: Filter.and([
-      Filter.equals("name", workout.name),
+      Filter.equals("name", workoutName),
     ]));
     //
     var _workoutList =
@@ -86,4 +123,49 @@ class WorkoutDao {
     print("workout data length: ${_workoutList.length}");
     return _workoutList.length > 0;
   }
+
+//  Future<List<Workout>> reorderWorkouts(
+//      int oldIndex, int newIndex, Workout workout) {
+//    print(
+//        "$TAG reorder oldIndex: $oldIndex , newIndex: $newIndex workout: ${workout.toMap()}");
+//    return getWorkoutsFromDao().then((oldExercises) {
+//      if (newIndex > oldExercises.length) newIndex = oldExercises.length;
+//      if (oldIndex < newIndex) newIndex--;
+//
+//      var exercise = oldExercises[oldIndex];
+//      oldExercises.remove(exercise);
+//      oldExercises.insert(newIndex, exercise);
+//      var sortId;
+//      var newExercises = List<Exercise>();
+//      oldExercises.forEach((exer) {
+//        print("$TAG reorderexer exercises: ${exer.toMap()}");
+//        sortId = sortId == null ? 0 : ++sortId;
+//        newExercises.add(
+//          Exercise(
+//              sortId: sortId,
+//              name: exer.name,
+//              workSets: exer.workSets,
+//              weightUnit: exer.weightUnit),
+//        );
+//      });
+//
+//      return newExercises;
+//    }).then((newExers) {
+//      newExers.forEach((exer) {
+//        print("$TAG reorderexer newExercises : ${exer.toMap()}");
+//      });
+//
+//      //replace outdated exers
+//      return replaceExercises(newExers, workout).then((_) {
+//        //get updated exers with updated sortId
+//        return getExercises(workout).then((exers) {
+//          exers.forEach((e) {
+//            print("$TAG reorderexer before push getExercises : ${e.toMap()}");
+//          });
+//          return exers;
+//        });
+//      });
+//    });
+//  }
+
 }

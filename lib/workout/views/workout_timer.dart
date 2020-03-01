@@ -111,6 +111,7 @@ class _WorkoutTimerState extends State<WorkoutTimer>
     var w = Workout(
       widget.workout.name,
       _startedDateTime.toString(),
+      widget.workout.sortId,
     );
     w.id = widget.workout.id;
     _workoutBloc.valUpdate(w);
@@ -167,6 +168,7 @@ class _WorkoutTimerState extends State<WorkoutTimer>
     var w = Workout(
       widget.workout.name,
       null,
+      widget.workout.sortId,
     );
     w.id = widget.workout.id;
     _workoutBloc.valUpdate(w);

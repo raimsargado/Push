@@ -72,7 +72,7 @@ class WorkoutBloc implements WorkoutBlocApi {
 
   @override
   Future<bool> valSearch(dynamic any) async {
-    var workout = any as Workout;
+    var workoutName = any as String;
     bool exists = false;
     print("workout bloc search workoutlist: ${_workoutList.length}");
     if (_workoutList.isNotEmpty) {
@@ -80,7 +80,7 @@ class WorkoutBloc implements WorkoutBlocApi {
         print("workout exists: isNotEmpty _workoutList ${w.name}");
       });
       var filtered = _workoutList.firstWhere(
-          (w) => w.name.trim() == workout.name.trim(),
+          (w) => w.name.trim() == workoutName.trim(),
           orElse: () => null);
       exists = filtered != null;
       print("workout exists: isNotEmpty $exists");

@@ -100,7 +100,11 @@ class _WorkoutViewState extends State<WorkoutView> {
     if (_hasChanges()) {
       if (_debounce?.isActive ?? false) _debounce.cancel();
       _debounce = Timer(const Duration(milliseconds: 1000), () {
-        var w = Workout(_workoutNameController.text, _startTime);
+        var w = Workout(
+          _workoutNameController.text,
+          _startTime,
+          widget.workout.sortId,
+        );
         w.id = widget.workout.id;
         //update workout db
         _workoutBloc.valUpdate(w);
@@ -185,9 +189,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: WorkoutTimer(
                   saveCallback: _saveAllProgress,
                   //will trigger the [_saveAllProgress()]
-                  workout: widget.workout)
-
-              ),
+                  workout: widget.workout)),
         ],
       ),
       body: StreamBuilder<List<Exercise>>(
