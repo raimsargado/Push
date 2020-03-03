@@ -25,17 +25,21 @@ class WorkoutBloc implements WorkoutBlocApi {
     });
   }
 
+//todo fix the sortids every after delete
+  //todo or... increment the highest sortid then add the workout
   @override
   Stream get valOutput => valControllerOutput.stream;
 
   @override
   void valCreate(dynamic any) {
     var workout = any as Workout;
-    _workoutRepo.addWorkout(workout).then((key) {
+    var workoutToPush = Workout(workout.name, workout.startTime,
+        _workoutList.isNotEmpty ? _workoutList.length - 1 : 0);
+    _workoutRepo.addWorkout(workoutToPush).then((key) {
       //update view after adding workout
       print("workout bloc workout key: $key");
-      workout.id = key;
-      _workoutList.add(workout);
+      workoutToPush.id = key;
+      _workoutList.add(workoutToPush);
       valController.sink.add(_workoutList); //update list
     });
   }
@@ -97,5 +101,14 @@ class WorkoutBloc implements WorkoutBlocApi {
   void dispose() {
     valControllerOutput.close();
     valController.close();
+  }
+
+  @override
+  void reorder(int oldIndex, int newIndex) {
+    _workoutRepo.reorder(oldIndex, newIndex).then((workouts) {
+      _workoutList.clear();
+      _workoutList.addAll(workouts);
+      valController.sink.add(_workoutList);
+    });
   }
 }

@@ -1,5 +1,4 @@
 import 'package:sembast/sembast.dart';
-import 'package:sembast/utils/value_utils.dart';
 import 'package:strongr/app_db_interface.dart';
 import 'package:strongr/exercise/data/exercise_dao.dart';
 import 'package:strongr/service_init.dart';
@@ -29,7 +28,7 @@ class WorkoutDao {
     // For filtering by key (ID), RegEx, greater than, and many other criteria,
     // we use a Finder.
     final finder = Finder(filter: Filter.byKey(workout.id));
-    await _newWorkoutStore.update(
+    return await _newWorkoutStore.update(
       await _database,
       workout.toMap(),
       finder: finder,
@@ -99,7 +98,7 @@ class WorkoutDao {
       await _database,
       finder: finder,
     );
-
+//todo fix reorder error .. cant update the view . but probably updating the database
     // Making a List<Workout> out of List<RecordSnapshot>
     return recordSnapshots.map((snapshot) {
       final workout = Workout.fromMap(snapshot.value);
@@ -124,48 +123,60 @@ class WorkoutDao {
     return _workoutList.length > 0;
   }
 
-//  Future<List<Workout>> reorderWorkouts(
-//      int oldIndex, int newIndex, Workout workout) {
-//    print(
-//        "$TAG reorder oldIndex: $oldIndex , newIndex: $newIndex workout: ${workout.toMap()}");
-//    return getWorkoutsFromDao().then((oldExercises) {
-//      if (newIndex > oldExercises.length) newIndex = oldExercises.length;
-//      if (oldIndex < newIndex) newIndex--;
-//
-//      var exercise = oldExercises[oldIndex];
-//      oldExercises.remove(exercise);
-//      oldExercises.insert(newIndex, exercise);
-//      var sortId;
-//      var newExercises = List<Exercise>();
-//      oldExercises.forEach((exer) {
-//        print("$TAG reorderexer exercises: ${exer.toMap()}");
-//        sortId = sortId == null ? 0 : ++sortId;
-//        newExercises.add(
-//          Exercise(
-//              sortId: sortId,
-//              name: exer.name,
-//              workSets: exer.workSets,
-//              weightUnit: exer.weightUnit),
-//        );
-//      });
-//
-//      return newExercises;
-//    }).then((newExers) {
-//      newExers.forEach((exer) {
-//        print("$TAG reorderexer newExercises : ${exer.toMap()}");
-//      });
-//
-//      //replace outdated exers
-//      return replaceExercises(newExers, workout).then((_) {
-//        //get updated exers with updated sortId
-//        return getExercises(workout).then((exers) {
-//          exers.forEach((e) {
-//            print("$TAG reorderexer before push getExercises : ${e.toMap()}");
-//          });
-//          return exers;
-//        });
-//      });
-//    });
-//  }
+  Future<List<Workout>> reorder(int oldIndex, int newIndex) {
+    return getWorkoutsFromDao().then((oldWorkouts) {
+      if (newIndex > oldWorkouts.length) newIndex = oldWorkouts.length;
+      if (oldIndex < newIndex) newIndex--;
 
+      var workout = oldWorkouts[oldIndex];
+      oldWorkouts.remove(workout);
+      oldWorkouts.insert(newIndex, workout);
+      int sortId;
+      var newWorkouts = List<Workout>();
+      oldWorkouts.forEach((w) {
+        print("$TAG reorder workouts: ${w.toMap()}");
+        sortId = sortId == null ? 0 : ++sortId;
+        var workout = Workout(
+          w.name,
+          w.startTime,
+          sortId,
+        );
+        workout.id = w.id;
+        newWorkouts.add(workout);
+      });
+      return newWorkouts;
+    }).then((newWorkouts) {
+      newWorkouts.forEach((workout) {
+        print("$TAG reorder newWorkouts : ${workout.toMap()}");
+      });
+      //replace outdated exers
+      return updateWorkouts(newWorkouts).then((_) {
+        //get updated exers with updated sortId
+        return newWorkouts;
+//
+//        return getWorkoutsFromDao().then((workouts) {
+//          workouts.forEach((w) {
+//            print("$TAG reorder before push getWorkoutsFromDao : ${w.toMap()}");
+//          });
+//        });
+      });
+    });
+  }
+
+  Future<dynamic> updateWorkouts(List<Workout> newWorkouts) async {
+    //update workout
+    var processCount = 0;
+    for (final w in newWorkouts) {
+      updateWorkout(w).then((_) {
+        ++processCount;
+        print("$TAG , updateWorkouts :  workout ${w.toMap()}");
+        print("$TAG , updateWorkouts :  processCount $processCount");
+      });
+
+      if (processCount == newWorkouts.length) {
+        print("$TAG , updateWorkouts :  return processCount: $processCount");
+        return Future<void>.value();
+      }
+    }
+  }
 }

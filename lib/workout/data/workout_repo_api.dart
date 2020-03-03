@@ -19,4 +19,6 @@ abstract class WorkoutRepoApi {
   Future<dynamic> deleteWorkout(Workout workOut);
 
   Future<dynamic> searchWorkout(String workoutName);
+
+  Future<List<Workout>> reorder(int oldIndex, int newIndex);
 }

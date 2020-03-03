@@ -41,4 +41,9 @@ class WorkoutRepo implements WorkoutRepoApi {
   Future<bool> searchWorkout(String workoutName) async {
     return await dao.hasWorkout(workoutName);
   }
+
+  @override
+  Future<List<Workout>> reorder(int oldIndex, int newIndex) async {
+    return await dao.reorder(oldIndex,newIndex);
+  }
 }

@@ -22,6 +22,8 @@ class WorkoutListView extends StatelessWidget {
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
   var _workouts = List<Workout>();
 
+  var TAG = "WorkoutListView";
+
   @override
   Widget build(BuildContext context) {
 //    final String assetName = 'assets/BikiniDoodle.svg';
@@ -50,20 +52,37 @@ class WorkoutListView extends StatelessWidget {
             });
             if (workouts.isNotEmpty) {
               var wList = workouts.toSet().toList();
-              return CustomScrollView(
-                slivers: <Widget>[
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      var _workout = wList?.elementAt(index);
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                        child: WorkoutItem(workout: _workout),
-                      );
-                    }, childCount: wList?.length),
-                  ),
+
+              return ReorderableListView(
+                children: <Widget>[
+                  for (final workout in wList)
+                    Padding(
+                      key: ValueKey(workout.id),
+                      padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                      child: WorkoutItem(workout: workout),
+                    ),
                 ],
+                onReorder: (oldIndex, newIndex) {
+                  print("$TAG onReorder oldIndex: $oldIndex");
+                  print("$TAG onReorder newIndex $newIndex");
+
+                  _workoutBloc.reorder(oldIndex, newIndex);
+                },
               );
+//              return CustomScrollView(
+//                slivers: <Widget>[
+//                  SliverList(
+//                    delegate: SliverChildBuilderDelegate(
+//                            (BuildContext context, int index) {
+//                          var _workout = wList?.elementAt(index);
+//                          return Padding(
+//                            padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+//                            child: WorkoutItem(workout: _workout),
+//                          );
+//                        }, childCount: wList?.length),
+//                  ),
+//                ],
+//              );
             } else {
               return Center(
                 child: Column(
