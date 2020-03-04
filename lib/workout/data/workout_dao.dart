@@ -10,10 +10,6 @@ class WorkoutDao {
       await serviceLocator.get<AppDatabaseApi>().database;
   var _exerdao = ExerciseDao();
 
-  //workout_store
-  //exercise_store
-  //workSet_store
-
   static const String WORKOUT_STORE_NAME = 'WORKOUTS';
   static const String TAG = 'WorkoutDao';
   final _newWorkoutStore = intMapStoreFactory.store(WORKOUT_STORE_NAME);
@@ -35,54 +31,42 @@ class WorkoutDao {
     );
   }
 
-//  Future<List<Workout>> updateWorkout(Workout workout) async {
-//    print("$TAG : updateWorkSet: workout: ${workout.name}");
-//
-//    final finder = Finder(filter: Filter.equals("name", workout.name));
-//
-//    // find a record
-//    var _workout =
-//    await _newWorkoutStore.findFirst(await _database, finder: finder);
-//
-//    // record snapshot are read-only.
-//    // If you want to modify it you should clone it
-//    if (_workout != null) {
-//      var map = cloneMap(_workout.value);
-//      var newExercise = Workout.fromMap(map);
-//      //updating sortId
-//      newExercise.sortId
-//      //adding new
-//      newExercise.workSets.add(newWorkSet.toMap());
-//      print(
-//          "exercise not null ,updateWorkSet replace by newExercise: ${newExercise.toMap()}");
-//      return await _exercisesStore
-//          .update(await _database, newExercise.toMap(), finder: finder)
-//          .then((_) {
-//        return getExercises(workout);
-//      });
-//    } else {
-//      print(
-//          "exercise is null ,updateWorkSet data exercise: ${exercise.toMap()}");
-//      return await _exercisesStore
-//          .add(await _database, exercise.toMap())
-//          .then((_) {
-//        return getExercises(workout);
-//      });
-//    }
-//  }
-
   Future<dynamic> deleteWorkout(Workout workout) async {
     final finder = Finder(filter: Filter.byKey(workout.id));
     return await _newWorkoutStore
-        .delete(
-      await _database,
-      finder: finder,
-    )
+        .delete(await _database, finder: finder)
         .then((_) {
       //delete exercises
       _exerdao.getExercises(workout).then((exers) {
         exers.forEach((exercise) {
           _exerdao.deleteExercise(exercise, workout);
+        });
+      });
+    }).then((_) {
+      //update sortIds
+      return getWorkoutsFromDao().then((oldWorkouts) {
+        int sortId;
+        var newWorkouts = List<Workout>();
+        oldWorkouts.forEach((w) {
+          print("$TAG reorder workouts: ${w.toMap()}");
+          sortId = sortId == null ? 0 : ++sortId;
+          var workout = Workout(
+            w.name,
+            w.startTime,
+            sortId,
+          );
+          workout.id = w.id;
+          newWorkouts.add(workout);
+        });
+        return newWorkouts;
+      }).then((newWorkouts) {
+        newWorkouts.forEach((workout) {
+          print("$TAG deleteWorkout method reorder newWorkouts : ${workout.toMap()}");
+        });
+        //replace outdated exers
+        return updateWorkouts(newWorkouts).then((_) {
+          //get updated exers with updated sortId
+          return newWorkouts;
         });
       });
     });
@@ -98,7 +82,6 @@ class WorkoutDao {
       await _database,
       finder: finder,
     );
-//todo fix reorder error .. cant update the view . but probably updating the database
     // Making a List<Workout> out of List<RecordSnapshot>
     return recordSnapshots.map((snapshot) {
       final workout = Workout.fromMap(snapshot.value);
@@ -153,12 +136,6 @@ class WorkoutDao {
       return updateWorkouts(newWorkouts).then((_) {
         //get updated exers with updated sortId
         return newWorkouts;
-//
-//        return getWorkoutsFromDao().then((workouts) {
-//          workouts.forEach((w) {
-//            print("$TAG reorder before push getWorkoutsFromDao : ${w.toMap()}");
-//          });
-//        });
       });
     });
   }

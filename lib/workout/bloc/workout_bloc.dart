@@ -34,7 +34,7 @@ class WorkoutBloc implements WorkoutBlocApi {
   void valCreate(dynamic any) {
     var workout = any as Workout;
     var workoutToPush = Workout(workout.name, workout.startTime,
-        _workoutList.isNotEmpty ? _workoutList.length - 1 : 0);
+        _workoutList.isNotEmpty ? _workoutList.length : 0);
     _workoutRepo.addWorkout(workoutToPush).then((key) {
       //update view after adding workout
       print("workout bloc workout key: $key");
@@ -47,12 +47,9 @@ class WorkoutBloc implements WorkoutBlocApi {
   @override
   void valDelete(dynamic any) {
     var workout = any as Workout;
-    _workoutRepo.deleteWorkout(any).then((_) {
-      var filteredWorkout = _workoutList.firstWhere((w) => w.id == workout.id);
-      print("filteredworkout ${filteredWorkout.name}");
-      print("removed workout: ${workout.name}");
-      //remove workout
-      _workoutList.remove(filteredWorkout);
+    _workoutRepo.deleteWorkout(workout).then((workouts) {
+      _workoutList.clear();
+      _workoutList.addAll(workouts);
       valController.sink.add(_workoutList); //update list
     });
   }
