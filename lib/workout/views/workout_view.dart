@@ -61,6 +61,8 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   String _startTime;
 
+  bool _isFromSorting = false;
+
   _saveAllProgress() {
     print("$TAG, refresh _saveAllProgress workout: ${widget.workout.toMap()}");
     print("$TAG, refresh _saveAllProgress exers: ${widget.workout.toMap()}");
@@ -85,6 +87,25 @@ class _WorkoutViewState extends State<WorkoutView> {
   }
 
   AppLifecycleState _notification;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("$TAG AppLifecycleState resumed");
+//        _startTimer();
+        break;
+      case AppLifecycleState.inactive:
+        print("$TAG AppLifecycleState inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("$TAG AppLifecycleState paused");
+        break;
+      case AppLifecycleState.detached:
+        print("$TAG AppLifecycleState detached");
+        break;
+    }
+  }
 
   @override
   void didUpdateWidget(WorkoutView oldWidget) {
@@ -180,6 +201,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   builder: (context) => ExerciseReorderView(
                     exercises: _exercises,
                     workout: widget.workout,
+                    sortCallback: _isSorted,
                   ),
                 ),
               );
@@ -353,5 +375,10 @@ class _WorkoutViewState extends State<WorkoutView> {
     _workoutNameController.addListener(_onChange);
     _workoutNameController.text = widget.workout.name;
     _exerciseBloc.initExercises(widget.workout);
+  }
+
+  _isSorted() {
+    print("$TAG sort callback triggered");
+    _isFromSorting = true;
   }
 }

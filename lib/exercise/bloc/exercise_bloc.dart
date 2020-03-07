@@ -13,20 +13,37 @@ class ExerciseBloc implements ExerciseBlocApi {
   static const TAG = "EXERBLOC";
   var _exerciseRepo = serviceLocator.get<ExerciseRepoApi>();
   var valController = new StreamController<List<Exercise>>.broadcast();
+  var valControllerWithoutRefresh =
+      new StreamController<List<Exercise>>.broadcast();
   var valControllerOutput = new StreamController<List<Exercise>>.broadcast();
+  var valControllerOutputWithoutRefresh =
+      new StreamController<List<Exercise>>.broadcast();
+  var _exercises = List<Exercise>();
 
   ExerciseBloc() {
     valController.stream.listen((exercises) {
       valControllerOutput.sink.add(exercises);
+    });
+
+    valControllerWithoutRefresh.stream.listen((exercises) {
+      valControllerOutputWithoutRefresh.sink.add(exercises);
     });
   }
 
   @override
   Stream get valOutput => valControllerOutput.stream;
 
+  @override
+  Stream get valOutputWithoutRefresh =>
+      valControllerOutputWithoutRefresh.stream;
+
   void dispose() {
-    valControllerOutput.close();
+    //
     valController.close();
+    valControllerOutput.close();
+    //
+    valControllerWithoutRefresh.close();
+    valControllerOutputWithoutRefresh.close();
   }
 
   @override
@@ -35,7 +52,6 @@ class ExerciseBloc implements ExerciseBlocApi {
     _exerciseRepo.addExercise(exercise, workout).then((exercises) {
       valController.sink.add(null);
       Timer(Duration(milliseconds: 100), () {
-        print("Yeah, this line is printed after 3 seconds");
         valController.sink.add(exercises);
       });
     });
@@ -47,7 +63,6 @@ class ExerciseBloc implements ExerciseBlocApi {
     _exerciseRepo.deleteExercise(exercise, workout).then((exercises) {
       valController.sink.add(null);
       Timer(Duration(milliseconds: 100), () {
-        print("Yeah, this line is printed after 3 seconds");
         valController.sink.add(exercises);
       });
     });
@@ -72,13 +87,10 @@ class ExerciseBloc implements ExerciseBlocApi {
   void initExercises(Workout workout) {
     _exerciseRepo.getExercises(workout).then((exercises) {
       //trigger stream
-      valController.sink.add(exercises);
-//
-//      valController.sink.add(null); //clear the pipe
-//      Timer(Duration(milliseconds: 100), () {
-//        print("Yeah, this line is printed after 3 seconds");
-//        valController.sink.add(exercises);
-//      });
+      _exercises.clear();
+      _exercises.addAll(exercises);
+      valController.sink.add(_exercises);
+      valControllerWithoutRefresh.sink.add(_exercises);
     });
   }
 
@@ -118,7 +130,6 @@ class ExerciseBloc implements ExerciseBlocApi {
     await _exerciseRepo.saveAllProgress(workout).then((exercises) {
       valController.sink.add(null); //clear the pipe
       Timer(Duration(milliseconds: 100), () {
-        print("Yeah, this line is printed after 3 seconds");
         valController.sink.add(exercises);
       });
     });
@@ -128,8 +139,15 @@ class ExerciseBloc implements ExerciseBlocApi {
   void reorder(int oldIndex, int newIndex, workout) {
     print("$TAG reorder");
     _exerciseRepo.reorder(oldIndex, newIndex, workout).then((exercises) {
-      //
-      valController.sink.add(exercises);
+      //update the reorder view
+      _exercises.clear();
+      _exercises.addAll(exercises);
+      valControllerWithoutRefresh.sink.add(_exercises);
+      //update the workout view
+      valController.sink.add(null);
+      Timer(Duration(milliseconds: 100), () {
+        valController.sink.add(_exercises);
+      });
     });
   }
 }

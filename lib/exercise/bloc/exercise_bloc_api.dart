@@ -9,6 +9,8 @@ abstract class ExerciseBlocApi {
 
   Stream<dynamic> get valOutput;
 
+  Stream<dynamic> get valOutputWithoutRefresh;
+
   void updateWorkSet(Exercise exercise, WorkSet newWorkSet, Workout workout);
 
   void deleteWorkSet(

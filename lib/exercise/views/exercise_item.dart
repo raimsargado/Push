@@ -28,6 +28,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
   Exercise _exercise;
 
   _initWidgets() {
+    print(
+        "$TAG , _initWidgets exer : ${widget.exercise.toMap()}");
     _exercise = widget.exercise;
     _wSets.clear();
     _exercise.workSets.forEach((workSetMap) {

@@ -7,10 +7,11 @@ import 'package:strongr/workout/models/workout.dart';
 import 'package:strongr/workout/views/workout_view.dart';
 
 class ExerciseReorderView extends StatefulWidget {
+  final Function() sortCallback;
   final List<Exercise> exercises;
   final Workout workout;
 
-  const ExerciseReorderView({Key key, this.exercises, this.workout})
+  const ExerciseReorderView({Key key, this.exercises, this.workout, this.sortCallback})
       : super(key: key);
 
   @override
@@ -49,7 +50,7 @@ class _State extends State<ExerciseReorderView> {
         title: Text("Sort your exercises"),
       ),
       body: StreamBuilder<List<Exercise>>(
-          stream: _exerciseBloc.valOutput,
+          stream: _exerciseBloc.valOutputWithoutRefresh,
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               print(
@@ -78,18 +79,10 @@ class _State extends State<ExerciseReorderView> {
                         ),
                     ],
                     onReorder: (oldIndex, newIndex) {
-                      // These two lines are workarounds for ReorderableListView problems
-//                              if (newIndex > exercises.length)
-//                                newIndex = exercises.length;
-//                              if (oldIndex < newIndex) newIndex--;
-//
-//                              var exercise = exercises[oldIndex];
-//                              exercises.remove(exercise);
-//                              exercises.insert(newIndex, exercise);
 
                       print("$TAG onReorder oldIndex: $oldIndex");
                       print("$TAG onReorder newIndex $newIndex");
-
+                      widget.sortCallback();
                       _exerciseBloc.reorder(oldIndex, newIndex, widget.workout);
                     });
               }
