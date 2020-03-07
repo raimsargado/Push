@@ -82,14 +82,20 @@ class ExerciseDao {
       await _database,
       finder: finder,
     );
-
-    // Making a List<Exercise> out of List<RecordSnapshot>
-    return recordSnapshots.map((snapshot) {
-      final exercise = Exercise.fromMap(snapshot.value);
-      // An ID is a key of a record from the database.
-      exercise.id = snapshot.key;
-      return exercise;
-    }).toList();
+    if (recordSnapshots.isNotEmpty) {
+      // Making a List<Exercise> out of List<RecordSnapshot>
+      return recordSnapshots.map((snapshot) {
+        final exercise = Exercise.fromMap(snapshot.value);
+        // An ID is a key of a record from the database.
+        exercise.id = snapshot.key;
+        print(
+            "get exers  recordSnapshots: isNotEmpty exercise: ${exercise.name}");
+        return exercise;
+      }).toList();
+    } else {
+      print("get exers is empty recordSnapshots:  ${recordSnapshots}");
+      return List<Exercise>();
+    }
   }
 
   Future<dynamic> updateExercise(Exercise exercise, Workout workout) async {
@@ -200,7 +206,8 @@ class ExerciseDao {
       }
 
       print(
-          "exercise not null , replace by newExercise: ${newExercise.toMap()}",);
+        "exercise not null , replace by newExercise: ${newExercise.toMap()}",
+      );
       return await _exercisesStore
           .update(await _database, newExercise.toMap(), finder: finder)
           .then((_) {
@@ -326,15 +333,20 @@ class ExerciseDao {
 
   Future<dynamic> saveAllProgress(Workout workout) async {
     return await getExercises(workout).then((exercises) async {
-      var newExercises = List<Exercise>();
-      for (final exercise in exercises) {
-        //put debounce
-        newExercises.add(await saveExerciseProgress(exercise));
-        print("$TAG saveAllProgress newexercises: ${newExercises.length}");
-        if (newExercises.length == exercises.length) {
-          //remove workout
-          return Future<dynamic>.value(newExercises);
+      print("$TAG saveAllProgress exercises: ${exercises.length}");
+      if (exercises.isNotEmpty) {
+        var newExercises = List<Exercise>();
+        for (final exercise in exercises) {
+          //put debounce
+          newExercises.add(await saveExerciseProgress(exercise));
+          print("$TAG saveAllProgress newexercises: ${newExercises.length}");
+          if (newExercises.length == exercises.length) {
+            //remove workout
+            return Future<dynamic>.value(newExercises);
+          }
         }
+      } else {
+        return Future<dynamic>.value(List<Exercise>());
       }
     });
   }

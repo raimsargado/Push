@@ -62,7 +62,8 @@ class _WorkoutViewState extends State<WorkoutView> {
   String _startTime;
 
   _saveAllProgress() {
-    print("$TAG, refresh _saveAllProgress");
+    print("$TAG, refresh _saveAllProgress workout: ${widget.workout.toMap()}");
+    print("$TAG, refresh _saveAllProgress exers: ${widget.workout.toMap()}");
     //save all progress
     //update each exercise
     //update each workSet on each exercise
@@ -216,10 +217,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   print(
                       "$TAG NOT EMPTY reorderexer _exerciseBloc.valOutput exercises: ${exer.toMap()}");
                 });
-//                _exercises.sort((a, b) {
-//                  print("$TAG TOSORT : A: ${a.toMap()} , B: ${b.toMap()}");
-//                  return a.id.compareTo(b.id);
-//                });
+
                 print("$TAG ADDING EXER: $_isAddingExercise");
                 return CustomScrollView(
                   controller: _scrollController,

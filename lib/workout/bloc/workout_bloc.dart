@@ -59,15 +59,11 @@ class WorkoutBloc implements WorkoutBlocApi {
     var workout = any as Workout;
     print("$TAG, valUpdate : WORKOUT : ${workout.toMap()}");
     _workoutRepo.updateWorkout(workout).then((_) {
-      var filteredWorkout = _workoutList.firstWhere((w) => w.id == workout.id);
-      print("filteredworkout ${filteredWorkout.name}");
-      print("new workout: ${workout.name}");
-      //remove old workout
-      _workoutList.remove(filteredWorkout);
-      //add new workout
-      _workoutList.add(workout);
-
-      valController.sink.add(_workoutList); //update list
+      _workoutRepo.getWorkouts().then((newWorkouts) {
+        _workoutList.clear();
+        _workoutList.addAll(newWorkouts);
+        valController.sink.add(_workoutList); //update list
+      });
     });
   }
 
