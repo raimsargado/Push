@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:strongr/exercise/models/exercise.dart';
+import 'package:push/exercise/models/exercise.dart';
 
 class ExerciseReorderItem extends StatelessWidget {
 

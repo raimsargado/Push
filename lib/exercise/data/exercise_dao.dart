@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/utils/value_utils.dart';
-import 'package:strongr/app_db_interface.dart';
-import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/models/workset.dart';
+import 'package:push/app_db_interface.dart';
+import 'package:push/exercise/models/exercise.dart';
+import 'package:push/service_init.dart';
+import 'package:push/workout/models/workout.dart';
+import 'package:push/workset/models/workset.dart';
 //TODO ALTERNATIVE IN BACKGROUND TIMER
 
 class ExerciseDao {

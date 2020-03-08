@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/bloc/workout_bloc_api.dart';
-import 'package:strongr/workout/models/workout.dart';
+import 'package:push/service_init.dart';
+import 'package:push/workout/bloc/workout_bloc_api.dart';
+import 'package:push/workout/models/workout.dart';
 
 class WorkoutTimer extends StatefulWidget {
   final Function() saveCallback;

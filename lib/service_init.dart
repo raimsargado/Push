@@ -1,19 +1,19 @@
 // This is our global ServiceLocator
 import 'package:get_it/get_it.dart';
-import 'package:strongr/app_db.dart';
-import 'package:strongr/app_db_interface.dart';
-import 'package:strongr/exercise/bloc/exercise_bloc.dart';
-import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
-import 'package:strongr/exercise/data/exercise_repo.dart';
-import 'package:strongr/exercise/data/exercise_repo_api.dart';
-import 'package:strongr/workout/bloc/workout_bloc.dart';
-import 'package:strongr/workout/bloc/workout_bloc_api.dart';
-import 'package:strongr/workout/data/workout_repo.dart';
-import 'package:strongr/workout/data/workout_repo_api.dart';
-import 'package:strongr/workset/bloc/workset_bloc.dart';
-import 'package:strongr/workset/bloc/workset_bloc_api.dart';
-import 'package:strongr/workset/data/workset_repo.dart';
-import 'package:strongr/workset/data/workset_repo_interface.dart';
+import 'package:push/app_db.dart';
+import 'package:push/app_db_interface.dart';
+import 'package:push/exercise/bloc/exercise_bloc.dart';
+import 'package:push/exercise/bloc/exercise_bloc_api.dart';
+import 'package:push/exercise/data/exercise_repo.dart';
+import 'package:push/exercise/data/exercise_repo_api.dart';
+import 'package:push/workout/bloc/workout_bloc.dart';
+import 'package:push/workout/bloc/workout_bloc_api.dart';
+import 'package:push/workout/data/workout_repo.dart';
+import 'package:push/workout/data/workout_repo_api.dart';
+import 'package:push/workset/bloc/workset_bloc.dart';
+import 'package:push/workset/bloc/workset_bloc_api.dart';
+import 'package:push/workset/data/workset_repo.dart';
+import 'package:push/workset/data/workset_repo_interface.dart';
 
 GetIt serviceLocator = GetIt.instance;
 

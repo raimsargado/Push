@@ -1,4 +1,4 @@
-import 'package:strongr/workset/models/workset.dart';
+import 'package:push/workset/models/workset.dart';
 
 abstract class WorkSetRepoApi {
   //get exercises

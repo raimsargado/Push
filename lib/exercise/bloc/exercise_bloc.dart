@@ -2,12 +2,12 @@ import 'dart:async';
 //TODO START DOING THE DESIGN
 //TODO RENAME THE APP TO "PUSH"
 import 'package:flutter/material.dart';
-import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
-import 'package:strongr/exercise/data/exercise_repo_api.dart';
-import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/models/workset.dart';
+import 'package:push/exercise/bloc/exercise_bloc_api.dart';
+import 'package:push/exercise/data/exercise_repo_api.dart';
+import 'package:push/exercise/models/exercise.dart';
+import 'package:push/service_init.dart';
+import 'package:push/workout/models/workout.dart';
+import 'package:push/workset/models/workset.dart';
 
 class ExerciseBloc implements ExerciseBlocApi {
   //

@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/main.dart';
-import 'package:strongr/service_init.dart';
-import 'package:strongr/workset/bloc/workset_bloc_api.dart';
-import 'package:strongr/workset/data/workset_repo_interface.dart';
-import 'package:strongr/workset/models/workset.dart';
+import 'package:push/exercise/models/exercise.dart';
+import 'package:push/main.dart';
+import 'package:push/service_init.dart';
+import 'package:push/workset/bloc/workset_bloc_api.dart';
+import 'package:push/workset/data/workset_repo_interface.dart';
+import 'package:push/workset/models/workset.dart';
 
 class WorkSetBloc extends WorkSetBlocApi {
   //

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
-import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/exercise/views/exercise_reorder_item.dart';
-import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workout/views/workout_view.dart';
+import 'package:push/exercise/bloc/exercise_bloc_api.dart';
+import 'package:push/exercise/models/exercise.dart';
+import 'package:push/exercise/views/exercise_reorder_item.dart';
+import 'package:push/service_init.dart';
+import 'package:push/workout/models/workout.dart';
+import 'package:push/workout/views/workout_view.dart';
 
 class ExerciseReorderView extends StatefulWidget {
   final Function() sortCallback;

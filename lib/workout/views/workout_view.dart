@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:strongr/custom_widgets/overlay_progressbar.dart';
-import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
-import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/exercise/views/exercise_item.dart';
-import 'package:strongr/exercise/views/exercise_reorder_view.dart';
-import 'package:strongr/home/home_view.dart';
-import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/bloc/workout_bloc_api.dart';
-import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workout/views/workout_timer.dart';
-import 'package:strongr/workset/models/workset.dart';
+import 'package:push/custom_widgets/overlay_progressbar.dart';
+import 'package:push/exercise/bloc/exercise_bloc_api.dart';
+import 'package:push/exercise/models/exercise.dart';
+import 'package:push/exercise/views/exercise_item.dart';
+import 'package:push/exercise/views/exercise_reorder_view.dart';
+import 'package:push/home/home_view.dart';
+import 'package:push/service_init.dart';
+import 'package:push/workout/bloc/workout_bloc_api.dart';
+import 'package:push/workout/models/workout.dart';
+import 'package:push/workout/views/workout_timer.dart';
+import 'package:push/workset/models/workset.dart';
 
 class WorkoutView extends StatefulWidget {
   //

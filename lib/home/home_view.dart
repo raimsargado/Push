@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/bloc/workout_bloc_api.dart';
-import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workout/views/workout_item.dart';
+import 'package:push/service_init.dart';
+import 'package:push/workout/bloc/workout_bloc_api.dart';
+import 'package:push/workout/models/workout.dart';
+import 'package:push/workout/views/workout_item.dart';
 
 class HomeView extends StatelessWidget {
   @override

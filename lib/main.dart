@@ -1,7 +1,7 @@
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
-import 'package:strongr/home/home_view.dart';
-import 'package:strongr/service_init.dart';
+import 'package:push/home/home_view.dart';
+import 'package:push/service_init.dart';
 
 // This "Headless Task" is run when app is terminated.
 void backgroundFetchHeadlessTask() async {

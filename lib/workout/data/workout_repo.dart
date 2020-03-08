@@ -1,6 +1,6 @@
-import 'package:strongr/workout/data/workout_dao.dart';
-import 'package:strongr/workout/data/workout_repo_api.dart';
-import 'package:strongr/workout/models/workout.dart';
+import 'package:push/workout/data/workout_dao.dart';
+import 'package:push/workout/data/workout_repo_api.dart';
+import 'package:push/workout/models/workout.dart';
 
 class WorkoutRepo implements WorkoutRepoApi {
   //

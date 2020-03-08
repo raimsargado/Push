@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:strongr/exercise/bloc/exercise_bloc_api.dart';
-import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/service_init.dart';
-import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/models/workset.dart';
+import 'package:push/exercise/bloc/exercise_bloc_api.dart';
+import 'package:push/exercise/models/exercise.dart';
+import 'package:push/service_init.dart';
+import 'package:push/workout/models/workout.dart';
+import 'package:push/workset/models/workset.dart';
 
 class WorkSetItem extends StatefulWidget {
   final WorkSet workSet;

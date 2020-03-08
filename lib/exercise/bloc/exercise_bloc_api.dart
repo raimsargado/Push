@@ -1,6 +1,6 @@
-import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/models/workset.dart';
+import 'package:push/exercise/models/exercise.dart';
+import 'package:push/workout/models/workout.dart';
+import 'package:push/workset/models/workset.dart';
 
 abstract class ExerciseBlocApi {
   void initExercises(Workout workout);

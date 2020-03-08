@@ -1,8 +1,8 @@
-import 'package:strongr/exercise/data/exercise_dao.dart';
-import 'package:strongr/exercise/data/exercise_repo_api.dart';
-import 'package:strongr/exercise/models/exercise.dart';
-import 'package:strongr/workout/models/workout.dart';
-import 'package:strongr/workset/models/workset.dart';
+import 'package:push/exercise/data/exercise_dao.dart';
+import 'package:push/exercise/data/exercise_repo_api.dart';
+import 'package:push/exercise/models/exercise.dart';
+import 'package:push/workout/models/workout.dart';
+import 'package:push/workset/models/workset.dart';
 
 class ExerciseRepo implements ExerciseRepoApi {
   var dao = ExerciseDao();
