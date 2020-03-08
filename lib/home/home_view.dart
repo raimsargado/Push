@@ -36,7 +36,7 @@ class WorkoutListView extends StatelessWidget {
     print("build stateless $_workouts");
     return Scaffold(
       appBar: AppBar(
-        title: Text("Strongr"),
+        title: Text("Push"),
         elevation: 0,
       ),
       body: StreamBuilder(

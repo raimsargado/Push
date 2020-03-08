@@ -1,4 +1,4 @@
-package com.johnraimappsph.strongr
+package com.johnraimappsph.push
 
 import android.os.Bundle
 
