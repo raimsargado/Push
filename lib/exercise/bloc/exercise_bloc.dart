@@ -1,7 +1,4 @@
 import 'dart:async';
-//TODO START DOING THE DESIGN
-//TODO RENAME THE APP TO "PUSH"
-import 'package:flutter/material.dart';
 import 'package:push/exercise/bloc/exercise_bloc_api.dart';
 import 'package:push/exercise/data/exercise_repo_api.dart';
 import 'package:push/exercise/models/exercise.dart';
