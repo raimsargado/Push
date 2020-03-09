@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:push/custom_widgets/upper_case_text_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:push/custom_widgets/overlay_progressbar.dart';
 import 'package:push/exercise/bloc/exercise_bloc_api.dart';
@@ -176,7 +177,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             Expanded(
               flex: 1,
               child: TextField(
-                keyboardType: TextInputType.text,
+                inputFormatters: [UpperCaseTextFormatter()],
                 decoration: InputDecoration(
                     alignLabelWithHint: true, hintText: widget.workout.name),
                 controller: _workoutNameController,
@@ -314,6 +315,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           return new AlertDialog(
             title: Text('Add exercise'),
             content: new TextField(
+              textCapitalization: TextCapitalization.words,
               controller: _exerciseNameFieldController,
               decoration: InputDecoration(hintText: "eg. Chest Press"),
             ),

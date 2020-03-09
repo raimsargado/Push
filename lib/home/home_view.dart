@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:push/custom_widgets/upper_case_text_formatter.dart';
 import 'package:push/service_init.dart';
 import 'package:push/workout/bloc/workout_bloc_api.dart';
 import 'package:push/workout/models/workout.dart';
@@ -120,6 +121,7 @@ class WorkoutListView extends StatelessWidget {
           return AlertDialog(
             title: Text('Add a workout'),
             content: TextField(
+              inputFormatters: [UpperCaseTextFormatter()],
               controller: _textFieldController,
               decoration: InputDecoration(hintText: "eg. Pull Day"),
             ),
