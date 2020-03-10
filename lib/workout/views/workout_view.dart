@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:push/custom_widgets/pascal_case_text_formatter.dart';
 import 'package:push/custom_widgets/upper_case_text_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:push/custom_widgets/overlay_progressbar.dart';
@@ -315,7 +316,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           return new AlertDialog(
             title: Text('Add exercise'),
             content: new TextField(
-              textCapitalization: TextCapitalization.words,
+              inputFormatters: [PascalCaseTextFormatter()],
               controller: _exerciseNameFieldController,
               decoration: InputDecoration(hintText: "eg. Chest Press"),
             ),
