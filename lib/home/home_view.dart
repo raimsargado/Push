@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:push/custom_widgets/upper_case_text_formatter.dart';
@@ -39,6 +40,14 @@ class WorkoutListView extends StatelessWidget {
       appBar: AppBar(
         title: Text("Push"),
         elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings_backup_restore),
+            onPressed: () {
+              _displayBackupRestoreDialog(context);
+            },
+          ),
+        ],
       ),
       body: StreamBuilder(
         stream: _workoutBloc.valOutput,
@@ -111,6 +120,56 @@ class WorkoutListView extends StatelessWidget {
   }
 
   TextEditingController _textFieldController = TextEditingController();
+
+  void _displayBackupRestoreDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Backup/Restore'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Backup present programs"),
+                    IconButton(
+                      icon: Icon(Icons.save),
+                      onPressed: () {
+                        //
+                      },
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Restore previous programs"),
+                    IconButton(
+                      icon: Icon(Icons.restore),
+                      onPressed: () {
+                        //
+                      },
+                    ),
+                  ],
+                ),
+
+              ],
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('OK'),
+                onPressed: () {
+                  //go back to previous page
+                  Navigator.pop(context);
+                  //toast "changes not saved"
+                },
+              ),
+            ],
+          );
+        });
+  }
 
   _displayDialog(BuildContext context) async {
     _textFieldController.text = "";
