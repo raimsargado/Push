@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:push/backup_restore/backup_view.dart';
 import 'package:push/custom_widgets/upper_case_text_formatter.dart';
 import 'package:push/service_init.dart';
 import 'package:push/workout/bloc/workout_bloc_api.dart';
@@ -44,7 +45,12 @@ class WorkoutListView extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.settings_backup_restore),
             onPressed: () {
-              _displayBackupRestoreDialog(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BackupView(),
+                ),
+              );
             },
           ),
         ],
@@ -120,56 +126,6 @@ class WorkoutListView extends StatelessWidget {
   }
 
   TextEditingController _textFieldController = TextEditingController();
-
-  void _displayBackupRestoreDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Backup/Restore'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text("Backup present programs"),
-                    IconButton(
-                      icon: Icon(Icons.save),
-                      onPressed: () {
-                        //
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Text("Restore previous programs"),
-                    IconButton(
-                      icon: Icon(Icons.restore),
-                      onPressed: () {
-                        //
-                      },
-                    ),
-                  ],
-                ),
-
-              ],
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('OK'),
-                onPressed: () {
-                  //go back to previous page
-                  Navigator.pop(context);
-                  //toast "changes not saved"
-                },
-              ),
-            ],
-          );
-        });
-  }
 
   _displayDialog(BuildContext context) async {
     _textFieldController.text = "";
