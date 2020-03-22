@@ -20,7 +20,7 @@ class _BackupViewState extends State<BackupView> {
     //init prefs
     _futureBackups = SharedPreferences.getInstance().then((prefs) {
       _prefs = prefs;
-      return (prefs.getStringList(dbKeys) ?? List<String>());
+      return _getBackupList();
     });
   }
 
@@ -42,7 +42,13 @@ class _BackupViewState extends State<BackupView> {
                 "Second Backup",
               ]);
               _prefs.setStringList(dbKeys, _backups).then((_) {
-                setState(() {});
+                setState(() {
+                  _futureBackups =
+                      SharedPreferences.getInstance().then((prefs) {
+                    _prefs = prefs;
+                    return (prefs.getStringList(dbKeys) ?? List<String>());
+                  });
+                });
               });
             },
           ),
@@ -70,7 +76,9 @@ class _BackupViewState extends State<BackupView> {
                           "First Backup",
                           "Second Backup",
                         ]).then((_) {
-                          setState(() {});
+                          setState(() {
+                            _futureBackups = _getBackupList();
+                          });
                         });
                       },
                     ),
@@ -152,6 +160,6 @@ class _BackupViewState extends State<BackupView> {
   }
 
   Future<List<String>> _getBackupList() async {
-    return await Future.value(_backups);
+    return await Future.value((_prefs.getStringList(dbKeys) ?? List<String>()));
   }
 }
