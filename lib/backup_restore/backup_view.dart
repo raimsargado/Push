@@ -1,17 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:push/app_db_interface.dart';
+import 'package:push/service_init.dart';
+import 'package:sembast/sembast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//todo make the actual backup
+//todo implement restore feature
 class BackupView extends StatefulWidget {
   @override
   _BackupViewState createState() => _BackupViewState();
 }
 
 class _BackupViewState extends State<BackupView> {
-  var dbKeys = "DB";
+  var dbKeys = "DB"; // main key for prefs on db identifiers
   var TAG = "BackupView";
-  var _backups = List<String>();
+  var _backups = List<String>(); // list of db identifiers
   Future<List<String>> _futureBackups;
+
+  Future<Database> get _database async =>
+      await serviceLocator.get<AppDatabaseApi>().database;
+  var dbFunctions = serviceLocator.get<AppDatabaseApi>();
 
   SharedPreferences _prefs;
 
@@ -33,21 +42,48 @@ class _BackupViewState extends State<BackupView> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.settings_backup_restore),
-            onPressed: () {
+            onPressed: () async {
               var oldBackups = _prefs.getStringList(dbKeys);
+
               _backups.clear();
               _backups.addAll(oldBackups);
-              _backups.addAll([
-                "First Backup",
-                "Second Backup",
-              ]);
-              _prefs.setStringList(dbKeys, _backups).then((_) {
+              var dateKey = DateTime.now().toString();
+              var dataAsText = await dbFunctions.backup();
+              dbFunctions.write(dataAsText, dateKey).then((_) {
+                _backups.add(dateKey);
+                //save key to prefs
+                _prefs.setStringList(dbKeys, _backups).then((_) {
+                  setState(() {
+                    _futureBackups =
+                        SharedPreferences.getInstance().then((prefs) {
+                      _prefs = prefs;
+                      return (prefs.getStringList(dbKeys) ?? List<String>());
+                    });
+                  });
+                });
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete_sweep),
+            onPressed: () {
+              //
+
+              var oldBackups = _prefs.getStringList(dbKeys);
+              oldBackups.forEach((backupKey) {
+                //delete
+                dbFunctions.delete(backupKey).then((result) {
+                  print("deleted file: result: $result");
+                });
+                _backups.remove(backupKey);
+              });
+              _prefs.setStringList(dbKeys, _backups).then((_){
                 setState(() {
                   _futureBackups =
                       SharedPreferences.getInstance().then((prefs) {
-                    _prefs = prefs;
-                    return (prefs.getStringList(dbKeys) ?? List<String>());
-                  });
+                        _prefs = prefs;
+                        return (prefs.getStringList(dbKeys) ?? List<String>());
+                      });
                 });
               });
             },
@@ -72,10 +108,9 @@ class _BackupViewState extends State<BackupView> {
                     CupertinoButton(
                       child: Text("MAKE BACKUP"),
                       onPressed: () {
-                        _prefs.setStringList(dbKeys, [
-                          "First Backup",
-                          "Second Backup",
-                        ]).then((_) {
+                        dbFunctions.backup();
+                        _prefs.setStringList(
+                            dbKeys, [DateTime.now().toString()]).then((_) {
                           setState(() {
                             _futureBackups = _getBackupList();
                           });
@@ -87,6 +122,12 @@ class _BackupViewState extends State<BackupView> {
               );
             } else {
               _backups = snapshot.data;
+              _backups.forEach((backupDateKey) async {
+                print("text from file backupDateKey: $backupDateKey");
+                print(
+                    "text from file: ${await dbFunctions.read(backupDateKey)}");
+              });
+
               return CustomScrollView(
                 slivers: <Widget>[
                   SliverList(

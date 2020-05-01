@@ -1,13 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:push/app_db_interface.dart';
+import 'package:sembast/utils/sembast_import_export.dart';
 
 class AppDatabase extends AppDatabaseApi {
-
   //Completer is used for transforming synchronous code into asynchronous code.
   Completer<Database> _dbOpenCompleter;
 
@@ -38,5 +40,47 @@ class AppDatabase extends AppDatabaseApi {
     print("dbPath: $dbPath");
     // Any code awaiting the Completer's future will now start executing
     _dbOpenCompleter.complete(database);
+  }
+
+  @override
+  Future<String> backup() async {
+    var content = await exportDatabase(await database);
+// Save as text
+    var saved = jsonEncode(content);
+    print("backupDb: ${saved}");
+    return saved;
+  }
+
+  @override
+  Future<void> write(String dataAsText, String fileName) async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final File file = File('${directory.path}/$fileName.txt');
+    await file.writeAsString(dataAsText);
+  }
+
+  @override
+  Future<String> read(String fileName) async {
+    String text;
+    try {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      final File file = File('${directory.path}/$fileName.txt');
+      text = await file.readAsString();
+    } catch (e) {
+      print("Couldn't read file");
+    }
+    return text;
+  }
+
+  @override
+  Future<int> delete(String fileName) async {
+    try {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      final File file = File('${directory.path}/$fileName.txt');
+      await file.delete();
+      return 1;
+    } catch (e) {
+      print("Couldn't delete file");
+      return 0;
+    }
   }
 }
