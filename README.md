@@ -1,3 +1,3 @@
 # Push
 
-Freemium app for premium gains.
+A Flutter application for Fitness enthusiasts to track their workout progress.
