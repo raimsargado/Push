@@ -14,15 +14,7 @@ class WorkoutBloc implements WorkoutBlocApi {
   var valControllerOutput = new StreamController<List<Workout>>.broadcast();
 
   WorkoutBloc() {
-    valController.stream.listen((workouts) {
-      valControllerOutput.sink.add(workouts);
-    });
-
-    _workoutRepo.getWorkouts().then((workouts) {
-      _workoutList.addAll(workouts);
-      print("workout list: $_workoutList");
-      valController.sink.add(workouts);
-    });
+    init();
   }
 
 //todo fix the sortids every after delete
@@ -103,5 +95,24 @@ class WorkoutBloc implements WorkoutBlocApi {
       _workoutList.addAll(workouts);
       valController.sink.add(_workoutList);
     });
+  }
+
+  @override
+  void init() {
+    valController.stream.listen((workouts) {
+      valControllerOutput.sink.add(workouts);
+    });
+
+    _workoutRepo.getWorkouts().then((workouts) {
+      _workoutList.addAll(workouts);
+      print("workout list: $_workoutList");
+      valController.sink.add(workouts);
+    });
+  }
+
+  @override
+  Future<void> clearWorkouts() async {
+    valController.sink.add([]);
+    return await Future.value();
   }
 }

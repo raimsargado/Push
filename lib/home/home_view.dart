@@ -8,7 +8,12 @@ import 'package:push/workout/bloc/workout_bloc_api.dart';
 import 'package:push/workout/models/workout.dart';
 import 'package:push/workout/views/workout_item.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,22 +25,23 @@ class HomeView extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class WorkoutListView extends StatelessWidget {
+class WorkoutListView extends StatefulWidget {
   //injection without context dependency
+  @override
+  _WorkoutListViewState createState() => _WorkoutListViewState();
+}
+
+class _WorkoutListViewState extends State<WorkoutListView> {
+  //
   var _workoutBloc = serviceLocator.get<WorkoutBlocApi>();
+
   var _workouts = List<Workout>();
 
   var TAG = "WorkoutListView";
 
   @override
   Widget build(BuildContext context) {
-//    final String assetName = 'assets/BikiniDoodle.svg';
-//    final Widget svg = SvgPicture.asset(
-//      assetName,
-//      semanticsLabel: 'Empty',
-//
-//    );
-
+    //
     print("build stateless $_workouts");
     return Scaffold(
       appBar: AppBar(
@@ -48,7 +54,9 @@ class WorkoutListView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BackupView(),
+                  builder: (context) => BackupView(
+                    refreshCallback: () => _refreshApp(),
+                  ),
                 ),
               );
             },
@@ -59,14 +67,18 @@ class WorkoutListView extends StatelessWidget {
         stream: _workoutBloc.valOutput,
         builder: (context, snapshot) {
           print("homeview snapshot data: ${snapshot.data}");
-          if (snapshot.data == null) {
+          print(
+              "homeview snapshot connectionState: ${snapshot.connectionState}");
+          if (snapshot.data == null &&
+              snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
           } else {
             var workouts = snapshot.data as List<Workout>;
-            workouts.forEach((w) {
-              print("home_view workout: ${w.toMap()}");
-            });
-            if (workouts.isNotEmpty) {
+
+            if (workouts != null && workouts.isNotEmpty) {
+              workouts.forEach((w) {
+                print("home_view workout: ${w.toMap()}");
+              });
               var wList = workouts.toSet().toList();
 
               return ReorderableListView(
@@ -85,20 +97,6 @@ class WorkoutListView extends StatelessWidget {
                   _workoutBloc.reorder(oldIndex, newIndex);
                 },
               );
-//              return CustomScrollView(
-//                slivers: <Widget>[
-//                  SliverList(
-//                    delegate: SliverChildBuilderDelegate(
-//                            (BuildContext context, int index) {
-//                          var _workout = wList?.elementAt(index);
-//                          return Padding(
-//                            padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-//                            child: WorkoutItem(workout: _workout),
-//                          );
-//                        }, childCount: wList?.length),
-//                  ),
-//                ],
-//              );
             } else {
               return Center(
                 child: Column(
@@ -170,5 +168,17 @@ class WorkoutListView extends StatelessWidget {
             ],
           );
         });
+  }
+
+  _refreshApp() {
+    //
+    _workoutBloc.clearWorkouts().then((_){
+      setState(() {
+        print("tag refresh");
+      });
+    }).then((_){
+      _workoutBloc.init();
+    });
+
   }
 }

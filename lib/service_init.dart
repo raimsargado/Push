@@ -1,4 +1,5 @@
 // This is our global ServiceLocator
+import 'dart:async';
 import 'package:get_it/get_it.dart';
 import 'package:push/app_db.dart';
 import 'package:push/app_db_interface.dart';
@@ -16,20 +17,24 @@ import 'package:push/workset/data/workset_repo.dart';
 import 'package:push/workset/data/workset_repo_interface.dart';
 
 GetIt serviceLocator = GetIt.instance;
+//Completer<void> locatorReady = Completer<void>();
 
 void serviceInit() {
   //main.db
-  serviceLocator.registerSingleton<AppDatabaseApi>(AppDatabase(),
-      signalsReady: true);
+  serviceLocator.registerSingleton<AppDatabaseApi>(AppDatabase());
 
   //repos
-  serviceLocator.registerSingleton<WorkoutRepoApi>(WorkoutRepo(),
-      signalsReady: true);
+  serviceLocator.registerSingleton<WorkoutRepoApi>(WorkoutRepo());
   serviceLocator.registerSingleton<WorkSetRepoApi>(WorkSetRepo());
   serviceLocator.registerSingleton<ExerciseRepoApi>(ExerciseRepo());
 
   //blocs
-  serviceLocator.registerSingleton<WorkoutBlocApi>(WorkoutBloc());
+  serviceLocator.registerSingleton<WorkoutBlocApi>(WorkoutBloc(),
+      signalsReady: true);
   serviceLocator.registerSingleton<WorkSetBlocApi>(WorkSetBloc());
   serviceLocator.registerSingleton<ExerciseBlocApi>(ExerciseBloc());
+
+//  serviceLocator.ready.listen((_) {
+//    locatorReady.complete();
+//  });
 }

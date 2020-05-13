@@ -10,4 +10,6 @@ abstract class AppDatabaseApi {
   Future<String> read(String fileName);
 
   Future<int> delete(String fileName);
+
+  Future<void> restore(String dataAsText);
 }

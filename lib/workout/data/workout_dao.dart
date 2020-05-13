@@ -1,3 +1,4 @@
+import 'package:push/custom_widgets/pascal_case_text_formatter.dart';
 import 'package:sembast/sembast.dart';
 import 'package:push/app_db_interface.dart';
 import 'package:push/exercise/data/exercise_dao.dart';
@@ -5,9 +6,13 @@ import 'package:push/service_init.dart';
 import 'package:push/workout/models/workout.dart';
 
 class WorkoutDao {
+  var dbFunctions = serviceLocator.get<AppDatabaseApi>();
+
   //
-  Future<Database> get _database async =>
-      await serviceLocator.get<AppDatabaseApi>().database;
+  Future<Database> get _database async {
+    return await serviceLocator.get<AppDatabaseApi>().database;
+  }
+
   var _exerdao = ExerciseDao();
 
   static const String WORKOUT_STORE_NAME = 'WORKOUTS';
@@ -61,7 +66,8 @@ class WorkoutDao {
         return newWorkouts;
       }).then((newWorkouts) {
         newWorkouts.forEach((workout) {
-          print("$TAG deleteWorkout method reorder newWorkouts : ${workout.toMap()}");
+          print(
+              "$TAG deleteWorkout method reorder newWorkouts : ${workout.toMap()}");
         });
         //replace outdated exers
         return updateWorkouts(newWorkouts).then((_) {

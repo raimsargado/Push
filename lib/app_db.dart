@@ -12,9 +12,11 @@ import 'package:sembast/utils/sembast_import_export.dart';
 class AppDatabase extends AppDatabaseApi {
   //Completer is used for transforming synchronous code into asynchronous code.
   Completer<Database> _dbOpenCompleter;
+  Database db;
 
   // Database object accessor
   Future<Database> get database async {
+    print("dbcompleter: $_dbOpenCompleter");
     // If completer is null, AppDatabaseClass is newly instantiated, so database is not yet opened
     if (_dbOpenCompleter == null) {
       _dbOpenCompleter = Completer();
@@ -35,11 +37,11 @@ class AppDatabase extends AppDatabaseApi {
     // Path with the form: /platform-specific-directory/push.main.db
     final dbPath = join(appDocumentDir.path, 'push.db');
 
-    final database = await databaseFactoryIo.openDatabase(dbPath);
+    var db = await databaseFactoryIo.openDatabase(dbPath);
 
     print("dbPath: $dbPath");
     // Any code awaiting the Completer's future will now start executing
-    _dbOpenCompleter.complete(database);
+    _dbOpenCompleter.complete(db);
   }
 
   @override
@@ -82,5 +84,15 @@ class AppDatabase extends AppDatabaseApi {
       print("Couldn't delete file");
       return 0;
     }
+  }
+
+  @override
+  Future<void> restore(String dataAsText) async {
+    var oldDb = await database;
+    var map = jsonDecode(dataAsText) as Map;
+    var db = await importDatabase(map, databaseFactoryIo, oldDb.path);
+    _dbOpenCompleter = null;
+    print("RESTORE : $db");
+    return null;
   }
 }
