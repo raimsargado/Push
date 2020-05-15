@@ -12,7 +12,6 @@ import 'package:sembast/utils/sembast_import_export.dart';
 class AppDatabase extends AppDatabaseApi {
   //Completer is used for transforming synchronous code into asynchronous code.
   Completer<Database> _dbOpenCompleter;
-  Database db;
 
   // Database object accessor
   Future<Database> get database async {
@@ -96,3 +95,5 @@ class AppDatabase extends AppDatabaseApi {
     return null;
   }
 }
+
+
