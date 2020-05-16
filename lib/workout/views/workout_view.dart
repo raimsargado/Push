@@ -192,6 +192,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             icon: Icon(Icons.delete_outline),
             onPressed: () {
               _displayDeleteDialog();
+
             },
           ),
           IconButton(
