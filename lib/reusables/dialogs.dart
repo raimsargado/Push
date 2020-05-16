@@ -26,14 +26,9 @@ class Dialogs {
               onPressed: () => Navigator.of(context).pop(DialogAction.negative),
               child: Text(negativeText),
             ),
-            RaisedButton(
+            FlatButton(
               onPressed: () => Navigator.of(context).pop(DialogAction.positive),
-              child: Text(
-                positiveText,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: Text(positiveText),
             ),
           ],
         );

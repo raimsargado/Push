@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:push/reusables/dialogs.dart';
 import 'package:push/service_init.dart';
 import 'package:push/workout/bloc/workout_bloc_api.dart';
 import 'package:push/workout/models/workout.dart';
@@ -77,9 +78,18 @@ class _WorkoutTimerState extends State<WorkoutTimer>
         _isWorkoutStarted
             ? IconButton(
                 icon: Icon(Icons.pause_circle_outline),
-                onPressed: () {
+                onPressed: () async {
                   //stop workout
-                  _displayStopWorkoutDialog();
+                  var decision = await Dialogs.decisionDialog(
+                    context,
+                    "Stop Workout",
+                    'Are you sure to stop your workout?',
+                    "Yes",
+                    "No",
+                  );
+                  if (decision == DialogAction.positive) {
+                    _stopWorkout();
+                  }
                 },
               )
             : IconButton(
@@ -180,36 +190,5 @@ class _WorkoutTimerState extends State<WorkoutTimer>
       _timer.cancel();
       _timeCount = 0;
     });
-  }
-
-  void _displayStopWorkoutDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return new AlertDialog(
-            title: Container(child: Text('😒😒😒😒😒😒')),
-            content: Text(
-              'Are you sure to \nstop your workout?',
-              textAlign: TextAlign.center,
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('CANCEL'),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-              ),
-              FlatButton(
-                child: new Text('OK'),
-                onPressed: () {
-                  //todo wip refact
-                  _stopWorkout();
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-              )
-            ],
-          );
-        });
   }
 }
