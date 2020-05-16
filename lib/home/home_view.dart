@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:push/backup_restore/backup_view.dart';
 import 'package:push/custom_widgets/upper_case_text_formatter.dart';
@@ -48,19 +49,18 @@ class _WorkoutListViewState extends State<WorkoutListView> {
         title: Text("Push"),
         elevation: 0,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings_backup_restore),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BackupView(
-                    refreshCallback: () => _refreshApp(),
-                  ),
+          GestureDetector(
+            onTap: ()=>Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BackupView(
+                  refreshCallback: () => _refreshApp(),
                 ),
-              );
-            },
-          ),
+              ),
+            ),
+              child: Container(
+                  width: 42,
+                  child: Center(child: custom()))),
         ],
       ),
       body: StreamBuilder(
@@ -172,13 +172,22 @@ class _WorkoutListViewState extends State<WorkoutListView> {
 
   _refreshApp() {
     //
-    _workoutBloc.clearWorkouts().then((_){
+    _workoutBloc.clearWorkouts().then((_) {
       setState(() {
         print("tag refresh");
       });
-    }).then((_){
+    }).then((_) {
       _workoutBloc.init();
     });
+  }
 
+  Widget custom() {
+    // Adobe XD layer: 'Icon ionic-md-optio…' (group)
+    return // Adobe XD layer: 'Icon ionic-md-optio…' (group)
+      // Adobe XD layer: 'Icon ionic-md-optio…' (group)
+      SvgPicture.string(
+        '<svg viewBox="2.3 2.3 16.3 16.3" ><g transform="translate(2.25, 12.75)"><path transform="translate(-2.25, -24.67)" d="M 2.25 27 L 12.16850757598877 27 L 12.16850757598877 28.16688346862793 L 2.25 28.16688346862793 L 2.25 27 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /><path transform="translate(-14.71, -24.67)" d="M 28.125 27 L 31.04220962524414 27 L 31.04220962524414 28.16688346862793 L 28.125 28.16688346862793 L 28.125 27 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /><path transform="translate(-12.0, -22.5)" d="M 24.83376693725586 27.14929962158203 C 24.83376693725586 27.80381393432617 24.31133270263672 28.33441543579102 23.66688346862793 28.33441543579102 L 23.66688346862793 28.33441543579102 C 23.02243423461914 28.33441543579102 22.5 27.80381393432617 22.5 27.14929962158203 L 22.5 23.68511581420898 C 22.5 23.03060531616211 23.02243423461914 22.5 23.66688346862793 22.5 L 23.66688346862793 22.5 C 24.31133270263672 22.5 24.83376693725586 23.03060531616211 24.83376693725586 23.68511581420898 L 24.83376693725586 27.14929962158203 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></g><g transform="translate(2.25, 7.5)"><path transform="translate(-2.25, -14.54)" d="M 2.25 16.875 L 5.167207717895508 16.875 L 5.167207717895508 18.04188346862793 L 2.25 18.04188346862793 L 2.25 16.875 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /><path transform="translate(-8.21, -14.54)" d="M 14.625 16.875 L 24.54350662231445 16.875 L 24.54350662231445 18.04188346862793 L 14.625 18.04188346862793 L 14.625 16.875 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /><path transform="translate(-5.5, -12.37)" d="M 11.33376693725586 17.02429962158203 C 11.33376693725586 17.67881202697754 10.81133079528809 18.20941543579102 10.16688346862793 18.20941543579102 L 10.16688346862793 18.20941543579102 C 9.522436141967773 18.20941543579102 9 17.67881202697754 9 17.02429962158203 L 9 13.56011581420898 C 9 12.90560340881348 9.522436141967773 12.375 10.16688346862793 12.375 L 10.16688346862793 12.375 C 10.81133079528809 12.375 11.33376693725586 12.90560340881348 11.33376693725586 13.56011581420898 L 11.33376693725586 17.02429962158203 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></g><g transform="translate(2.25, 2.25)"><path transform="translate(-2.25, -4.42)" d="M 2.25 6.75 L 12.16850757598877 6.75 L 12.16850757598877 7.91688346862793 L 2.25 7.91688346862793 L 2.25 6.75 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /><path transform="translate(-14.71, -4.42)" d="M 28.125 6.75 L 31.04220962524414 6.75 L 31.04220962524414 7.91688346862793 L 28.125 7.91688346862793 L 28.125 6.75 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /><path transform="translate(-12.0, -2.25)" d="M 24.83376693725586 6.899300575256348 C 24.83376693725586 7.553812980651855 24.31133270263672 8.084416389465332 23.66688346862793 8.084416389465332 L 23.66688346862793 8.084416389465332 C 23.02243423461914 8.084416389465332 22.5 7.553812980651855 22.5 6.899300575256348 L 22.5 3.435115814208984 C 22.5 2.780603647232056 23.02243423461914 2.25 23.66688346862793 2.25 L 23.66688346862793 2.25 C 24.31133270263672 2.25 24.83376693725586 2.780603647232056 24.83376693725586 3.435115814208984 L 24.83376693725586 6.899300575256348 Z" fill="#f7f7f7" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></g></svg>',
+        allowDrawingOutsideViewBox: true,
+      );
   }
 }
