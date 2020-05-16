@@ -320,7 +320,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             title: Text('Add exercise'),
             content: new TextField(
               inputFormatters: [PascalCaseTextFormatter()],
-              controller: _exerciseNameFieldController,git s
+              controller: _exerciseNameFieldController,
               decoration: InputDecoration(hintText: "eg. Chest Press"),
             ),
             actions: <Widget>[
