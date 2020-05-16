@@ -314,10 +314,13 @@ class _WorkoutViewState extends State<WorkoutView> {
         builder: (context) {
           _exerciseNameFieldController.text = "";
           return new AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             title: Text('Add exercise'),
             content: new TextField(
               inputFormatters: [PascalCaseTextFormatter()],
-              controller: _exerciseNameFieldController,
+              controller: _exerciseNameFieldController,git s
               decoration: InputDecoration(hintText: "eg. Chest Press"),
             ),
             actions: <Widget>[

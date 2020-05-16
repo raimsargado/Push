@@ -132,6 +132,9 @@ class _WorkoutListViewState extends State<WorkoutListView> {
         barrierDismissible: true,
         builder: (context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             title: Text('Add a workout'),
             content: TextField(
               inputFormatters: [UpperCaseTextFormatter()],
