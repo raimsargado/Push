@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:icon_shadow/icon_shadow.dart';
 import 'package:push/backup_restore/backup_view.dart';
 import 'package:push/custom_widgets/upper_case_text_formatter.dart';
 import 'package:push/service_init.dart';
@@ -20,7 +18,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData.dark(),
+      theme: ThemeData.light(),
       home: WorkoutListView(), /**[WorkoutListView] as home page**/
     );
   }
@@ -46,158 +44,137 @@ class _WorkoutListViewState extends State<WorkoutListView> {
     //
     print("build stateless $_workouts");
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: SafeArea(
-                  child: Stack(
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "PUSH",
-                          style: TextStyle(
-                            fontFamily: 'Helvetica Neue',
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                          width: 60,
-                          child: Center(
-                              child: IconButton(
-                            icon: Icon(Icons.menu),
-                            iconSize: 28,
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BackupView(
-                                    refreshCallback: () => _refreshApp(),
-                                  ),
-                                ),
-                              );
-                            },
-                          ))),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 0,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(24, 0, 0, 0),
+          Expanded(
+            flex: 1,
+            child: SafeArea(
+              child: Stack(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.center,
                     child: Text(
-                      "Your Programs",
+                      "PUSH",
                       style: TextStyle(
                         fontFamily: 'Helvetica Neue',
-                        fontSize: 24,
+                        fontSize: 18,
                       ),
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                flex: 4,
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(0, 24, 0, 70),
-                  child: StreamBuilder(
-                    stream: _workoutBloc.valOutput,
-                    builder: (context, snapshot) {
-                      print("homeview snapshot data: ${snapshot.data}");
-                      print(
-                          "homeview snapshot connectionState: ${snapshot.connectionState}");
-                      if (snapshot.data == null &&
-                          snapshot.connectionState != ConnectionState.done) {
-                        return Center(child: CircularProgressIndicator());
-                      } else {
-                        var workouts = snapshot.data as List<Workout>;
-                        if (workouts != null && workouts.isNotEmpty) {
-                          workouts.forEach((w) {
-                            print("home_view workout: ${w.toMap()}");
-                          });
-                          var wList = workouts.toSet().toList();
-
-                          return ReorderableListView(
-                            children: <Widget>[
-                              for (final workout in wList)
-                                Padding(
-                                  key: ValueKey(workout.id),
-                                  padding:
-                                      const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                                  child: WorkoutItem(workout: workout),
-                                ),
-                            ],
-                            onReorder: (oldIndex, newIndex) {
-                              print("$TAG onReorder oldIndex: $oldIndex");
-                              print("$TAG onReorder newIndex $newIndex");
-
-                              _workoutBloc.reorder(oldIndex, newIndex);
-                            },
-                          );
-                        } else {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text("Add workout now!"),
-                              ],
+                  Container(
+                      margin: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                      width: 60,
+                      child: Center(
+                          child: IconButton(
+                        icon: Icon(Icons.menu),
+                        iconSize: 28,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BackupView(
+                                refreshCallback: () => _refreshApp(),
+                              ),
                             ),
                           );
-                        }
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 70,
-              decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey[500].withOpacity(0.5),
-                      offset: Offset(0, 3), // changes position of shadow
-                      spreadRadius: 3,
-                      blurRadius: 3,
-                    ),
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(16))),
-              child: Row(
-                children: <Widget>[],
+                        },
+                      ))),
+                ],
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-              child: IconButton(
-                icon: IconShadowWidget(
-                  Icon(
-                    Icons.add_circle,
-                    size: 65,
+          Expanded(
+            flex: 0,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                margin: EdgeInsets.fromLTRB(24, 0, 0, 0),
+                child: Text(
+                  "Your Workouts",
+                  style: TextStyle(
+                    fontFamily: 'Helvetica Neue',
+                    fontSize: 24,
                   ),
-                  shadowColor: Colors.black87,
                 ),
-                iconSize: 65,
-                color: Colors.black87,
-                onPressed: () {
-                  _displayDialog(context);
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(0, 24, 0, 70),
+              child: StreamBuilder(
+                stream: _workoutBloc.valOutput,
+                builder: (context, snapshot) {
+                  print("homeview snapshot data: ${snapshot.data}");
+                  print(
+                      "homeview snapshot connectionState: ${snapshot.connectionState}");
+                  if (snapshot.data == null &&
+                      snapshot.connectionState != ConnectionState.done) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    var workouts = snapshot.data as List<Workout>;
+                    if (workouts != null && workouts.isNotEmpty) {
+                      workouts.forEach((w) {
+                        print("home_view workout: ${w.toMap()}");
+                      });
+                      var wList = workouts.toSet().toList();
+
+                      return ReorderableListView(
+                        children: <Widget>[
+                          for (final workout in wList)
+                            Padding(
+                              key: ValueKey(workout.id),
+                              padding:
+                                  const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                              child: WorkoutItem(workout: workout),
+                            ),
+                        ],
+                        onReorder: (oldIndex, newIndex) {
+                          print("$TAG onReorder oldIndex: $oldIndex");
+                          print("$TAG onReorder newIndex $newIndex");
+
+                          _workoutBloc.reorder(oldIndex, newIndex);
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Add a workout now!",
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }
                 },
               ),
             ),
-          )
+          ),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Align(
+        alignment: Alignment.bottomRight,
+        child: GestureDetector(
+          onTap: () => _displayDialog(context),
+          child: Container(
+            padding: EdgeInsets.all(12),
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: Colors.black87),
+            margin: EdgeInsets.fromLTRB(0, 0, 10, 30),
+            child: Icon(
+              Icons.add,
+              size: 30,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -11,7 +11,8 @@ class ExerciseReorderView extends StatefulWidget {
   final List<Exercise> exercises;
   final Workout workout;
 
-  const ExerciseReorderView({Key key, this.exercises, this.workout, this.sortCallback})
+  const ExerciseReorderView(
+      {Key key, this.exercises, this.workout, this.sortCallback})
       : super(key: key);
 
   @override
@@ -62,8 +63,10 @@ class _State extends State<ExerciseReorderView> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Image(image: AssetImage('assets/MoshingDoodle.png')),
-                      Text("Slight warm-up will do before starting."),
+                      Text(
+                        "No exercises yet",
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
                     ],
                   ),
                 );
@@ -79,7 +82,6 @@ class _State extends State<ExerciseReorderView> {
                         ),
                     ],
                     onReorder: (oldIndex, newIndex) {
-
                       print("$TAG onReorder oldIndex: $oldIndex");
                       print("$TAG onReorder newIndex $newIndex");
                       widget.sortCallback();

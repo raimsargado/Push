@@ -1,9 +1,8 @@
-import 'package:push/custom_widgets/pascal_case_text_formatter.dart';
-import 'package:sembast/sembast.dart';
 import 'package:push/app_db_interface.dart';
 import 'package:push/exercise/data/exercise_dao.dart';
 import 'package:push/service_init.dart';
 import 'package:push/workout/models/workout.dart';
+import 'package:sembast/sembast.dart';
 
 class WorkoutDao {
   var dbFunctions = serviceLocator.get<AppDatabaseApi>();

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:push/custom_widgets/pascal_case_text_formatter.dart';
 import 'package:push/custom_widgets/upper_case_text_formatter.dart';
+import 'package:push/reusables/dialogs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:push/custom_widgets/overlay_progressbar.dart';
 import 'package:push/exercise/bloc/exercise_bloc_api.dart';
@@ -148,163 +149,186 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   _scaffold() {
     return Scaffold(
-      floatingActionButton: IconButton(
-        icon: Icon(
-          Icons.add_circle_outline,
-          size: 40,
-        ),
-        onPressed: () {
-          _displayAddExerciseDialog(context);
-        },
-      ),
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            print("onpress text controller: ${_workoutNameController.text}");
-            print("onpress old name: ${widget.workout.name}");
-            Navigator.pop(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeView(),
-              ),
-            );
-          },
-        ),
-        centerTitle: false,
-        title: Row(
+      body: SafeArea(
+        child: Column(
           children: <Widget>[
-            //WORKOUT TITLE
+            //TITLE AREA
             Expanded(
               flex: 1,
-              child: TextField(
-                inputFormatters: [UpperCaseTextFormatter()],
-                decoration: InputDecoration(
-                    alignLabelWithHint: true, hintText: widget.workout.name),
-                controller: _workoutNameController,
-//                focusNode: _textFocus,
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      print("onpress text :${_workoutNameController.text}");
+                      print("onpress old name: ${widget.workout.name}");
+                      Navigator.pop(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeView()),
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      inputFormatters: [UpperCaseTextFormatter()],
+                      decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          hintText: widget.workout.name),
+                      controller: _workoutNameController,
+                      style: TextStyle(
+                        fontFamily: 'Helvetica Neue',
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.sort),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ExerciseReorderView(
+                            exercises: _exercises,
+                            workout: widget.workout,
+                            sortCallback: _isSorted,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
+            ),
+            //OPTIONS
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  //WORKOUT TITLE
+                  Container(
+                    margin: EdgeInsets.fromLTRB(16, 0, 0, 0),
+                    child: WorkoutTimer(
+                        saveCallback: _saveAllProgress,
+                        //will trigger the [_saveAllProgress()]
+                        workout: widget.workout),
+                  ),
+                  GestureDetector(
+                    child: Container(
+                      child: Text(
+                        "DELETE",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      margin: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          shape: BoxShape.rectangle,
+                          color: Colors.grey),
+                    ),
+                    onTap: () async {
+                      var decision = await Dialogs.decisionDialog(
+                        context,
+                        "Delete Workout",
+                        'Are you sure to delete workout?',
+                        "Yes",
+                        "No",
+                      );
+                      if (decision == DialogAction.positive) {
+                        Navigator.pop(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeView(),
+                          ),
+                        );
+                        _workoutBloc.valDelete(widget.workout);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 8,
+              child: StreamBuilder<List<Exercise>>(
+                  stream: _exerciseBloc.valOutput,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      print(
+                          "$TAG _exerciseBloc.valOutput exercises NULL loading..: ${snapshot.data}");
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      if (snapshot.data.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Slight warm-up will do before starting.",
+                                style:
+                                    TextStyle(fontSize: 18, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        _exercises = snapshot.data;
+                        _exercises.forEach((exer) {
+                          print(
+                              "$TAG NOT EMPTY reorderexer _exerciseBloc.valOutput exercises: ${exer.toMap()}");
+                        });
+                        print("$TAG ADDING EXER: $_isAddingExercise");
+                        return CustomScrollView(
+                          controller: _scrollController,
+                          slivers: <Widget>[
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                                var _exercise = _exercises?.elementAt(index);
+                                print("$TAG _exercise: ${_exercise.toMap()}");
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                                  child: ExerciseItem(
+                                      workout: widget.workout,
+                                      exercise: _exercise),
+                                );
+                              }, childCount: _exercises?.length),
+                            ),
+                          ],
+                        );
+                      }
+                    }
+                  }),
             ),
           ],
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.delete_outline),
-            onPressed: () {
-              _displayDeleteDialog();
-
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.sort),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ExerciseReorderView(
-                    exercises: _exercises,
-                    workout: widget.workout,
-                    sortCallback: _isSorted,
-                  ),
-                ),
-              );
-            },
-          ),
-          Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
-              child: WorkoutTimer(
-                  saveCallback: _saveAllProgress,
-                  //will trigger the [_saveAllProgress()]
-                  workout: widget.workout)),
-        ],
       ),
-      body: StreamBuilder<List<Exercise>>(
-          stream: _exerciseBloc.valOutput,
-          builder: (context, snapshot) {
-            if (snapshot.data == null) {
-              print(
-                  "$TAG _exerciseBloc.valOutput exercises NULL loading..: ${snapshot.data}");
-              return Center(child: CircularProgressIndicator());
-            } else {
-              if (snapshot.data.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image(image: AssetImage('assets/MoshingDoodle.png')),
-                      Text("Slight warm-up will do before starting."),
-                    ],
-                  ),
-                );
-              } else {
-                _exercises = snapshot.data;
-                _exercises.forEach((exer) {
-                  print(
-                      "$TAG NOT EMPTY reorderexer _exerciseBloc.valOutput exercises: ${exer.toMap()}");
-                });
-
-                print("$TAG ADDING EXER: $_isAddingExercise");
-                return CustomScrollView(
-                  controller: _scrollController,
-                  slivers: <Widget>[
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        var _exercise = _exercises?.elementAt(index);
-                        print("$TAG _exercise: ${_exercise.toMap()}");
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                          child: ExerciseItem(
-                              workout: widget.workout, exercise: _exercise),
-                        );
-                      }, childCount: _exercises?.length),
-                    ),
-                  ],
-                );
-              }
-            }
-          }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Align(
+        alignment: Alignment.bottomRight,
+        child: GestureDetector(
+          onTap: () => _displayAddExerciseDialog(context),
+          child: Container(
+            padding: EdgeInsets.all(12),
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: Colors.black87),
+            margin: EdgeInsets.fromLTRB(0, 0, 10, 30),
+            child: Icon(
+              Icons.add,
+              size: 30,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   bool _hasChanges() {
     return _workoutNameController.text.isNotEmpty &&
         widget.workout.name != _workoutNameController.text;
-  }
-
-  void _displayDeleteDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Are you sure to delete workout?'),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('NOPE'),
-                onPressed: () {
-                  //go back to previous page
-                  Navigator.pop(context);
-                  //toast "changes not saved"
-                },
-              ),
-              FlatButton(
-                child: new Text('OK'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeView(),
-                    ),
-                  );
-
-                  _workoutBloc.valDelete(widget.workout);
-                },
-              )
-            ],
-          );
-        });
   }
 
   _displayAddExerciseDialog(BuildContext context) async {

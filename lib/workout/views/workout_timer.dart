@@ -69,16 +69,8 @@ class _WorkoutTimerState extends State<WorkoutTimer>
     return Row(
       children: <Widget>[
         _isWorkoutStarted
-            ? Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
-                child: Center(
-                    child: Text("${format(Duration(seconds: _timeCount))}")),
-              )
-            : Container(),
-        _isWorkoutStarted
-            ? IconButton(
-                icon: Icon(Icons.pause_circle_outline),
-                onPressed: () async {
+            ? GestureDetector(
+                onTap: () async {
                   //stop workout
                   var decision = await Dialogs.decisionDialog(
                     context,
@@ -91,10 +83,19 @@ class _WorkoutTimerState extends State<WorkoutTimer>
                     _stopWorkout();
                   }
                 },
+                child: Container(
+                  padding: EdgeInsets.all(6),
+                  child: Text(
+                    "STOP",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                      shape: BoxShape.rectangle, color: Colors.redAccent),
+                ),
               )
-            : IconButton(
-                icon: Icon(Icons.play_circle_outline),
-                onPressed: () {
+            : GestureDetector(
+                onTap: () async {
                   //start workout
                   print("$TAG start time: _startWorkout:");
                   //todo wip refact
@@ -103,8 +104,35 @@ class _WorkoutTimerState extends State<WorkoutTimer>
                     _isWorkoutStarted = true;
                   });
                   _startWorkout();
-//                      initPlatformState();
                 },
+                child:
+                Container(
+                  child: Text(
+                    "START",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      shape: BoxShape.rectangle, color: Colors.lightGreen),
+                ),
+              ),
+        _isWorkoutStarted
+            ? Container(
+                margin: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                child: Center(
+                    child: Text(
+                  "${format(Duration(seconds: _timeCount))}",
+                  style: TextStyle(fontSize: 18),
+                )),
+              )
+            : Container(
+                margin: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                child: Center(
+                    child: Text(
+                  "${format(Duration(seconds: 0))}",
+                  style: TextStyle(fontSize: 18),
+                )),
               ),
       ],
     );

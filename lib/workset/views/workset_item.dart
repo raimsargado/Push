@@ -116,7 +116,7 @@ class _WorkSetItemState extends State<WorkSetItem> {
                 child: Center(
                   child: TextField(
                     textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
                     decoration:
                         InputDecoration(alignLabelWithHint: true, hintText: ""),
                     controller: _weightFieldController,
