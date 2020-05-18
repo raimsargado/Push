@@ -35,61 +35,83 @@ class _State extends State<ExerciseReorderView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(
-              context,
-              MaterialPageRoute(
-                builder: (context) => WorkoutView(),
-              ),
-            );
-          },
-        ),
-        centerTitle: false,
-        title: Text("Sort your exercises"),
-      ),
-      body: StreamBuilder<List<Exercise>>(
-          stream: _exerciseBloc.valOutputWithoutRefresh,
-          builder: (context, snapshot) {
-            if (snapshot.data == null) {
-              print(
-                  "$TAG _exerciseBloc.valOutput exercises NULL loading..: ${snapshot.data}");
-              return Center(child: CircularProgressIndicator());
-            } else {
-              if (snapshot.data.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "No exercises yet",
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Navigator.pop(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WorkoutView(),
                       ),
-                    ],
+                    );
+                  },
+                ),
+                Expanded(
+                  flex: 6,
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Sort your exercises",
+                      style: TextStyle(
+                        fontFamily: 'Helvetica Neue',
+                        fontSize: 20,
+                      ),
+                    ),
                   ),
-                );
-              } else {
-                _exercises = snapshot.data;
-                return ReorderableListView(
-                    children: [
-                      for (final exer in _exercises)
-                        Padding(
-                          key: ValueKey(exer.id),
-                          padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                          child: ExerciseReorderItem(exercise: exer),
-                        ),
-                    ],
-                    onReorder: (oldIndex, newIndex) {
-                      print("$TAG onReorder oldIndex: $oldIndex");
-                      print("$TAG onReorder newIndex $newIndex");
-                      widget.sortCallback();
-                      _exerciseBloc.reorder(oldIndex, newIndex, widget.workout);
-                    });
-              }
-            }
-          }),
+                ),
+                Spacer(flex: 1,)
+              ],
+            ),
+            Expanded(
+              child: StreamBuilder<List<Exercise>>(
+                  stream: _exerciseBloc.valOutputWithoutRefresh,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      print(
+                          "$TAG _exerciseBloc.valOutput exercises NULL loading..: ${snapshot.data}");
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      if (snapshot.data.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "No exercises yet",
+                                style: TextStyle(fontSize: 18, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        _exercises = snapshot.data;
+                        return ReorderableListView(
+                            children: [
+                              for (final exer in _exercises)
+                                Padding(
+                                  key: ValueKey(exer.id),
+                                  padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                                  child: ExerciseReorderItem(exercise: exer),
+                                ),
+                            ],
+                            onReorder: (oldIndex, newIndex) {
+                              print("$TAG onReorder oldIndex: $oldIndex");
+                              print("$TAG onReorder newIndex $newIndex");
+                              widget.sortCallback();
+                              _exerciseBloc.reorder(oldIndex, newIndex, widget.workout);
+                            });
+                      }
+                    }
+                  }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -153,56 +153,53 @@ class _WorkoutViewState extends State<WorkoutView> {
         child: Column(
           children: <Widget>[
             //TITLE AREA
-            Expanded(
-              flex: 1,
-              child: Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
-                    onPressed: () {
-                      print("onpress text :${_workoutNameController.text}");
-                      print("onpress old name: ${widget.workout.name}");
-                      Navigator.pop(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeView()),
-                      );
-                    },
-                  ),
-                  Expanded(
-                    child: TextField(
-                      textAlign: TextAlign.center,
-                      inputFormatters: [UpperCaseTextFormatter()],
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          hintText: widget.workout.name),
-                      controller: _workoutNameController,
-                      style: TextStyle(
-                        fontFamily: 'Helvetica Neue',
-                        fontSize: 18,
-                      ),
+            Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    print("onpress text :${_workoutNameController.text}");
+                    print("onpress old name: ${widget.workout.name}");
+                    Navigator.pop(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeView()),
+                    );
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    inputFormatters: [UpperCaseTextFormatter()],
+                    decoration: InputDecoration(
+                        alignLabelWithHint: true,
+                        hintText: widget.workout.name),
+                    controller: _workoutNameController,
+                    style: TextStyle(
+                      fontFamily: 'Helvetica Neue',
+                      fontSize: 18,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.sort),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ExerciseReorderView(
-                            exercises: _exercises,
-                            workout: widget.workout,
-                            sortCallback: _isSorted,
-                          ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.sort),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ExerciseReorderView(
+                          exercises: _exercises,
+                          workout: widget.workout,
+                          sortCallback: _isSorted,
                         ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
             //OPTIONS
-            Expanded(
-              flex: 1,
+            Container(
+              padding: EdgeInsets.fromLTRB(0, 24, 0, 24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -250,7 +247,6 @@ class _WorkoutViewState extends State<WorkoutView> {
               ),
             ),
             Expanded(
-              flex: 8,
               child: StreamBuilder<List<Exercise>>(
                   stream: _exerciseBloc.valOutput,
                   builder: (context, snapshot) {

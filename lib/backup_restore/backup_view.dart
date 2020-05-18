@@ -41,108 +41,137 @@ class _BackupViewState extends State<BackupView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Backup/Restore"),
-        elevation: 0,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings_backup_restore),
-            onPressed: () async {
-              var decision = await Dialogs.decisionDialog(
-                context,
-                "Backup/Restore",
-                "Make backup?",
-                "Yes",
-                "No",
-              );
-              if (decision == DialogAction.positive) {
-                _makeBackup();
-              }
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_sweep),
-            onPressed: () async {
-              var decision = await Dialogs.decisionDialog(
-                context,
-                "Backup/Restore",
-                "Delete all backups?",
-                "Yes",
-                "No",
-              );
-              if (decision == DialogAction.positive) {
-                _deleteAllBackups();
-              }
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder<List<String>>(
-        future: _futureBackups,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print("$TAG  , snapshots: ${snapshot.data}");
-          print("$TAG  , snapshots: connection ${snapshot.connectionState}");
-          if (snapshot.data == null) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            if (snapshot.data.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image(image: AssetImage('assets/MoshingDoodle.png')),
-                    Text("No back ups."),
-                    CupertinoButton(
-                      child: Text("MAKE BACKUP"),
-                      onPressed: () async {
-                        var decision = await Dialogs.decisionDialog(
-                          context,
-                          "Backup/Restore",
-                          "Make backup?",
-                          "Yes",
-                          "No",
-                        );
-                        if (decision == DialogAction.positive) {
-                          _makeBackup();
-                        }
-                      },
-                    ),
-                  ],
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-              );
-            } else {
-              _backups = snapshot.data;
-              return CustomScrollView(
-                slivers: <Widget>[
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      var backup = _backups?.elementAt(index);
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
-                        child: ListTile(
-                          title: Text(backup),
-                          onTap: () async {
-                            var decision = await Dialogs.decisionDialog(
-                              context,
-                              "Backup/Restore",
-                              "Are you sure to restore? This will replace your current workouts.",
-                              "Yes",
-                              "No",
-                            );
-                            if (decision == DialogAction.positive) {
-                              _restore(backup);
-                            }
-                          },
+                Expanded(
+                  flex: 6,
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Backup/Restore",
+                      style: TextStyle(
+                        fontFamily: 'Helvetica Neue',
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.settings_backup_restore),
+                  onPressed: () async {
+                    var decision = await Dialogs.decisionDialog(
+                      context,
+                      "Backup/Restore",
+                      "Make backup?",
+                      "Yes",
+                      "No",
+                    );
+                    if (decision == DialogAction.positive) {
+                      _makeBackup();
+                    }
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_sweep),
+                  onPressed: () async {
+                    var decision = await Dialogs.decisionDialog(
+                      context,
+                      "Backup/Restore",
+                      "Delete all backups?",
+                      "Yes",
+                      "No",
+                    );
+                    if (decision == DialogAction.positive) {
+                      _deleteAllBackups();
+                    }
+                  },
+                ),
+              ],
+            ),
+            Expanded(
+              child: FutureBuilder<List<String>>(
+                future: _futureBackups,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  print("$TAG  , snapshots: ${snapshot.data}");
+                  print(
+                      "$TAG  , snapshots: connection ${snapshot.connectionState}");
+                  if (snapshot.data == null) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    if (snapshot.data.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "No backups.",
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.grey),
+                            ),
+                            CupertinoButton(
+                              child: Text("MAKE BACKUP"),
+                              onPressed: () async {
+                                var decision = await Dialogs.decisionDialog(
+                                  context,
+                                  "Backup/Restore",
+                                  "Make backup?",
+                                  "Yes",
+                                  "No",
+                                );
+                                if (decision == DialogAction.positive) {
+                                  _makeBackup();
+                                }
+                              },
+                            ),
+                          ],
                         ),
                       );
-                    }, childCount: _backups?.length),
-                  ),
-                ],
-              );
-            }
-          }
-        },
+                    } else {
+                      _backups = snapshot.data;
+                      return CustomScrollView(
+                        slivers: <Widget>[
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                                (BuildContext context, int index) {
+                              var backup = _backups?.elementAt(index);
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(2, 4, 2, 0),
+                                child: ListTile(
+                                  title: Text(backup),
+                                  onTap: () async {
+                                    var decision = await Dialogs.decisionDialog(
+                                      context,
+                                      "Backup/Restore",
+                                      "Are you sure to restore? This will replace your current workouts.",
+                                      "Yes",
+                                      "No",
+                                    );
+                                    if (decision == DialogAction.positive) {
+                                      _restore(backup);
+                                    }
+                                  },
+                                ),
+                              );
+                            }, childCount: _backups?.length),
+                          ),
+                        ],
+                      );
+                    }
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -154,7 +183,7 @@ class _BackupViewState extends State<BackupView> {
   Future<void> _makeBackup() async {
     var oldBackups = _prefs.getStringList(dbKeys);
     _backups.clear();
-    _backups.addAll(oldBackups);
+    _backups.addAll(oldBackups ?? List<String>());
     var dateKey = DateTime.now().toString();
     var dataAsText = await dbFunctions.backup();
     dbFunctions.write(dataAsText, dateKey).then((_) {
